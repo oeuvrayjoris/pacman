@@ -1,6 +1,6 @@
 # Pacman
 
-3D game.
+Pacman 3D by Victor Lapostolle, Jordan Vilsaint, Délio Elana & Joris Oeuvray
 
 ## Setup
 
@@ -10,7 +10,7 @@ $ git clone https://github.com/oeuvrayjoris/pacman.git
 
 ## Tech
 
-* [OpenGL3](https://www.opengl.org)
+* [OpenGL](https://www.opengl.org)
 * [SDL](https://www.libsdl.org)
 
 ## Language
