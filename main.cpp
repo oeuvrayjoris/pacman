@@ -11,10 +11,10 @@
 using namespace glimac;
 
 int main(int argc, char** argv) {
-    GLuint largeur = 800;
-    GLuint hauteur = 600;
+    GLuint width = 800;
+    GLuint height = 600;
     // Initialize SDL and open a window
-    SDLWindowManager windowManager(largeur, hauteur, "Pacman 3D");
+    SDLWindowManager windowManager(width, height, "Pacman 3D");
 
     // Initialize glew for OpenGL3+ support
     GLenum glewInitError = glewInit();
