@@ -1,3 +1,4 @@
+#define GLEW_STATIC
 #include <glimac/SDLWindowManager.hpp>
 #include <GL/glew.h>
 #include <iostream>
@@ -7,6 +8,7 @@
 #include <glimac/glm.hpp>
 #include <glimac/common.hpp>
 #include <vector>
+#include "headers/Creature.hpp"
 
 using namespace glimac;
 
