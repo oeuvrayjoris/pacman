@@ -9,6 +9,10 @@ int Board::getN() {
     return n;
 }
 
+std::vector<std::vector<int>> Board::getTab() {
+	return tab;
+}
+
 
 /* SETTERS */
 void Board::setM(int a) {
@@ -18,13 +22,16 @@ void Board::setM(int a) {
 void Board::setN(int b) {
 	n = b;
 }
+void Board::setTab(std::vector<std::vector<int>> newTab) {
+	tab = newTab;
+}
 
 
 /* CONSTRUCTORS */
 Board::Board() {
 	m = 25;
 	n = 25;
-	int board[m][n] = {
+	int tab[m][n] = {
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
             {1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1},
@@ -52,13 +59,6 @@ Board::Board() {
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
     };
 }
-
-Board::Board(int a, int b) {
-	m = a;
-	n = b;
-	board = 0;
-}
-
 
 /* DESTRUCTOR */
 Board::~Board() {}

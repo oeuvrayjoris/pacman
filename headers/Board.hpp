@@ -9,14 +9,15 @@ class Board {
         // Getters
 		int getM();
 		int getN();
+		std::vector<std::vector<int>> getTab();
 
         // Setters
         void setM(int a);
 		void setN(int b);
+		void setTab(std::vector<std::vector<int>> newTab);
 
         // Constructors
         Board();
-        Board(int a, int b);
 
         // Destructor
         ~Board();
@@ -25,7 +26,7 @@ class Board {
         // Attr
 		int m;
 		int n;
-		int board[m][n];
+		int tab[25][25];
 };
 
 #endif

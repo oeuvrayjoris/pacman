@@ -9,6 +9,7 @@
 #include <glimac/common.hpp>
 #include <vector>
 #include "headers/Creature.hpp"
+#include "headers/Board.hpp"
 
 using namespace glimac;
 
