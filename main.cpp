@@ -11,8 +11,8 @@
 using namespace glimac;
 
 int main(int argc, char** argv) {
-    GLuint width = 800;
-    GLuint height = 600;
+    GLuint width = 1280;
+    GLuint height = 720;
     // Initialize SDL and open a window
     SDLWindowManager windowManager(width, height, "Pacman 3D");
 
@@ -54,14 +54,11 @@ int main(int argc, char** argv) {
     glEnable(GL_DEPTH_TEST);
 
     /**
-    * Calcul des Matrices de Transformation
+    * Calcul des matrices de Transformation
     */
-    glm::mat4 ProjMatrix;
-    glm::mat4 MVMatrix;
-    glm::mat4 NormalMatrix;
+    glm::mat4 ProjMatrix, MVMatrix, NormalMatrix;
 
     Sphere sphere(1, 32, 16);
-
 
     GLuint vbo;
     glGenBuffers(1, &vbo);
@@ -72,6 +69,7 @@ int main(int argc, char** argv) {
     GLuint vao;
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
+
     const GLuint VERTEX_ATTR_POSITION = 1;
     const GLuint VERTEX_ATTR_NORMAL = 2;
     const GLuint VERTEX_ATTR_TEXCOORDS = 3;
@@ -87,59 +85,57 @@ int main(int argc, char** argv) {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
+    // Application loop
+    bool loop = true;
 
+    while(loop) {
 
-    // Application loop:
-    bool done = false;
-    while(!done) {
         // Event loop:
         SDL_Event e;
         while(windowManager.pollEvent(e)) {
             if(e.type == SDL_QUIT) {
-                done = true; // Leave the loop after this iteration
+                loop = false; // Leave the loop after this iteration
             }
         }
 
         /*********************************
          * HERE SHOULD COME THE RENDERING CODE
          *********************************/
+
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        MVMatrix = glm::translate( glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -5.0f));
-        ProjMatrix = glm::perspective(glm::radians(70.0f), 800.0f/600.0f, 0.1f, 100.0f);
+        MVMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -5.0f));
+        ProjMatrix = glm::perspective(glm::radians(70.0f), (float)width/height, 0.1f, 100.0f);
         NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
 
         glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
         glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
         glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
 
-
         glBindVertexArray(vao);
 
-        //Dessin de la planète
-        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
+        /* START DRAWING THE EARTH */
+            glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
 
-        MVMatrix = glm::translate(glm::mat4(1), glm::vec3(0, 0, -5)); // Translation
-        MVMatrix = glm::rotate(MVMatrix, windowManager.getTime(), glm::vec3(0, 1, 0));
-        MVMatrix = glm::translate(MVMatrix, glm::vec3(-2, 0, 0));
-        MVMatrix = glm::scale(MVMatrix, glm::vec3(0.2, 0.2, 0.2));
+            MVMatrix = glm::translate(glm::mat4(1), glm::vec3(0, 0, -5)); // Translation
+            MVMatrix = glm::rotate(MVMatrix, windowManager.getTime(), glm::vec3(0, 1, 0));
+            MVMatrix = glm::translate(MVMatrix, glm::vec3(-2, 0, 0));
+            MVMatrix = glm::scale(MVMatrix, glm::vec3(0.2, 0.2, 0.2));
 
-        glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
-        glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-        glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+            glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+            glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+            glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+        /* END DRAWING THE EARTH */
 
-
-        //Dessin de la lune
-        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
+        /* START DRAWING THE MOON */
+            glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
+        /* END DRAWING */
 
         glBindVertexArray(0);
-
-
 
 
         // Update the display
         windowManager.swapBuffers();
     }
-
     return EXIT_SUCCESS;
 }
