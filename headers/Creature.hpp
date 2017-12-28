@@ -10,7 +10,11 @@
 class Creature {
 
 public:
+    Creature();
+
     Creature(const std::string &name, int x_coord, int y_coord);
+
+    // Getters and setters
 
     const std::string &getName() const;
 
@@ -44,9 +48,11 @@ public:
 
     void setMove_right(bool move_right);
 
-    void Creature::setDirection(int dir);
+    // Other methods
 
-private:
+    void setDirection(int dir);
+
+protected:
     std::string name;
     float speed;
     int x_coord;
