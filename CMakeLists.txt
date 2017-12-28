@@ -1,4 +1,4 @@
-file(GLOB HEADER_FILES *.hpp headers/*.hpp)
+file(GLOB HEADER_FILES *.hpp headers/*.hpp include)
 file(GLOB SRC_FILES *.cpp src/*.cpp)
 file(GLOB_RECURSE SHADER_FILES *.glsl)
 
