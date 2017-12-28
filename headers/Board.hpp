@@ -21,7 +21,6 @@ class Board {
         // Destructor
         ~Board();
 
-
 	private:
         // Attr
 		int m;
