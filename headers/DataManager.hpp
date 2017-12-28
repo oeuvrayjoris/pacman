@@ -17,7 +17,7 @@ public:
     DataManager();
 
     rapidjson::Document importFromJson(std::string fileName);
-    
+
     void exportInJson(std::string datas[]);
 
 };
