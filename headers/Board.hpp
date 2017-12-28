@@ -1,5 +1,5 @@
-#ifndef BOARD_H
-#define BOARD_H
+#ifndef IMACGL_BOARD_HPP
+#define IMACGL_BOARD_HPP
 
 #include <iostream>
 #include <vector>
