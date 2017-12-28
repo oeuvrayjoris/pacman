@@ -3,3 +3,5 @@
 //
 
 #include "../headers/DataManager.hpp"
+
+DataManager::DataManager() {}
