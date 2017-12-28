@@ -7,16 +7,16 @@
 class Board {
     public:
         // Getters
-		int getX();
-		int getY();
+		int getM();
+		int getN();
 
         // Setters
-        void setX(int a);
-		void setY(int b);
+        void setM(int a);
+		void setN(int b);
 
         // Constructors
         Board();
-        Board(int m, int n);
+        Board(int a, int b);
 
         // Destructor
         ~Board();
@@ -24,9 +24,9 @@ class Board {
 
 	private:
         // Attr
-		int x;
-		int y;
-		int board[y][x];
+		int m;
+		int n;
+		int board[m][n];
 };
 
 #endif
