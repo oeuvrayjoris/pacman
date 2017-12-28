@@ -24,7 +24,7 @@ public:
     void setValue(float value);
 
 private:
-    
+
     int state; // 1 - Normal / 0 - Slowed ghost / -1 - Eaten ghost
     float value;
 };
