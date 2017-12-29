@@ -38,13 +38,13 @@
 /.idea
 CMakeLists.txt
 
-/glimac/include/glimac/SDLWindowManager.hpp
-/glimac/include/glimac/Program.hpp
-/glimac/include/glimac/Image.hpp
-/glimac/include/glimac/glm.hpp
-/glimac/include/glimac/Geometry.hpp
+SDLWindowManager.hpp
+Program.hpp
+Image.hpp
+glm.hpp
+Geometry.hpp
 
-/glimac/src/SDLWindowManager.cpp
-/glimac/src/Program.cpp
-/glimac/src/Image.cpp
-/glimac/src/Geometry.cpp
+SDLWindowManager.cpp
+Program.cpp
+Image.cpp
+Geometry.cpp
