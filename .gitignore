@@ -30,12 +30,3 @@
 *.exe
 *.out
 *.app
-
-# Cmake
-/CMake
-/cmake-build-debug
-.idea
-CMakeLists.txt
-
-/assets/models
-/third-party/include/glm
