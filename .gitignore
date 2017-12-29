@@ -30,3 +30,21 @@
 *.exe
 *.out
 *.app
+
+# Cmake
+/CMake
+/cmake-build-debug
+/third-party
+/.idea
+CMakeLists.txt
+
+/glimac/include/glimac/SDLWindowManager.hpp
+/glimac/include/glimac/Program.hpp
+/glimac/include/glimac/Image.hpp
+/glimac/include/glimac/glm.hpp
+/glimac/include/glimac/Geometry.hpp
+
+/glimac/src/SDLWindowManager.cpp
+/glimac/src/Program.cpp
+/glimac/src/Image.cpp
+/glimac/src/Geometry.cpp
