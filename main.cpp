@@ -28,6 +28,11 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
     }
 
+    /*Board board;
+    std::cout << "*** Board ***" << std::endl;
+    std::cout << "m = " << board.getM() << std::endl;
+    std::cout << "n = " << board.getN() << std::endl;*/
+
     FilePath applicationPath(argv[0]);
 
     std::string VS = "shaders/3D.vs.glsl";

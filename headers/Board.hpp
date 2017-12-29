@@ -9,9 +9,6 @@ public:
 	// Constructors
 	Board();
 
-	// Destructor
-	~Board();
-
 	// Getters
 	int getM();
 	int getN();
@@ -23,6 +20,7 @@ public:
 	void setTab(std::vector<std::vector<int>> new_tab);
 
 	// Methods
+	void build();
 	void changeValue(int m, int n, int value);
 
 private:
