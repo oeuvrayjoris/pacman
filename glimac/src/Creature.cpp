@@ -1,8 +1,7 @@
 //
 // Created by Jordan on 27/12/2017.
 //
-
-#include "../headers/Creature.hpp"
+#include "glimac/Creature.hpp"
 
 // Constructors
 
@@ -10,7 +9,7 @@ Creature::Creature() {}
 
 Creature::Creature(const std::string &name, int x_coord, int y_coord) : name(name), x_coord(x_coord), y_coord(y_coord) {
     speed = 0.5f;
-    move_up, move_down, move_left, move_right = false;
+    //move_up, move_down, move_left, move_right = false;
 }
 
 // Getters and setters

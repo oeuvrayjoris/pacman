@@ -2,7 +2,7 @@
 // Created by Jordan on 28/12/2017.
 //
 
-#include "../headers/Ghost.hpp"
+#include "glimac/Ghost.hpp"
 
 Ghost::Ghost() {
     value = 800.f;

@@ -10,8 +10,8 @@
 #include <glimac/common.hpp>
 #include <vector>
 
-#include "headers/Creature.hpp"
-#include "headers/Board.hpp"
+#include <glimac/Creature.hpp>
+#include <glimac/Board.hpp>
 
 using namespace glimac;
 
@@ -28,10 +28,10 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
     }
 
-    /*Board board;
+    Board board;
     std::cout << "*** Board ***" << std::endl;
     std::cout << "m = " << board.getM() << std::endl;
-    std::cout << "n = " << board.getN() << std::endl;*/
+    std::cout << "n = " << board.getN() << std::endl;
 
     FilePath applicationPath(argv[0]);
 

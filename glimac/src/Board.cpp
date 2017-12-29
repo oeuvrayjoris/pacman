@@ -1,5 +1,4 @@
-#include "../headers/Board.hpp"
-
+#include "glimac/Board.hpp"
 
 /* CONSTRUCTOR */
 

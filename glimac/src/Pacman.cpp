@@ -2,7 +2,7 @@
 // Created by Jordan on 28/12/2017.
 //
 
-#include "../headers/Pacman.hpp"
+#include "glimac/Pacman.hpp"
 
 Pacman::Pacman() {
     lives = 3;
