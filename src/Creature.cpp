@@ -47,48 +47,28 @@ void Creature::setY_coord(int y_coord) {
     Creature::y_coord = y_coord;
 }
 
-bool Creature::isMove_up() const {
-    return move_up;
+int Creature::getDirection() const {
+    return direction;
 }
 
-void Creature::setMove_up(bool move_up) {
-    Creature::move_up = move_up;
-}
-
-bool Creature::isMove_down() const {
-    return move_down;
-}
-
-void Creature::setMove_down(bool move_down) {
-    Creature::move_down = move_down;
-}
-
-bool Creature::isMove_left() const {
-    return move_left;
-}
-
-void Creature::setMove_left(bool move_left) {
-    Creature::move_left = move_left;
-}
-
-bool Creature::isMove_right() const {
-    return move_right;
-}
-
-void Creature::setMove_right(bool move_right) {
-    Creature::move_right = move_right;
+void Creature::setDirection(int direction) {
+    Creature::direction = direction;
 }
 
 // Other methods
 
-void Creature::setDirection(int dir){
-    move_up = move_down = move_left = move_right = false;
-    if(dir == 1)
-        move_up = true;
-    else if(dir == 2)
-        move_down = true;
-    else if(dir == 3)
-        move_left = true;
-    else if(dir == 4)
-        move_right = true;
+void Creature::moveUp() {
+    x_coord--;
+}
+
+void Creature::moveDown() {
+    x_coord++;
+}
+
+void Creature::moveLeft(){
+    y_coord--;
+}
+
+void Creature::moveRight(){
+    y_coord++;
 }
