@@ -32,32 +32,26 @@ public:
 
     void setY_coord(int y_coord);
 
-    bool isMove_up() const;
+    int getDirection() const;
 
-    void setMove_up(bool move_up);
-
-    bool isMove_down() const;
-
-    void setMove_down(bool move_down);
-
-    bool isMove_left() const;
-
-    void setMove_left(bool move_left);
-
-    bool isMove_right() const;
-
-    void setMove_right(bool move_right);
+    void setDirection(int direction);
 
     // Other methods
 
-    void setDirection(int dir);
+    void moveUp();
+
+    void moveDown();
+
+    void moveLeft();
+
+    void moveRight();
 
 protected:
     std::string name;
     float speed;
     int x_coord;
     int y_coord;
-    bool move_up, move_down, move_left, move_right;
+    int direction; // 1 for up, 2 for down, 3 for left, 4 for right
 
 
 };

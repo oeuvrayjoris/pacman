@@ -5,28 +5,30 @@
 #include <vector>
 
 class Board {
-    public:
-        // Getters
-		int getM();
-		int getN();
-		std::vector<std::vector<int>> getTab();
 
-        // Setters
-        void setM(int a);
-		void setN(int b);
-		void setTab(std::vector<std::vector<int>> newTab);
+public:
 
-        // Constructors
-        Board();
+	// Constructors
+	Board();
 
-        // Destructor
-        ~Board();
+	// Destructor
+	~Board();
+
+	// Getters
+	int getM();
+	int getN();
+    std::vector<std::vector<int>> getTab();
+
+	// Setters
+	void setM(int a);
+	void setN(int b);
+	void setTab(std::vector<std::vector<int>> newTab);
 
 	private:
         // Attr
 		int m;
 		int n;
-		int tab[25][25];
+        std::vector<std::vector<int>> tab;
 };
 
 #endif

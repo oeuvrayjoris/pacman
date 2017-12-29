@@ -141,5 +141,18 @@ int main(int argc, char** argv) {
         windowManager.swapBuffers();
     }
 
+    /*
+
+    Board board = Board();
+    for (int i = 0; i < board.getM(); i++) {
+        for (int j = 0; j < board.getN(); i++) {
+            if(board.getTab()[i][j] == 1)
+                std::cout << " ! ";
+            else
+                std::cout << "   ";
+        }
+        std::cout << std::endl;
+    } */
+
     return EXIT_SUCCESS;
 }
