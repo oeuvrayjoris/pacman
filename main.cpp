@@ -110,6 +110,7 @@ int main(int argc, char** argv) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         MVMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -5.0f));
+        MVMatrix = glm::rotate(MVMatrix, -windowManager.getTime(), glm::vec3(0.0f, 1.0f, 0.0f));
         ProjMatrix = glm::perspective(glm::radians(70.0f), (float)width/height, 0.1f, 100.0f);
         NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
 
