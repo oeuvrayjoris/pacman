@@ -9,6 +9,7 @@
 #include <glimac/glm.hpp>
 #include <glimac/common.hpp>
 #include <vector>
+
 #include "headers/Creature.hpp"
 #include "headers/Board.hpp"
 

@@ -7,8 +7,8 @@
 class Board {
     public:
         // Getters
-		int getM();
-		int getN();
+		int getLargeur();
+		int getHauteur();
 		std::vector<std::vector<int>> getTab();
 
         // Setters
@@ -24,8 +24,8 @@ class Board {
 
 	private:
         // Attr
-		int m;
-		int n;
+		int largeur;
+		int hauteur;
 		int tab[25][25];
 };
 
