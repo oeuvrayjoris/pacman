@@ -8,7 +8,10 @@
 // directions and icons
 const char ALL_DIRS[4] = {'z','q','s','d'};
 
-// timers
+// Board properties
+const char NO_COLLISION_TILES[2] = {' ','o'};
+
+// Timers
 const int SUPER_MAX   = 500;
 const int ONE_UP_MAX  = 13;
 const int PELLET_MAX  = 8;
