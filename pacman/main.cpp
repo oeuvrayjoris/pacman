@@ -32,6 +32,7 @@ int main(int argc, char** argv) {
     std::cout << "m = " << board.getM() << std::endl;
     std::cout << "n = " << board.getN() << std::endl;
 
+
     FilePath applicationPath(argv[0]);
 
     std::string VS = "shaders/3D.vs.glsl";
@@ -68,7 +69,7 @@ int main(int argc, char** argv) {
     glm::mat4 ProjMatrix, MVMatrix, NormalMatrix;
 
     Sphere sphere(1, 32, 16);
-    Cube cube;
+    Cube cube(1.0);
 
     GLuint vbo;
     glGenBuffers(1, &vbo);
@@ -102,8 +103,8 @@ int main(int argc, char** argv) {
 
         // Event loop:
         SDL_Event e;
-        while(windowManager.pollEvent(e)) {
-            if(e.type == SDL_QUIT) {
+        while (windowManager.pollEvent(e)) {
+            if (e.type == SDL_QUIT) {
                 loop = false; // Leave the loop after this iteration
             }
         }
@@ -115,8 +116,20 @@ int main(int argc, char** argv) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         MVMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -5.0f));
+
+        /*for (int i = 0; i < board.getM(); i++) {
+            for (int j = 0; j < board.getN(); j++) {
+                if(board.getTab()[i][j] == 1)
+                    MVMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.1f, 0.0f, 0.0f));
+                //else
+                    //MVMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(1, -1, 0));
+            }
+            MVMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-2.5f, 0.1f, 0));
+        }*/
+
+
         MVMatrix = glm::rotate(MVMatrix, -windowManager.getTime(), glm::vec3(0.0f, 1.0f, 0.0f));
-        ProjMatrix = glm::perspective(glm::radians(70.0f), (float)width/height, 0.1f, 100.0f);
+        ProjMatrix = glm::perspective(glm::radians(70.0f), (float) width / height, 0.1f, 100.0f);
         NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
 
         glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
@@ -126,20 +139,20 @@ int main(int argc, char** argv) {
         glBindVertexArray(vao);
 
         /* START DRAWING THE EARTH */
-            glDrawArrays(GL_TRIANGLES, 0, cube.getVertexCount());
-
-            MVMatrix = glm::translate(glm::mat4(1), glm::vec3(0, 0, -5)); // Translation
-            MVMatrix = glm::rotate(MVMatrix, windowManager.getTime(), glm::vec3(0, 1, 0));
-            MVMatrix = glm::translate(MVMatrix, glm::vec3(-2, 0, 0));
-            MVMatrix = glm::scale(MVMatrix, glm::vec3(0.2, 0.2, 0.2));
-
-            glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
-            glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-            glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+        glDrawArrays(GL_TRIANGLES, 0, cube.getVertexCount());
         /* END DRAWING THE EARTH */
 
+        MVMatrix = glm::translate(glm::mat4(1), glm::vec3(0, 0, -5)); // Translation
+        MVMatrix = glm::rotate(MVMatrix, windowManager.getTime(), glm::vec3(0, 1, 0));
+        MVMatrix = glm::translate(MVMatrix, glm::vec3(-2, 0, 0));
+        MVMatrix = glm::scale(MVMatrix, glm::vec3(0.2, 0.2, 0.2));
+
+        glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+        glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+        glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+
         /* START DRAWING THE MOON */
-            glDrawArrays(GL_TRIANGLES, 0, cube.getVertexCount());
+        glDrawArrays(GL_TRIANGLES, 0, cube.getVertexCount());
         /* END DRAWING */
 
         glBindVertexArray(0);
@@ -147,16 +160,6 @@ int main(int argc, char** argv) {
 
         // Update the display
         windowManager.swapBuffers();
-    }
-
-    for (int i = 0; i < board.getM(); i++) {
-        for (int j = 0; j < board.getN(); j++) {
-            if(board.getTab()[i][j] == 1)
-                std::cout << "!";
-            else
-                std::cout << " ";
-        }
-        std::cout << std::endl;
     }
 
     return EXIT_SUCCESS;
