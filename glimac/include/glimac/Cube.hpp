@@ -6,10 +6,10 @@
 class Cube {
 	public:
 		// Constructor
-		Cube();
+		Cube(float size);
 
 		// Methods
-		void build();
+		void build(float size);
 		const float* getDataPointer() const;
 		GLsizei getVertexCount() const;
 

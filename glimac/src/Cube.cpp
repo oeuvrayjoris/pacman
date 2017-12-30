@@ -4,49 +4,50 @@
 #include "glimac/common.hpp"
 #include "glimac/Cube.hpp"
 
-void Cube::build() {
-    m_Vertices = {-1.0f,-1.0f,-1.0f,
-                  -1.0f,-1.0f, 1.0f,
-                  -1.0f, 1.0f, 1.0f,
-                  1.0f, 1.0f,-1.0f,
-                  -1.0f,-1.0f,-1.0f,
-                  -1.0f, 1.0f,-1.0f,
-                  1.0f,-1.0f, 1.0f,
-                  -1.0f,-1.0f,-1.0f,
-                  1.0f,-1.0f,-1.0f,
-                  1.0f, 1.0f,-1.0f,
-                  1.0f,-1.0f,-1.0f,
-                  -1.0f,-1.0f,-1.0f,
-                  -1.0f,-1.0f,-1.0f,
-                  -1.0f, 1.0f, 1.0f,
-                  -1.0f, 1.0f,-1.0f,
-                  1.0f,-1.0f, 1.0f,
-                  -1.0f,-1.0f, 1.0f,
-                  -1.0f,-1.0f,-1.0f,
-                  -1.0f, 1.0f, 1.0f,
-                  -1.0f,-1.0f, 1.0f,
-                  1.0f,-1.0f, 1.0f,
-                  1.0f, 1.0f, 1.0f,
-                  1.0f,-1.0f,-1.0f,
-                  1.0f, 1.0f,-1.0f,
-                  1.0f,-1.0f,-1.0f,
-                  1.0f, 1.0f, 1.0f,
-                  1.0f,-1.0f, 1.0f,
-                  1.0f, 1.0f, 1.0f,
-                  1.0f, 1.0f,-1.0f,
-                  -1.0f, 1.0f,-1.0f,
-                  1.0f, 1.0f, 1.0f,
-                  -1.0f, 1.0f,-1.0f,
-                  -1.0f, 1.0f, 1.0f,
-                  1.0f, 1.0f, 1.0f,
-                  -1.0f, 1.0f, 1.0f,
-                  1.0f,-1.0f, 1.0f
+void Cube::build(float size) {
+    m_Vertices = {
+            -size,-size,-size,
+            -size,-size, size,
+            -size, size, size,
+            size, size,-size,
+            -size,-size,-size,
+            -size, size,-size,
+            size,-size, size,
+            -size,-size,-size,
+            size,-size,-size,
+            size, size,-size,
+            size,-size,-size,
+            -size,-size,-size,
+            -size,-size,-size,
+            -size, size, size,
+            -size, size,-size,
+            size,-size, size,
+            -size,-size, size,
+            -size,-size,-size,
+            -size, size, size,
+            -size,-size, size,
+            size,-size, size,
+            size, size, size,
+            size,-size,-size,
+            size, size,-size,
+            size,-size,-size,
+            size, size, size,
+            size,-size, size,
+            size, size, size,
+            size, size,-size,
+            -size, size,-size,
+            size, size, size,
+            -size, size,-size,
+            -size, size, size,
+            size, size, size,
+            -size, size, size,
+            size,-size, size
     };
 }
 
-Cube::Cube() {
+Cube::Cube(float size) {
     m_nVertexCount = 108;
-    build();
+    build(size);
 }
 
 const float* Cube::getDataPointer() const {
