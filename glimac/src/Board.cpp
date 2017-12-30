@@ -30,48 +30,48 @@ void Board::build() {
 		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 	};
-	tab = board;
+	level = board;
 }
 
 
 /* CONSTRUCTOR */
 Board::Board() {
-	m = 25;
-	n = 25;
+	levelHeight = 25;
+	levelWidth = 25;
 	build();
 }
 
 
 /* GETTERS */
-int Board::getM() {
-    return m;
+int Board::getLevelHeight(){
+    return levelHeight;
 }
 
-int Board::getN() {
-    return n;
+int Board::getLevelWidth(){
+    return levelWidth;
 }
 
-std::vector<std::vector<int>> Board::getTab() {
-	return tab;
+std::vector<std::vector<int>> Board::getLevel() {
+	return level;
 }
 
 
 /* SETTERS */
-void Board::setM(int new_m) {
-	m = new_m;
+void Board::setLevelHeight(int new_m){
+	levelHeight = new_m;
 }
 
-void Board::setN(int new_n) {
-	n = new_n;
+void Board::setLevelWidth(int new_n){
+	levelWidth = new_n;
 }
 
-void Board::setTab(std::vector<std::vector<int>> new_tab) {
-	tab = new_tab;
+void Board::setLevel(std::vector<std::vector<int>> new_tab) {
+	level = new_tab;
 }
 
 
 /* METHODS */
 
 void Board::changeValue(int m, int n, int value) {
-    tab[m][n] = value;
+    level[m][n] = value;
 }

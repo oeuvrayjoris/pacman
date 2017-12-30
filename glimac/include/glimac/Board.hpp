@@ -10,14 +10,14 @@ public:
 	Board();
 
 	// Getters
-	int getM();
-	int getN();
-	std::vector<std::vector<int>> getTab();
+	int getLevelHeight();
+	int getLevelWidth();
+	std::vector<std::vector<int>> getLevel();
 
 	// Setters
-	void setM(int new_m);
-	void setN(int new_n);
-	void setTab(std::vector<std::vector<int>> new_tab);
+	void setLevelHeight(int new_m);
+	void setLevelWidth(int new_n);
+	void setLevel(std::vector<std::vector<int>> new_tab);
 
 	// Methods
 	void build();
@@ -25,9 +25,9 @@ public:
 
 private:
 	// Attr
-	int m;
-	int n;
-	std::vector<std::vector<int>> tab;
+	int levelHeight;
+	int levelWidth;
+	std::vector<std::vector<int>> level;
 };
 
 #endif
