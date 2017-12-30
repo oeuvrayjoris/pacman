@@ -37,6 +37,9 @@
 /third-party
 /.idea
 CMakeLists.txt
+CMakeLists.txt.user.e99d394
+/pacman/cmake-build-debug/
+/pacman/.idea/
 
 SDLWindowManager.hpp
 Program.hpp

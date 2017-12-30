@@ -1,3 +1,4 @@
+#define GLEW_STATIC
 #include "glimac/Shader.hpp"
 
 #include <fstream>
