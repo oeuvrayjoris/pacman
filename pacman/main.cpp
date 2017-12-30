@@ -121,35 +121,6 @@ int main(int argc, char** argv) {
                 loop = false; // Leave the loop after this iteration
             }
 
-            /*if (windowManager.isMouseButtonPressed(SDL_BUTTON_RIGHT)) {
-                mousePosition = windowManager.getMousePosition();
-                if (mousePosition.x < previousMousePosition.x) {
-                    camera.rotateLeft(0.1);
-                }
-                else if (mousePosition.x > previousMousePosition.x) {
-                    camera.rotateLeft(-0.1);
-                }
-                if (mousePosition.y < previousMousePosition.y) {
-                    camera.rotateUp(0.1);
-                }
-                else if (mousePosition.y > previousMousePosition.y) {
-                    camera.rotateUp(-0.1);
-                }
-            }
-
-            if (windowManager.isMouseButtonPressed(SDL_BUTTON_MIDDLE)) {
-                mousePosition = windowManager.getMousePosition();
-                if (mousePosition.y < previousMousePosition.y) {
-                    camera.moveFront(-0.05);
-                }
-                else if (mousePosition.y > previousMousePosition.y) {
-                    camera.moveFront(0.05);
-                }
-            }
-
-            previousMousePosition = mousePosition;
-            */
-
             if (windowManager.isKeyPressed(SDLK_z))
                 camera.moveFront(0.001);
             if (windowManager.isKeyPressed(SDLK_s))
