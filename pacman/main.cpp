@@ -116,18 +116,6 @@ int main(int argc, char** argv) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         MVMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -5.0f));
-
-        /*for (int i = 0; i < board.getM(); i++) {
-            for (int j = 0; j < board.getN(); j++) {
-                if(board.getTab()[i][j] == 1)
-                    MVMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.1f, 0.0f, 0.0f));
-                //else
-                    //MVMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(1, -1, 0));
-            }
-            MVMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-2.5f, 0.1f, 0));
-        }*/
-
-
         MVMatrix = glm::rotate(MVMatrix, -windowManager.getTime(), glm::vec3(0.0f, 1.0f, 0.0f));
         ProjMatrix = glm::perspective(glm::radians(70.0f), (float) width / height, 0.1f, 100.0f);
         NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
@@ -154,6 +142,27 @@ int main(int argc, char** argv) {
         /* START DRAWING THE MOON */
         glDrawArrays(GL_TRIANGLES, 0, cube.getVertexCount());
         /* END DRAWING */
+
+        for (int i = 0; i < board.getM(); i++) { // Parcours des lignes
+            MVMatrix = glm::translate(glm::mat4(1), glm::vec3(-8, -3, -10)); // réinit MVMAtrix puis translate général
+            MVMatrix = glm::scale(MVMatrix, glm::vec3(0.15, 0.15, 0.15)); // Scale général
+            MVMatrix = glm::translate(MVMatrix, glm::vec3(0, 0, i*0.5f)); // Translate en profondeur en fonction du numéro de ligne
+            for (int j = 0; j < board.getN(); j++) { // Parcours des colonnes
+                if(board.getTab()[i][j] == 1) {
+                    MVMatrix = glm::translate(MVMatrix, glm::vec3(i*0.5f, 0, 0)); // On translate en x, pour afficher le cube à droite
+
+                    glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+                    glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+                    glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+
+                    glDrawArrays(GL_TRIANGLES, 0, cube.getVertexCount());
+                }
+                else {
+                    MVMatrix = glm::translate(MVMatrix, glm::vec3(i*0.5f, 0, 0)); // On translate mais on affiche pas le cube (car c'est vide)
+                }
+
+            }
+        }
 
         glBindVertexArray(0);
 
