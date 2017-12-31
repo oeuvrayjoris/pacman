@@ -41,11 +41,11 @@ const std::string &Pacman::getName() const {
     return name;
 }
 
-int Pacman::getDir() const {
+char Pacman::getDir() const {
     return dir;
 }
 
-int Pacman::getDirOld() const {
+char Pacman::getDirOld() const {
     return dirOld;
 }
 
@@ -91,11 +91,11 @@ void Pacman::setName(const std::string &name) {
     Pacman::name = name;
 }
 
-void Pacman::setDir(int dir) {
+void Pacman::setDir(char dir) {
     Pacman::dir = dir;
 }
 
-void Pacman::setDirOld(int dirOld) {
+void Pacman::setDirOld(char dirOld) {
     Pacman::dirOld = dirOld;
 }
 
@@ -113,19 +113,46 @@ void Pacman::setKillCount(int killCount) {
 
 // Other methods
 
-void Pacman::Move() {
-
+void Pacman::Move(glimac::SDLWindowManager windowManager) {
+    GetDirection(windowManager);
+    if (TestForCollision() == false) {
+        if (board->getLevel()[coord_x][coord_y] != 1) {
+            if (board->getLevel()[coord_x][coord_y] == 2) {
+                score += 50;
+                super = SUPER_MAX;
+            }
+            if (board->getLevel()[coord_x][coord_y] == 3) {
+                score += 100;
+            } else {
+                score += 10;
+            }
+            board->changeValue(coord_x, coord_y, 0);
+            --leftDots;
+        }
+        dirOld = dir;
+    }
 }
 
-void Pacman::GetDirection(char key) {
-    dir = key;
-    // if not, try moving in the same direction as before
-    if (!strchr(ALL_DIRS, dir)) {
+void Pacman::GetDirection(glimac::SDLWindowManager windowManager) {
+
+    if (windowManager.isKeyPressed(SDLK_z))
+        dir = 'z';
+    else if (windowManager.isKeyPressed(SDLK_s))
+        dir = 's';
+    else if (windowManager.isKeyPressed(SDLK_q))
+        dir = 'q';
+    else if (windowManager.isKeyPressed(SDLK_d))
+        dir = 'd';
+    // Try moving in the same direction as before
+    else {
         dir = dirOld;
     }
 }
 
 bool Pacman::TestForCollision() {
+
+    int elem;
+    bool exists;
 
     // save old coordinates
     coord_x_old = coord_x;
@@ -133,30 +160,38 @@ bool Pacman::TestForCollision() {
     // if the character in front of the player is a space, move in the appropriate direction
     switch (dir) {
         case 'q':
+            elem = board->getLevel()[coord_x][coord_y - 1];
+            exists = std::find(std::begin(NO_COLLISION_TILES), std::end(NO_COLLISION_TILES), elem) != std::end(NO_COLLISION_TILES);
             // if travelling through the tunnel at the left
             if (coord_x == 0) {
                 coord_x = board->getLevelWidth() - 1;
             }
-            else if (strchr(NO_COLLISION_TILES, board->GetLevel(coord_y, coord_x - 1))) {
+            else if (exists) {
                 --coord_x;
             }
             break;
         case 'd':
+            elem = board->getLevel()[coord_x][coord_y + 1];
+            exists = std::find(std::begin(NO_COLLISION_TILES), std::end(NO_COLLISION_TILES), elem) != std::end(NO_COLLISION_TILES);
             // if travelling through the tunnel at the right
             if (coord_x == board->getLevelWidth() - 1) {
                 coord_x = 0;
             }
-            else if (strchr(NO_COLLISION_TILES, board->GetLevel(coord_y, coord_x + 1))) {
+            else if (exists) {
                 ++coord_x;
             }
             break;
         case 'w':
-            if (strchr(NO_COLLISION_TILES, board->GetLevel(coord_y - 1, coord_x))) {
+            elem = board->getLevel()[coord_x - 1][coord_y];
+            exists = std::find(std::begin(NO_COLLISION_TILES), std::end(NO_COLLISION_TILES), elem) != std::end(NO_COLLISION_TILES);
+            if (exists) {
                 --coord_y;
             }
             break;
         case 's':
-            if (strchr(NO_COLLISION_TILES, board->GetLevel(coord_y + 1, coord_x))) {
+            elem = board->getLevel()[coord_x + 1][coord_y];
+            exists = std::find(std::begin(NO_COLLISION_TILES), std::end(NO_COLLISION_TILES), elem) != std::end(NO_COLLISION_TILES);
+            if (exists) {
                 ++coord_y;
             }
     }
@@ -165,4 +200,12 @@ bool Pacman::TestForCollision() {
         return true;
     }
     return false;
+}
+
+void Pacman::loseLife(){
+    lives--;
+}
+
+void Pacman::lifeUp(){
+    lives++;
 }

@@ -77,8 +77,8 @@ int main(int argc, char** argv) {
 
     Board board;
     std::cout << "*** Board ***" << std::endl;
-    std::cout << "m = " << board.getM() << std::endl;
-    std::cout << "n = " << board.getN() << std::endl;
+    std::cout << "m = " << board.getLevelHeight() << std::endl;
+    std::cout << "n = " << board.getLevelWidth() << std::endl;
 
     GLuint vbo;
     glGenBuffers(1, &vbo);
@@ -167,12 +167,12 @@ int main(int argc, char** argv) {
         glDrawArrays(GL_TRIANGLES, 0, cube.getVertexCount());
         /* END DRAWING */
 
-        for (int i = 0; i < board.getM(); i++) { // Parcours des lignes
+        for (int i = 0; i < board.getLevelHeight(); i++) { // Parcours des lignes
             MVMatrix = glm::translate(globalMVMatrix, glm::vec3(-8, -3, -10)); // réinit MVMAtrix puis translate général
             MVMatrix = glm::scale(MVMatrix, glm::vec3(0.15, 0.15, 0.15)); // Scale général
             MVMatrix = glm::translate(MVMatrix, glm::vec3(0, 0, i*0.5f)); // Translate en profondeur en fonction du numéro de ligne
-            for (int j = 0; j < board.getN(); j++) { // Parcours des colonnes
-                if(board.getTab()[i][j] == 1) {
+            for (int j = 0; j < board.getLevelWidth(); j++) { // Parcours des colonnes
+                if(board.getLevel()[i][j] == 1) {
                     MVMatrix = glm::translate(MVMatrix, glm::vec3(i*0.5f, 0, 0)); // On translate en x, pour afficher le cube à droite
 
                     glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));

@@ -9,7 +9,7 @@
 const char ALL_DIRS[4] = {'z','q','s','d'};
 
 // Board properties
-const char NO_COLLISION_TILES[2] = {' ','o'};
+const int NO_COLLISION_TILES[4] = {0, 1, 2, 3};
 
 // Timers
 const int SUPER_MAX   = 500;
@@ -26,6 +26,28 @@ const int BLINKY = 0;
 const int PINKY  = 1;
 const int INKY   = 2;
 const int CLYDE  = 3;
+
+/*
+ * 0 - Empty case
+ * 1 - Dot case
+ * 2 - Pellet case
+ * 3 - Bonus fruit case
+ *
+ * 4 - Edge
+ * Not useful for now
+ * 5 - Top left corner
+ * 6 - Top right corner
+ * 7 - Bottom left corner
+ * 8 - Bottom right corner
+ *
+ * 10 - Pacman
+ * 11 - Ghost 1
+ * 12 - Ghost 2
+ * 13 - Ghost 3
+ * 14 - Ghost 4
+ *
+ * 20 - Gate
+ */
 
 #endif //IMACGL_CONSTANTS_HPP
 

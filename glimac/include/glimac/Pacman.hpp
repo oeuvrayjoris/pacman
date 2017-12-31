@@ -4,9 +4,15 @@
 
 #ifndef IMACGL_PACMAN_HPP
 #define IMACGL_PACMAN_HPP
+#define GLEW_STATIC
 
 #include <iostream>
 #include <cstring>
+#include <algorithm> // for std::find
+#include <iterator> // for std::begin, std::end
+#include <glimac/SDLWindowManager.hpp>
+#include <GL/glew.h>
+
 #include <glimac/Constants.hpp>
 #include "Board.hpp"
 
@@ -25,8 +31,8 @@ public:
     int getLeftDots() const;
     int getScore() const;
     const std::string &getName() const;
-    int getDir() const;
-    int getDirOld() const;
+    char getDir() const;
+    char getDirOld() const;
     int getLives() const;
     int getSuper() const;
     int getKillCount() const;
@@ -40,17 +46,20 @@ public:
     void setLeftDots(int leftDots);
     void setScore(int score);
     void setName(const std::string &name);
-    void setDir(int dir);
-    void setDirOld(int dirOld);
+    void setDir(char dir);
+    void setDirOld(char dirOld);
     void setLives(int lives);
     void setSuper(int super);
     void setKillCount(int killCount);
 
     // Others methods
 
-    void Move();
-    void GetDirection(char key);
+    void Move(glimac::SDLWindowManager windowManager);
+    void GetDirection(glimac::SDLWindowManager windowManager);
     bool TestForCollision();
+
+    void loseLife();
+    void lifeUp();
 
 private:
     int coord_x;
@@ -62,8 +71,8 @@ private:
     int score;
     std::string name;
 
-    int dir;
-    int dirOld;
+    char dir;
+    char dirOld;
 
     int lives;
     int super;
