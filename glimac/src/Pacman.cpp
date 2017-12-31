@@ -113,43 +113,44 @@ void Pacman::setKillCount(int killCount) {
 
 // Other methods
 
-void Pacman::Move(glimac::SDLWindowManager windowManager) {
-    GetDirection(windowManager);
-    if (TestForCollision() == false) {
-        if (board->getLevel()[coord_x][coord_y] != 1) {
-            if (board->getLevel()[coord_x][coord_y] == 2) {
-                score += 50;
-                super = SUPER_MAX;
+void Pacman::move(char key) {
+    if (wait)
+        --wait;
+    else {
+        getDirection(key);
+        if (testForCollision() == false) {
+
+            if (board->getLevel()[coord_x][coord_y] != 0) {
+                if (board->getLevel()[coord_x][coord_y] == 2) {
+                    scoreAdd += 50;
+                    super = SUPER_MAX;
+                }
+                if (board->getLevel()[coord_x][coord_y] == 3) {
+                    scoreAdd += 100;
+                } else {
+                    scoreAdd += 10;
+                }
+                board->changeValue(coord_x, coord_y, 0);
+                --leftDots;
+                increaseScore(scoreAdd);
             }
-            if (board->getLevel()[coord_x][coord_y] == 3) {
-                score += 100;
-            } else {
-                score += 10;
-            }
-            board->changeValue(coord_x, coord_y, 0);
-            --leftDots;
+            dirOld = dir;
+            wait = PACMAN_MAX;
         }
-        dirOld = dir;
     }
 }
 
-void Pacman::GetDirection(glimac::SDLWindowManager windowManager) {
+void Pacman::getDirection(char key) {
 
-    if (windowManager.isKeyPressed(SDLK_z))
-        dir = 'z';
-    else if (windowManager.isKeyPressed(SDLK_s))
-        dir = 's';
-    else if (windowManager.isKeyPressed(SDLK_q))
-        dir = 'q';
-    else if (windowManager.isKeyPressed(SDLK_d))
-        dir = 'd';
+    if (strchr(ALL_DIRS, key))
+        dir = key;
     // Try moving in the same direction as before
     else {
         dir = dirOld;
     }
 }
 
-bool Pacman::TestForCollision() {
+bool Pacman::testForCollision() {
 
     int elem;
     bool exists;
@@ -163,36 +164,36 @@ bool Pacman::TestForCollision() {
             elem = board->getLevel()[coord_x][coord_y - 1];
             exists = std::find(std::begin(NO_COLLISION_TILES), std::end(NO_COLLISION_TILES), elem) != std::end(NO_COLLISION_TILES);
             // if travelling through the tunnel at the left
-            if (coord_x == 0) {
-                coord_x = board->getLevelWidth() - 1;
+            if (coord_y == 0) {
+                coord_y = board->getLevelWidth() - 1;
             }
             else if (exists) {
-                --coord_x;
+                --coord_y;
             }
             break;
         case 'd':
             elem = board->getLevel()[coord_x][coord_y + 1];
             exists = std::find(std::begin(NO_COLLISION_TILES), std::end(NO_COLLISION_TILES), elem) != std::end(NO_COLLISION_TILES);
             // if travelling through the tunnel at the right
-            if (coord_x == board->getLevelWidth() - 1) {
-                coord_x = 0;
+            if (coord_y == board->getLevelWidth() - 1) {
+                coord_y = 0;
             }
             else if (exists) {
-                ++coord_x;
+                ++coord_y;
             }
             break;
-        case 'w':
+        case 'z':
             elem = board->getLevel()[coord_x - 1][coord_y];
             exists = std::find(std::begin(NO_COLLISION_TILES), std::end(NO_COLLISION_TILES), elem) != std::end(NO_COLLISION_TILES);
             if (exists) {
-                --coord_y;
+                --coord_x;
             }
             break;
         case 's':
             elem = board->getLevel()[coord_x + 1][coord_y];
             exists = std::find(std::begin(NO_COLLISION_TILES), std::end(NO_COLLISION_TILES), elem) != std::end(NO_COLLISION_TILES);
             if (exists) {
-                ++coord_y;
+                ++coord_x;
             }
     }
     // if coordinates were not changed, there was a collision
@@ -202,10 +203,14 @@ bool Pacman::TestForCollision() {
     return false;
 }
 
-void Pacman::loseLife(){
-    lives--;
+void Pacman::increaseScore(int scoreAdd) {
+    // gain a life every time the score crosses a multiple of 10000
+    if (score / 10000 < (score + scoreAdd) / 10000) {
+        ++lives;
+    }
+    score += scoreAdd;
 }
 
-void Pacman::lifeUp(){
-    lives++;
+void Pacman::loseLife(){
+    lives--;
 }

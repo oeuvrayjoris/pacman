@@ -13,6 +13,7 @@
 #include <glimac/Board.hpp>
 #include <glimac/TrackballCamera.hpp>
 #include <glimac/FreeflyCamera.hpp>
+#include <glimac/Pacman.hpp>
 
 using namespace glimac;
 
@@ -75,10 +76,10 @@ int main(int argc, char** argv) {
 
     Cube cube(1.0);
 
-    Board board;
+    Board *board = new Board;
     std::cout << "*** Board ***" << std::endl;
-    std::cout << "m = " << board.getLevelHeight() << std::endl;
-    std::cout << "n = " << board.getLevelWidth() << std::endl;
+    std::cout << "m = " << board->getLevelHeight() << std::endl;
+    std::cout << "n = " << board->getLevelWidth() << std::endl;
 
     GLuint vbo;
     glGenBuffers(1, &vbo);
@@ -110,9 +111,18 @@ int main(int argc, char** argv) {
 
     glm::ivec2 previousMousePosition = windowManager.getMousePosition();
     glm::ivec2 mousePosition = windowManager.getMousePosition();
-    bool key[4] = {false, false, false, false};
+    //bool key[4] = {false, false, false, false};
+
+    Pacman pacman(board);
+
+    pacman.setDir('z');
+    pacman.setDirOld('x');
+    pacman.setCoord_x(12);
+    pacman.setCoord_y(12);
 
     while(loop) {
+
+        char key;
 
         // Event loop:
         SDL_Event e;
@@ -122,6 +132,15 @@ int main(int argc, char** argv) {
             }
 
             if (windowManager.isKeyPressed(SDLK_z))
+                key = 'z';
+            if (windowManager.isKeyPressed(SDLK_s))
+                key = 's';
+            if (windowManager.isKeyPressed(SDLK_q))
+                key = 'q';
+            if (windowManager.isKeyPressed(SDLK_d))
+                key = 'd';
+            /*
+            if (windowManager.isKeyPressed(SDLK_z))
                 camera.moveFront(0.001);
             if (windowManager.isKeyPressed(SDLK_s))
                 camera.moveFront(-0.001);
@@ -129,7 +148,14 @@ int main(int argc, char** argv) {
                 camera.moveLeft(0.001);
             if (windowManager.isKeyPressed(SDLK_d))
                 camera.moveLeft(-0.001);
+                */
         }
+
+        pacman.move(key);
+
+        std::cout << pacman.getCoord_x() << " - " << pacman.getCoord_y() << " - " << board->getLevel()[pacman.getCoord_x()][pacman.getCoord_y()] << std::endl;
+        if (pacman.getDir() != pacman.getDirOld())
+            std::cout << pacman.getDir() << " - " << std::endl;
 
         /*********************************
          * HERE SHOULD COME THE RENDERING CODE
@@ -167,12 +193,12 @@ int main(int argc, char** argv) {
         glDrawArrays(GL_TRIANGLES, 0, cube.getVertexCount());
         /* END DRAWING */
 
-        for (int i = 0; i < board.getLevelHeight(); i++) { // Parcours des lignes
+        for (int i = 0; i < board->getLevelHeight(); i++) { // Parcours des lignes
             MVMatrix = glm::translate(globalMVMatrix, glm::vec3(-8, -3, -10)); // réinit MVMAtrix puis translate général
             MVMatrix = glm::scale(MVMatrix, glm::vec3(0.15, 0.15, 0.15)); // Scale général
             MVMatrix = glm::translate(MVMatrix, glm::vec3(0, 0, i*0.5f)); // Translate en profondeur en fonction du numéro de ligne
-            for (int j = 0; j < board.getLevelWidth(); j++) { // Parcours des colonnes
-                if(board.getLevel()[i][j] == 1) {
+            for (int j = 0; j < board->getLevelWidth(); j++) { // Parcours des colonnes
+                if(board->getLevel()[i][j] == 4) {
                     MVMatrix = glm::translate(MVMatrix, glm::vec3(i*0.5f, 0, 0)); // On translate en x, pour afficher le cube à droite
 
                     glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
@@ -189,7 +215,6 @@ int main(int argc, char** argv) {
         }
 
         glBindVertexArray(0);
-
 
         // Update the display
         windowManager.swapBuffers();

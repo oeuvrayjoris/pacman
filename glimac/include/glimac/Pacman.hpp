@@ -54,10 +54,11 @@ public:
 
     // Others methods
 
-    void Move(glimac::SDLWindowManager windowManager);
-    void GetDirection(glimac::SDLWindowManager windowManager);
-    bool TestForCollision();
+    void move(char key);
+    void getDirection(char key);
+    bool testForCollision();
 
+    void increaseScore(int scoreAdd);
     void loseLife();
     void lifeUp();
 
@@ -67,8 +68,11 @@ private:
     int coord_x_old;
     int coord_y_old;
 
+    int wait;
+
     int leftDots;
     int score;
+    int scoreAdd;
     std::string name;
 
     char dir;
