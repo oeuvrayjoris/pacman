@@ -20,7 +20,7 @@ class Pacman {
 
 public:
     // Constructors
-    Pacman(Board *board);
+    Pacman(Board *const board);
 
     // Getters
 

@@ -6,7 +6,7 @@
 
 // Constructors
 
-Pacman::Pacman(Board *board) : board(board) {
+Pacman::Pacman(Board *const board) : board(board) {
     score = 0;
 }
 
