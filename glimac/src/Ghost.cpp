@@ -4,7 +4,9 @@
 
 #include "glimac/Ghost.hpp"
 
-Ghost::Ghost(Board *const board);
+Ghost::Ghost(Board *const board) {
+    // code here..
+}
 
 void Ghost::move(int, int) {
     if (wait) {
@@ -32,7 +34,9 @@ void Ghost::move(int, int) {
     }
 }
 
-void Ghost::targetObject(bool[4]);
+void Ghost::targetObject(bool[4]) {
+    // code here
+}
 
 void Ghost::randomDirection() {
     getOpposite();
@@ -115,4 +119,6 @@ void Ghost::getOpposite() {
         dirOpp = 'q';
 }
 
-void Ghost::dead();
+void Ghost::dead() {
+    // code ...
+}
