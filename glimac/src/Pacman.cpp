@@ -195,6 +195,7 @@ bool Pacman::testForCollision() {
             if (exists) {
                 ++coord_x;
             }
+            break;
     }
     // if coordinates were not changed, there was a collision
     if (coord_x == coord_x_old && coord_y == coord_y_old) {

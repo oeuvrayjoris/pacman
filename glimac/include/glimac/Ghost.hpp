@@ -6,9 +6,13 @@
 #define IMACGL_GHOST_HPP
 
 #include <iostream>
+#include <algorithm> // for std::find
+#include <iterator> // for std::begin, std::end
 #include "Board.hpp"
+#include "Constants.hpp"
 
 class Ghost {
+
 public:
     Ghost(Board *const board);
     void move(int, int);
@@ -32,7 +36,7 @@ private:
     char dirOld;
     char dirOpp;
 
-    char mode;
+    char mode; // c = chasing, w = waiting, e = exiting, t = eatable, d = eaten,
     char modeOld;
 
     Board *board;

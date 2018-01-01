@@ -55,6 +55,18 @@ std::vector<std::vector<int>> Board::getLevel() {
 	return level;
 }
 
+int Board::getGateCoord_x() const {
+    return gateCoord_x;
+}
+
+int Board::getGateCoord_y() const {
+    return gateCoord_y;
+}
+
+bool Board::isSuper() const {
+    return super;
+}
+
 
 /* SETTERS */
 void Board::setLevelHeight(int new_m){
@@ -67,6 +79,18 @@ void Board::setLevelWidth(int new_n){
 
 void Board::setLevel(std::vector<std::vector<int>> new_tab) {
 	level = new_tab;
+}
+
+void Board::setGateCoord_x(int gateCoord_x) {
+    Board::gateCoord_x = gateCoord_x;
+}
+
+void Board::setGateCoord_y(int gateCoord_y) {
+    Board::gateCoord_y = gateCoord_y;
+}
+
+void Board::setSuper(bool super) {
+    Board::super = super;
 }
 
 
