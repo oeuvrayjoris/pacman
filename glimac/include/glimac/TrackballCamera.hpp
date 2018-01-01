@@ -14,6 +14,7 @@ public:
     void rotateLeft(float degrees);
     void rotateUp(float degrees);
     glm::mat4 getViewMatrix() const;
+    void print();
 };
 
 #endif //TRACKBALL_CAMERA_H

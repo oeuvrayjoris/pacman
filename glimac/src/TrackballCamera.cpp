@@ -1,9 +1,17 @@
+#include <iostream>
+
 #include <glimac/TrackballCamera.hpp>
 
 TrackballCamera::TrackballCamera() {
-    m_fDistance = 5;
-    m_fAngleX = 0;
+    m_fDistance = 13.7;
+    m_fAngleX = 54;
     m_fAngleY = 0;
+}
+
+void TrackballCamera::print() {
+    std::cout << "Distance = " << m_fDistance << std::endl;
+    std::cout << "AngleX = " << m_fAngleX << std::endl;
+    std::cout << "AngleY = " << m_fAngleY << std::endl;
 }
 
 void TrackballCamera::moveFront(float delta) {

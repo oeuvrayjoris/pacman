@@ -179,21 +179,30 @@ int main(int argc, char** argv) {
 
         glBindVertexArray(vao);
 
-        for (int i = 0; i < board->getLevelHeight(); i++) { // Parcours des lignes
-            MVMatrix = glm::translate(globalMVMatrix, glm::vec3(-2.08, 0, 0)); // réinit MVMAtrix puis translate général
-            MVMatrix = glm::scale(MVMatrix, glm::vec3(0.15, 0.15, 0.15)); // Scale général
-            MVMatrix = glm::translate(MVMatrix, glm::vec3(0, 0, 2*i)); // Translate en profondeur en fonction du numéro de ligne
-            for (int j = 0; j < board->getLevelWidth(); j++) { // Parcours des colonnes
-                MVMatrix = glm::translate(MVMatrix, glm::vec3(2, 0, 0)); // On translate en x, pour afficher le cube à droite
-                if(board->getLevel()[i][j] == 4) {
+        for (int i = 0; i < board->getLevelHeight(); i++) {
+            MVMatrix = glm::translate(globalMVMatrix, glm::vec3(-3.9, 6, 0));
+            MVMatrix = glm::scale(MVMatrix, glm::vec3(0.15, 0.15, 0.15));
+            MVMatrix = glm::translate(MVMatrix, glm::vec3(0, 0, 2*i));
 
-                    glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
-                    glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-                    glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+            for (int j = 0; j < board->getLevelWidth(); j++) {
+                MVMatrix = glm::translate(MVMatrix, glm::vec3(2, 0, 0));
 
-                    glDrawArrays(GL_TRIANGLES, 0, cube.getVertexCount());
+                switch(board->getLevel()[i][j]) {
+                    case 0:
+                        break;
+                    case 1:
+                        break;
+                    case 2:
+                        break;
+                    case 3:
+                        break;
+                    case 4:
+                        glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+                        glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+                        glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+                        glDrawArrays(GL_TRIANGLES, 0, cube.getVertexCount());
+                        break;
                 }
-
             }
         }
 
