@@ -63,8 +63,8 @@ int main(int argc, char** argv) {
     /**
     * Caméra
     */
-    FreeflyCamera camera = FreeflyCamera();
-    //TrackballCamera camera = TrackballCamera();
+    //FreeflyCamera camera = FreeflyCamera();
+    TrackballCamera camera = TrackballCamera();
 
     /**
     * Calcul des matrices de Transformation
@@ -111,7 +111,6 @@ int main(int argc, char** argv) {
 
     glm::ivec2 previousMousePosition = windowManager.getMousePosition();
     glm::ivec2 mousePosition = windowManager.getMousePosition();
-    //bool key[4] = {false, false, false, false};
 
     Pacman pacman(board);
 
@@ -131,31 +130,43 @@ int main(int argc, char** argv) {
                 loop = false; // Leave the loop after this iteration
             }
 
-            if (windowManager.isKeyPressed(SDLK_z))
-                key = 'z';
-            if (windowManager.isKeyPressed(SDLK_s))
-                key = 's';
-            if (windowManager.isKeyPressed(SDLK_q))
-                key = 'q';
-            if (windowManager.isKeyPressed(SDLK_d))
-                key = 'd';
-            /*
-            if (windowManager.isKeyPressed(SDLK_z))
-                camera.moveFront(0.001);
-            if (windowManager.isKeyPressed(SDLK_s))
-                camera.moveFront(-0.001);
-            if (windowManager.isKeyPressed(SDLK_q))
-                camera.moveLeft(0.001);
-            if (windowManager.isKeyPressed(SDLK_d))
-                camera.moveLeft(-0.001);
-                */
+            if (windowManager.isMouseButtonPressed(SDL_BUTTON_RIGHT)) {
+                mousePosition = windowManager.getMousePosition();
+                if (mousePosition.x < previousMousePosition.x) {
+                    camera.rotateLeft(0.5);
+                }
+                else if (mousePosition.x > previousMousePosition.x) {
+                    camera.rotateLeft(-0.5);
+                }
+                if (mousePosition.y < previousMousePosition.y) {
+                    camera.rotateUp(0.5);
+                }
+                else if (mousePosition.y > previousMousePosition.y) {
+                    camera.rotateUp(-0.5);
+                }
+            }
+            else if (windowManager.isMouseButtonPressed(SDL_BUTTON_MIDDLE)) {
+                // On récupére la position de la souris
+                mousePosition = windowManager.getMousePosition();
+                if (mousePosition.y < previousMousePosition.y)
+                {
+                    camera.moveFront(-0.05);
+                }
+                else if (mousePosition.y > previousMousePosition.y)
+                {
+                    camera.moveFront(0.05);
+                }
+            }
+
         }
+
+        previousMousePosition = mousePosition;
 
         pacman.move(key);
 
-        std::cout << pacman.getCoord_x() << " - " << pacman.getCoord_y() << " - " << board->getLevel()[pacman.getCoord_x()][pacman.getCoord_y()] << std::endl;
+        //std::cout << pacman.getCoord_x() << " - " << pacman.getCoord_y() << " - " << board->getLevel()[pacman.getCoord_x()][pacman.getCoord_y()] << std::endl;
         if (pacman.getDir() != pacman.getDirOld())
-            std::cout << pacman.getDir() << " - " << std::endl;
+            //std::cout << pacman.getDir() << " - " << std::endl;
 
         /*********************************
          * HERE SHOULD COME THE RENDERING CODE
@@ -166,49 +177,21 @@ int main(int argc, char** argv) {
         /* On récupère la ViewMatrix de la caméra à chaque tour de boucle */
         glm::mat4 globalMVMatrix = camera.getViewMatrix();
 
-        MVMatrix = glm::translate(globalMVMatrix, glm::vec3(0.0f, 0.0f, -5.0f));
-        MVMatrix = glm::rotate(MVMatrix, -windowManager.getTime(), glm::vec3(0.0f, 1.0f, 0.0f));
-        NormalMatrix = glm::transpose(glm::inverse(MVMatrix));
-
-        glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
-        glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-        glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
-
         glBindVertexArray(vao);
 
-        /* START DRAWING THE EARTH */
-        glDrawArrays(GL_TRIANGLES, 0, cube.getVertexCount());
-        /* END DRAWING THE EARTH */
-
-        MVMatrix = glm::translate(globalMVMatrix, glm::vec3(0, 0, -5)); // Translation
-        MVMatrix = glm::rotate(MVMatrix, windowManager.getTime(), glm::vec3(0, 1, 0));
-        MVMatrix = glm::translate(MVMatrix, glm::vec3(-2, 0, 0));
-        MVMatrix = glm::scale(MVMatrix, glm::vec3(0.2, 0.2, 0.2));
-
-        glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
-        glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-        glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
-
-        /* START DRAWING THE MOON */
-        glDrawArrays(GL_TRIANGLES, 0, cube.getVertexCount());
-        /* END DRAWING */
-
         for (int i = 0; i < board->getLevelHeight(); i++) { // Parcours des lignes
-            MVMatrix = glm::translate(globalMVMatrix, glm::vec3(-8, -3, -10)); // réinit MVMAtrix puis translate général
+            MVMatrix = glm::translate(globalMVMatrix, glm::vec3(-2.08, 0, 0)); // réinit MVMAtrix puis translate général
             MVMatrix = glm::scale(MVMatrix, glm::vec3(0.15, 0.15, 0.15)); // Scale général
-            MVMatrix = glm::translate(MVMatrix, glm::vec3(0, 0, i*0.5f)); // Translate en profondeur en fonction du numéro de ligne
+            MVMatrix = glm::translate(MVMatrix, glm::vec3(0, 0, 2*i)); // Translate en profondeur en fonction du numéro de ligne
             for (int j = 0; j < board->getLevelWidth(); j++) { // Parcours des colonnes
+                MVMatrix = glm::translate(MVMatrix, glm::vec3(2, 0, 0)); // On translate en x, pour afficher le cube à droite
                 if(board->getLevel()[i][j] == 4) {
-                    MVMatrix = glm::translate(MVMatrix, glm::vec3(i*0.5f, 0, 0)); // On translate en x, pour afficher le cube à droite
 
                     glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
                     glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
                     glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
 
                     glDrawArrays(GL_TRIANGLES, 0, cube.getVertexCount());
-                }
-                else {
-                    MVMatrix = glm::translate(MVMatrix, glm::vec3(i*0.5f, 0, 0)); // On translate mais on affiche pas le cube (car c'est vide)
                 }
 
             }
