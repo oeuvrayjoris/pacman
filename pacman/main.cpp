@@ -18,8 +18,8 @@
 using namespace glimac;
 
 int main(int argc, char** argv) {
-    GLuint width = 1280;
-    GLuint height = 720;
+    GLuint width = 854;//1280;
+    GLuint height = 480; //720;
     // Initialize SDL and open a window
     SDLWindowManager windowManager(width, height, "Pacman 3D");
 
@@ -163,10 +163,6 @@ int main(int argc, char** argv) {
         previousMousePosition = mousePosition;
 
         pacman.move(key);
-
-        //std::cout << pacman.getCoord_x() << " - " << pacman.getCoord_y() << " - " << board->getLevel()[pacman.getCoord_x()][pacman.getCoord_y()] << std::endl;
-        if (pacman.getDir() != pacman.getDirOld())
-            //std::cout << pacman.getDir() << " - " << std::endl;
 
         /*********************************
          * HERE SHOULD COME THE RENDERING CODE

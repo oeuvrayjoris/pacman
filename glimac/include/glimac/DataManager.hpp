@@ -10,6 +10,9 @@
 #include "../rapidjson/document.h"
 #include "../rapidjson/writer.h"
 #include "../rapidjson/stringbuffer.h"
+#include "Board.hpp"
+#include "Pacman.hpp"
+#include "Ghost.hpp"
 
 class DataManager {
 
