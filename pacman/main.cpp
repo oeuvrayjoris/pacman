@@ -75,6 +75,7 @@ int main(int argc, char** argv) {
     ProjMatrix = glm::perspective(glm::radians(70.f), (float) width / height, 0.1f, 100.f);
 
     Cube cube(1.0);
+    Sphere sphere(1, 32, 16);
 
     Board *board = new Board;
     std::cout << "*** Board ***" << std::endl;
@@ -85,6 +86,12 @@ int main(int argc, char** argv) {
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, cube.getVertexCount()*sizeof(float), cube.getDataPointer(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    GLuint vbo2;
+    glGenBuffers(1, &vbo2);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo2);
+    glBufferData(GL_ARRAY_BUFFER, sphere.getVertexCount()*sizeof(ShapeVertex), sphere.getDataPointer(), GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     GLuint vao;
@@ -102,6 +109,21 @@ int main(int argc, char** argv) {
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glVertexAttribPointer(VERTEX_ATTR_POSITION, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (const GLvoid*) (0*sizeof(GLfloat)));
     glVertexAttribPointer(VERTEX_ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (const GLvoid*) (0*sizeof(GLfloat)));
+    glVertexAttribPointer(VERTEX_ATTR_TEXCOORDS, 2, GL_FLOAT, GL_FALSE, 3*sizeof(float), (const GLvoid*) (0*sizeof(GLfloat)));
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+    GLuint vao2;
+    glGenVertexArrays(1, &vao2);
+    glBindVertexArray(vao2);
+
+    glEnableVertexAttribArray(VERTEX_ATTR_POSITION);
+    glEnableVertexAttribArray(VERTEX_ATTR_NORMAL);
+    glEnableVertexAttribArray(VERTEX_ATTR_TEXCOORDS);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo2);
+    glVertexAttribPointer(VERTEX_ATTR_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(ShapeVertex), (const GLvoid*) offsetof(ShapeVertex, position));
+    glVertexAttribPointer(VERTEX_ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, sizeof(ShapeVertex), (const GLvoid*) offsetof(ShapeVertex, normal));
     glVertexAttribPointer(VERTEX_ATTR_TEXCOORDS, 2, GL_FLOAT, GL_FALSE, 3*sizeof(float), (const GLvoid*) (0*sizeof(GLfloat)));
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
@@ -173,7 +195,7 @@ int main(int argc, char** argv) {
         /* On récupère la ViewMatrix de la caméra à chaque tour de boucle */
         glm::mat4 globalMVMatrix = camera.getViewMatrix();
 
-        glBindVertexArray(vao);
+
 
         for (int i = 0; i < board->getLevelHeight(); i++) {
             MVMatrix = glm::translate(globalMVMatrix, glm::vec3(-3.9, 6, 0));
@@ -185,28 +207,83 @@ int main(int argc, char** argv) {
 
                 switch(board->getLevel()[i][j]) {
                     case 0:
+                        // Empty case
                         break;
                     case 1:
+                        // Dot case
+                        MVMatrix = glm::rotate(MVMatrix, windowManager.getTime(), glm::vec3(0, 1, 0));
+                        MVMatrix = glm::scale(MVMatrix, glm::vec3(0.25, 0.25, 0.25));
+                        glBindVertexArray(vao2);
+                        glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+                        glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+                        glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+                        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
+                        glBindVertexArray(0);
+                        MVMatrix = glm::scale(MVMatrix, glm::vec3(4.0, 4.0, 4.0));
+                        MVMatrix = glm::rotate(MVMatrix, -windowManager.getTime(), glm::vec3(0, 1, 0));
                         break;
                     case 2:
+                        // Pellet case
+                        MVMatrix = glm::rotate(MVMatrix, windowManager.getTime(), glm::vec3(0, 1, 0));
+                        MVMatrix = glm::scale(MVMatrix, glm::vec3(0.5, 0.5, 0.5));
+                        glBindVertexArray(vao2);
+                        glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+                        glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+                        glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+                        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
+                        glBindVertexArray(0);
+                        MVMatrix = glm::scale(MVMatrix, glm::vec3(2.0, 2.0, 2.0));
+                        MVMatrix = glm::rotate(MVMatrix, -windowManager.getTime(), glm::vec3(0, 1, 0));
                         break;
                     case 3:
+                        // Bonus fruit case
                         break;
                     case 4:
+                        // Edge
+                        glBindVertexArray(vao);
                         glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
                         glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
                         glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
                         glDrawArrays(GL_TRIANGLES, 0, cube.getVertexCount());
+                        glBindVertexArray(0);
+                        break;
+                    case 10:
+                        // Pacman
+                        glBindVertexArray(vao2);
+                        glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+                        glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+                        glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+                        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
+                        glBindVertexArray(0);
+                        break;
+                        break;
+                    case 11:
+                        // Ghost 1
+                        break;
+                    case 12:
+                        // Ghost 2
+                        break;
+                    case 13:
+                        // Ghost 3
+                        break;
+                    case 14:
+                        // Ghost 4
+                        break;
+                    default:
                         break;
                 }
             }
         }
 
-        glBindVertexArray(0);
-
         // Update the display
         windowManager.swapBuffers();
     }
+
+    glDeleteBuffers(1, &vbo);
+    glDeleteVertexArrays(1, &vao);
+
+    glDeleteBuffers(1, &vbo2);
+    glDeleteVertexArrays(1, &vao2);
 
     return EXIT_SUCCESS;
 }
