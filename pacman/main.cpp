@@ -274,18 +274,41 @@ int main(int argc, char** argv) {
                         glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
                         glBindVertexArray(0);
                         break;
-                        break;
                     case 11:
                         // Ghost 1
+                        glBindVertexArray(vao2);
+                        glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+                        glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+                        glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+                        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
+                        glBindVertexArray(0);
                         break;
                     case 12:
                         // Ghost 2
+                        glBindVertexArray(vao2);
+                        glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+                        glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+                        glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+                        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
+                        glBindVertexArray(0);
                         break;
                     case 13:
                         // Ghost 3
+                        glBindVertexArray(vao2);
+                        glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+                        glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+                        glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+                        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
+                        glBindVertexArray(0);
                         break;
                     case 14:
                         // Ghost 4
+                        glBindVertexArray(vao2);
+                        glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+                        glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+                        glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+                        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
+                        glBindVertexArray(0);
                         break;
                     default:
                         break;
