@@ -10,7 +10,6 @@ Pacman::Pacman(Board *const board) : board(board) {
     score = 0;
 }
 
-
 // Getters
 
 int Pacman::getCoord_x() const {

@@ -78,9 +78,6 @@ int main(int argc, char** argv) {
     Sphere sphere(1, 32, 16);
 
     Board *board = new Board;
-    std::cout << "*** Board ***" << std::endl;
-    std::cout << "m = " << board->getLevelHeight() << std::endl;
-    std::cout << "n = " << board->getLevelWidth() << std::endl;
 
     GLuint vbo;
     glGenBuffers(1, &vbo);
@@ -136,10 +133,10 @@ int main(int argc, char** argv) {
 
     Pacman pacman(board);
 
-    pacman.setDir('z');
-    pacman.setDirOld('x');
-    pacman.setCoord_x(12);
-    pacman.setCoord_y(12);
+    pacman.setDir('d');
+    pacman.setDirOld('z');
+    pacman.setCoord_x(3);
+    pacman.setCoord_y(23);
 
     while(loop) {
 
@@ -148,8 +145,31 @@ int main(int argc, char** argv) {
         // Event loop:
         SDL_Event e;
         while (windowManager.pollEvent(e)) {
-            if (e.type == SDL_QUIT) {
-                loop = false; // Leave the loop after this iteration
+            switch(e.type) {
+                case SDL_QUIT:
+                    loop = false;
+                    break;
+                case SDL_KEYDOWN:
+                    switch(e.key.keysym.sym) {
+                        case SDLK_q:
+                            pacman.move('q');
+                            break;
+                        case SDLK_d:
+                            pacman.move('d');
+                            break;
+                        case SDLK_z:
+                            pacman.move('z');
+                            break;
+                        case SDLK_s:
+                            pacman.move('s');
+                            break;
+                        default:
+                            break;
+                    }
+                    std::cout << "Pacman : (" << pacman.getCoord_x() << "," << pacman.getCoord_y() << ")" << std::endl;
+                    break;
+                default:
+                    break;
             }
 
             if (windowManager.isMouseButtonPressed(SDL_BUTTON_RIGHT)) {
@@ -194,8 +214,6 @@ int main(int argc, char** argv) {
 
         /* On récupère la ViewMatrix de la caméra à chaque tour de boucle */
         glm::mat4 globalMVMatrix = camera.getViewMatrix();
-
-
 
         for (int i = 0; i < board->getLevelHeight(); i++) {
             MVMatrix = glm::translate(globalMVMatrix, glm::vec3(-3.9, 6, 0));
