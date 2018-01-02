@@ -215,8 +215,10 @@ int main(int argc, char** argv) {
         /* On récupère la ViewMatrix de la caméra à chaque tour de boucle */
         glm::mat4 globalMVMatrix = camera.getViewMatrix();
 
+        //NormalMatrix = glm::transpose(glm::inverse(globalMVMatrix));
+
         for (int i = 0; i < board->getLevelHeight(); i++) {
-            MVMatrix = glm::translate(globalMVMatrix, glm::vec3(-3.9, 6, 0));
+            MVMatrix = glm::translate(globalMVMatrix, glm::vec3(-3.9, 6.5, 0));
             MVMatrix = glm::scale(MVMatrix, glm::vec3(0.15, 0.15, 0.15));
             MVMatrix = glm::translate(MVMatrix, glm::vec3(0, 0, 2*i));
 

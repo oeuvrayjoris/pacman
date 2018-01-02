@@ -3,8 +3,8 @@
 #include <glimac/TrackballCamera.hpp>
 
 TrackballCamera::TrackballCamera() {
-    m_fDistance = 13.7;
-    m_fAngleX = 54;
+    m_fDistance = 13;
+    m_fAngleX = 55;
     m_fAngleY = 0;
 }
 

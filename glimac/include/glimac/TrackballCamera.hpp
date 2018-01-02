@@ -4,17 +4,22 @@
 #include <glimac/glm.hpp>
 
 class TrackballCamera {
-private:
-    float m_fDistance;
-    float m_fAngleX;
-    float m_fAngleY;
-public:
-    TrackballCamera();
-    void moveFront(float delta);
-    void rotateLeft(float degrees);
-    void rotateUp(float degrees);
-    glm::mat4 getViewMatrix() const;
-    void print();
+    public:
+        // Constructor
+        TrackballCamera();
+
+        // Methods
+        void moveFront(float delta);
+        void rotateLeft(float degrees);
+        void rotateUp(float degrees);
+        glm::mat4 getViewMatrix() const;
+        void print();
+
+    private:
+        // Attr
+        float m_fDistance;
+        float m_fAngleX;
+        float m_fAngleY;
 };
 
 #endif //TRACKBALL_CAMERA_H
