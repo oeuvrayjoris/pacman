@@ -9,7 +9,6 @@
 #include <glimac/glm.hpp>
 #include <glimac/common.hpp>
 #include <vector>
-
 #include <glimac/Board.hpp>
 #include <glimac/TrackballCamera.hpp>
 #include <glimac/FreeflyCamera.hpp>
@@ -133,16 +132,13 @@ int main(int argc, char** argv) {
 
     Pacman pacman(board);
 
-    pacman.setDir('q');
-    pacman.setDirOld('q');
+    pacman.setDir('d');
+    pacman.setDirOld('d');
     pacman.setCoord_x(23);
     pacman.setCoord_y(3);
-    char dir = 'q';
+    char dir = 'd';
 
     while(loop) {
-        //dir = 'x';
-        int pressed = 0;
-
         // Event loop:
         SDL_Event e;
         while (windowManager.pollEvent(e)) {
@@ -151,7 +147,6 @@ int main(int argc, char** argv) {
                     loop = false;
                     break;
                 case SDL_KEYDOWN:
-                    pressed = 1;
                     switch(e.key.keysym.sym) {
                         case SDLK_q:
                             dir = 'q';
@@ -172,7 +167,7 @@ int main(int argc, char** argv) {
                 default:
                     break;
             }
-            //std::cout << "Pacman : (" << pacman.getCoord_x() << "," << pacman.getCoord_y() << ")" << std::endl;
+
 
             if (windowManager.isMouseButtonPressed(SDL_BUTTON_RIGHT)) {
                 mousePosition = windowManager.getMousePosition();
@@ -201,15 +196,12 @@ int main(int argc, char** argv) {
                     camera.moveFront(0.05);
                 }
             }
-
         }
 
         previousMousePosition = mousePosition;
 
-        //if (pressed)
-            pacman.move(dir);
-        //pacman.move('x');
-
+        pacman.move(dir);
+        
         /*********************************
          * HERE SHOULD COME THE RENDERING CODE
          *********************************/
@@ -219,7 +211,7 @@ int main(int argc, char** argv) {
         /* On récupère la ViewMatrix de la caméra à chaque tour de boucle */
         glm::mat4 globalMVMatrix = camera.getViewMatrix();
 
-        //NormalMatrix = glm::transpose(glm::inverse(globalMVMatrix));
+        NormalMatrix = glm::transpose(glm::inverse(globalMVMatrix));
 
         for (int i = 0; i < board->getLevelHeight(); i++) {
             MVMatrix = glm::translate(globalMVMatrix, glm::vec3(-3.9, 6.5, 0));
