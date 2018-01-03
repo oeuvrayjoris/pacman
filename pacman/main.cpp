@@ -133,14 +133,15 @@ int main(int argc, char** argv) {
 
     Pacman pacman(board);
 
-    pacman.setDir('d');
-    pacman.setDirOld('z');
-    pacman.setCoord_x(3);
-    pacman.setCoord_y(23);
+    pacman.setDir('q');
+    pacman.setDirOld('q');
+    pacman.setCoord_x(23);
+    pacman.setCoord_y(3);
+    char dir = 'q';
 
     while(loop) {
-
-        char key;
+        //dir = 'x';
+        int pressed = 0;
 
         // Event loop:
         SDL_Event e;
@@ -150,27 +151,28 @@ int main(int argc, char** argv) {
                     loop = false;
                     break;
                 case SDL_KEYDOWN:
+                    pressed = 1;
                     switch(e.key.keysym.sym) {
                         case SDLK_q:
-                            pacman.move('q');
+                            dir = 'q';
                             break;
                         case SDLK_d:
-                            pacman.move('d');
+                            dir = 'd';
                             break;
                         case SDLK_z:
-                            pacman.move('z');
+                            dir = 'z';
                             break;
                         case SDLK_s:
-                            pacman.move('s');
+                            dir = 's';
                             break;
                         default:
                             break;
                     }
-                    std::cout << "Pacman : (" << pacman.getCoord_x() << "," << pacman.getCoord_y() << ")" << std::endl;
                     break;
                 default:
                     break;
             }
+            //std::cout << "Pacman : (" << pacman.getCoord_x() << "," << pacman.getCoord_y() << ")" << std::endl;
 
             if (windowManager.isMouseButtonPressed(SDL_BUTTON_RIGHT)) {
                 mousePosition = windowManager.getMousePosition();
@@ -204,7 +206,9 @@ int main(int argc, char** argv) {
 
         previousMousePosition = mousePosition;
 
-        pacman.move(key);
+        //if (pressed)
+            pacman.move(dir);
+        //pacman.move('x');
 
         /*********************************
          * HERE SHOULD COME THE RENDERING CODE

@@ -8,6 +8,7 @@
 
 Pacman::Pacman(Board *const board) : board(board) {
     score = 0;
+    wait = PACMAN_MAX;
 }
 
 // Getters
@@ -113,11 +114,13 @@ void Pacman::setKillCount(int killCount) {
 // Other methods
 
 void Pacman::move(char key) {
-    if (wait)
+    if (wait) {
         --wait;
+    }
     else {
         getDirection(key);
         if (testForCollision() == false) {
+
 
             if (board->getLevel()[coord_x][coord_y] != 0) {
                 if (board->getLevel()[coord_x][coord_y] == 2) {
@@ -129,31 +132,30 @@ void Pacman::move(char key) {
                 } else {
                     scoreAdd += 10;
                 }
-                board->changeValue(coord_x, coord_y, 0);
                 --leftDots;
                 increaseScore(scoreAdd);
             }
-            dirOld = dir;
+            board->changeValue(coord_x_old, coord_y_old, 0);
+            board->changeValue(coord_x, coord_y, 10);
             wait = PACMAN_MAX;
+            dirOld = dir;
         }
+
     }
 }
 
 void Pacman::getDirection(char key) {
 
-    if (strchr(ALL_DIRS, key))
-        dir = key;
+    dir = key;
+    if (!strchr(ALL_DIRS, key))
     // Try moving in the same direction as before
-    else {
         dir = dirOld;
-    }
 }
 
 bool Pacman::testForCollision() {
 
     int elem;
     bool exists;
-
     // save old coordinates
     coord_x_old = coord_x;
     coord_y_old = coord_y;
@@ -162,6 +164,7 @@ bool Pacman::testForCollision() {
         case 'q':
             elem = board->getLevel()[coord_x][coord_y - 1];
             exists = std::find(std::begin(NO_COLLISION_TILES), std::end(NO_COLLISION_TILES), elem) != std::end(NO_COLLISION_TILES);
+
             // if travelling through the tunnel at the left
             if (coord_y == 0) {
                 coord_y = board->getLevelWidth() - 1;
