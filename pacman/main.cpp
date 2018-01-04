@@ -71,8 +71,6 @@ int main(int argc, char** argv) {
     TrackballCamera camera = TrackballCamera();
 
 
-
-
     /**
     * Calcul des matrices de Transformation
     */
