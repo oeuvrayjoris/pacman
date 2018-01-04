@@ -60,7 +60,9 @@ int main(int argc, char** argv) {
     // Active test de profondeur du GPU
     glEnable(GL_DEPTH_TEST);
 
-    //bool res = Geometry::loadOBJ("pacman.obj", "pacman.mtl", 0);
+    Geometry pacman_obj;
+    if(!pacman_obj.loadOBJ("../../assets/models/pacman.obj", "../../assets/models/pacman.mtl", false))
+        std::cout << "Error loading pacman.obj" << std::endl;
 
     /**
     * Caméra
@@ -91,6 +93,18 @@ int main(int argc, char** argv) {
     glBufferData(GL_ARRAY_BUFFER, sphere.getVertexCount()*sizeof(ShapeVertex), sphere.getDataPointer(), GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+    GLuint vbo_pacman;
+    glGenBuffers(1, &vbo_pacman);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo_pacman);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, pacman_obj.getVertexCount()*sizeof(Geometry::Vertex), pacman_obj.getVertexBuffer(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+    GLuint ibo_pacman;
+    glGenBuffers(1, &ibo_pacman);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo_pacman);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, pacman_obj.getIndexCount()*sizeof(Geometry::Vertex), pacman_obj.getIndexBuffer(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
     GLuint vao;
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
@@ -104,9 +118,9 @@ int main(int argc, char** argv) {
     glEnableVertexAttribArray(VERTEX_ATTR_TEXCOORDS);
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glVertexAttribPointer(VERTEX_ATTR_POSITION, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (const GLvoid*) (0*sizeof(GLfloat)));
-    glVertexAttribPointer(VERTEX_ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (const GLvoid*) (0*sizeof(GLfloat)));
-    glVertexAttribPointer(VERTEX_ATTR_TEXCOORDS, 2, GL_FLOAT, GL_FALSE, 3*sizeof(float), (const GLvoid*) (0*sizeof(GLfloat)));
+    glVertexAttribPointer(VERTEX_ATTR_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(float), (const GLvoid*) (0*sizeof(GLfloat)));
+    glVertexAttribPointer(VERTEX_ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, sizeof(float), (const GLvoid*) (0*sizeof(GLfloat)));
+    glVertexAttribPointer(VERTEX_ATTR_TEXCOORDS, 2, GL_FLOAT, GL_FALSE, sizeof(float), (const GLvoid*) (0*sizeof(GLfloat)));
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
@@ -121,7 +135,24 @@ int main(int argc, char** argv) {
     glBindBuffer(GL_ARRAY_BUFFER, vbo2);
     glVertexAttribPointer(VERTEX_ATTR_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(ShapeVertex), (const GLvoid*) offsetof(ShapeVertex, position));
     glVertexAttribPointer(VERTEX_ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, sizeof(ShapeVertex), (const GLvoid*) offsetof(ShapeVertex, normal));
-    glVertexAttribPointer(VERTEX_ATTR_TEXCOORDS, 2, GL_FLOAT, GL_FALSE, 3*sizeof(float), (const GLvoid*) (0*sizeof(GLfloat)));
+    glVertexAttribPointer(VERTEX_ATTR_TEXCOORDS, 2, GL_FLOAT, GL_FALSE, sizeof(ShapeVertex), (const GLvoid*) offsetof(ShapeVertex, texCoords));
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+    GLuint vao_pacman;
+    glGenVertexArrays(1, &vao_pacman);
+    glBindVertexArray(vao_pacman);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo_pacman);
+
+    glEnableVertexAttribArray(VERTEX_ATTR_POSITION);
+    glEnableVertexAttribArray(VERTEX_ATTR_NORMAL);
+    glEnableVertexAttribArray(VERTEX_ATTR_TEXCOORDS);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_pacman);
+    glVertexAttribPointer(VERTEX_ATTR_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(Geometry::Vertex), (const GLvoid*) offsetof(Geometry::Vertex, m_Position));
+    glVertexAttribPointer(VERTEX_ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, sizeof(Geometry::Vertex), (const GLvoid*) offsetof(Geometry::Vertex, m_Normal));
+    glVertexAttribPointer(VERTEX_ATTR_TEXCOORDS, 2, GL_FLOAT, GL_FALSE, sizeof(Geometry::Vertex), (const GLvoid*) offsetof(Geometry::Vertex, m_TexCoords));
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
@@ -216,6 +247,7 @@ int main(int argc, char** argv) {
 
         NormalMatrix = glm::transpose(glm::inverse(globalMVMatrix));
 
+
         for (int i = 0; i < board->getLevelHeight(); i++) {
             MVMatrix = glm::translate(globalMVMatrix, glm::vec3(-3.9, 6.5, 0));
             MVMatrix = glm::scale(MVMatrix, glm::vec3(0.15, 0.15, 0.15));
@@ -268,12 +300,43 @@ int main(int argc, char** argv) {
                         break;
                     case 10:
                         // Pacman
-                        glBindVertexArray(vao2);
+                        //MVMatrix = glm::translate(MVMatrix, glm::vec3(0.2, 0, -0.4));
+                        MVMatrix = glm::scale(MVMatrix, glm::vec3(0.25, 0.25, 0.25));
+                        MVMatrix = glm::rotate(MVMatrix, 0.f, glm::vec3(0, 1, 0));
+
+                        switch(pacman.getDir()) {
+                            case 'z':
+                                MVMatrix = glm::rotate(MVMatrix, 180.f, glm::vec3(0, 1, 0));
+                                break;
+                            case 'q':
+                                MVMatrix = glm::rotate(MVMatrix, -90.f, glm::vec3(0, 1, 0));
+                                break;
+                            case 'd':
+                                MVMatrix = glm::rotate(MVMatrix, 90.f, glm::vec3(0, 1, 0));
+                                break;
+                        }
+
+                        glBindVertexArray(vao_pacman);
                         glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
                         glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
                         glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
-                        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
+                        glDrawElements(GL_TRIANGLES, pacman_obj.getIndexCount(), GL_UNSIGNED_INT, 0);
                         glBindVertexArray(0);
+
+                        switch(pacman.getDir()) {
+                            case 'z':
+                                MVMatrix = glm::rotate(MVMatrix, -180.f, glm::vec3(0, 1, 0));
+                                break;
+                            case 'q':
+                                MVMatrix = glm::rotate(MVMatrix, 90.f, glm::vec3(0, 1, 0));
+                                break;
+                            case 'd':
+                                MVMatrix = glm::rotate(MVMatrix, -90.f, glm::vec3(0, 1, 0));
+                                break;
+                        }
+
+                        MVMatrix = glm::scale(MVMatrix, glm::vec3(4, 4, 4));
+                        //MVMatrix = glm::translate(MVMatrix, glm::vec3(-0.2, 0, 0.4));
                         break;
                     case 11:
                         // Ghost 1
@@ -326,6 +389,9 @@ int main(int argc, char** argv) {
 
     glDeleteBuffers(1, &vbo2);
     glDeleteVertexArrays(1, &vao2);
+
+    glDeleteBuffers(1, &vbo_pacman);
+    glDeleteVertexArrays(1, &vao_pacman);
 
     return EXIT_SUCCESS;
 }
