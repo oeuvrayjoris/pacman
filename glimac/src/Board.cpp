@@ -132,7 +132,7 @@ void Board::initGame(){
     pacman->setCoord_x(pacman->getCoord_x_init());
     pacman->setCoord_y(pacman->getCoord_y_init());
     pacman->setDir('q');
-    pacman->setDirOld('a');
+    pacman->setDirOld('q');
     pacman->setWait(0);
     pacman->setSuper(0);
     for (int i = 0; i < 4; ++i) {
@@ -238,6 +238,13 @@ bool Board::isSuper() const {
     return super;
 }
 
+Pacman *Board::getPacman() const {
+    return pacman;
+}
+
+Ghost *const *Board::getGhosts() const {
+    return ghosts;
+}
 
 /* SETTERS */
 void Board::setLevelHeight(int new_m){
@@ -262,8 +269,4 @@ void Board::setGateCoord_y(int gateCoord_y) {
 
 void Board::setSuper(bool super) {
     Board::super = super;
-}
-
-Pacman *Board::getPacman() const {
-    return pacman;
 }

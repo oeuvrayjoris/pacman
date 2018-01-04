@@ -21,13 +21,18 @@ public:
 
     // Others methods
     void move(int, int);
-    void targetObject(bool[4]);
+    void targetObject(const bool[4]);
     void randomDirection();
     bool testForCollision();
     bool testForCollision_Creatures();
     void changeCoords();
     void getOpposite();
     void die();
+
+    void blinkyBehaviour();
+    void pinkyBehaviour();
+    void inkyBehaviour();
+    void clydeBehaviour();
 
     // Getters
     int getCoord_x() const;

@@ -200,7 +200,9 @@ int main(int argc, char** argv) {
         previousMousePosition = mousePosition;
 
         board->getPacman()->move(dir);
+        board->checkForDeath();
         board->moveGhosts();
+        board->checkForDeath();
         
         /*********************************
          * HERE SHOULD COME THE RENDERING CODE

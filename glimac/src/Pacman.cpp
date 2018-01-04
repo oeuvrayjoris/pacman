@@ -4,6 +4,7 @@
 
 #include "glimac/Pacman.hpp"
 #include "glimac/Board.hpp"
+#include "glimac/Ghost.hpp"
 
 // Constructors
 Pacman::Pacman(Board *const board) : board(board) {
@@ -18,8 +19,8 @@ void Pacman::move(char key) {
     }
     else {
         getDirection(key);
-        if (testForCollision() == false) {
-
+        if (validDirection()) {
+            changeCoords();
             if (board->getLevel()[coord_x][coord_y] != 0) {
 
                 int scoreAdd;
@@ -47,63 +48,69 @@ void Pacman::move(char key) {
 void Pacman::getDirection(char key) {
 
     dir = key;
-    if (!strchr(ALL_DIRS, key))
+    if (!strchr(ALL_DIRS, key) || !validDirection())
         // Try moving in the same direction as before
         dir = dirOld;
 }
 
-bool Pacman::testForCollision() {
-
+bool Pacman::validDirection() {
     int elem;
     bool exists;
+    // if the character in front of the player is a space, move in the appropriate direction
+    switch (dir) {
+        case 'q':
+            elem = board->getLevel()[coord_x][coord_y - 1];
+            exists = std::find(std::begin(NO_COLLISION_TILES), std::end(NO_COLLISION_TILES), elem) != std::end(NO_COLLISION_TILES);
+            return exists || coord_y == 0;
+        case 'd':
+            elem = board->getLevel()[coord_x][coord_y + 1];
+            exists = std::find(std::begin(NO_COLLISION_TILES), std::end(NO_COLLISION_TILES), elem) != std::end(NO_COLLISION_TILES);
+            return exists || coord_y == board->getLevelWidth()-1;
+        case 'z':
+            elem = board->getLevel()[coord_x - 1][coord_y];
+            exists = std::find(std::begin(NO_COLLISION_TILES), std::end(NO_COLLISION_TILES), elem) != std::end(NO_COLLISION_TILES);
+            return exists;
+        case 's':
+            elem = board->getLevel()[coord_x + 1][coord_y];
+            exists = std::find(std::begin(NO_COLLISION_TILES), std::end(NO_COLLISION_TILES), elem) != std::end(NO_COLLISION_TILES);
+            return exists;
+    }
+    return false;
+}
+
+void Pacman::changeCoords() {
+
     // save old coordinates
     coord_x_old = coord_x;
     coord_y_old = coord_y;
     // if the character in front of the player is a space, move in the appropriate direction
     switch (dir) {
         case 'q':
-            elem = board->getLevel()[coord_x][coord_y - 1];
-            exists = std::find(std::begin(NO_COLLISION_TILES), std::end(NO_COLLISION_TILES), elem) != std::end(NO_COLLISION_TILES);
-
             // if travelling through the tunnel at the left
             if (coord_y == 0) {
                 coord_y = board->getLevelWidth() - 1;
             }
-            else if (exists) {
+            else {
                 --coord_y;
             }
             break;
         case 'd':
-            elem = board->getLevel()[coord_x][coord_y + 1];
-            exists = std::find(std::begin(NO_COLLISION_TILES), std::end(NO_COLLISION_TILES), elem) != std::end(NO_COLLISION_TILES);
             // if travelling through the tunnel at the right
             if (coord_y == board->getLevelWidth() - 1) {
                 coord_y = 0;
             }
-            else if (exists) {
+            else {
                 ++coord_y;
             }
             break;
         case 'z':
-            elem = board->getLevel()[coord_x - 1][coord_y];
-            exists = std::find(std::begin(NO_COLLISION_TILES), std::end(NO_COLLISION_TILES), elem) != std::end(NO_COLLISION_TILES);
-            if (exists) {
-                --coord_x;
-            }
+            --coord_x;
+
             break;
         case 's':
-            elem = board->getLevel()[coord_x + 1][coord_y];
-            exists = std::find(std::begin(NO_COLLISION_TILES), std::end(NO_COLLISION_TILES), elem) != std::end(NO_COLLISION_TILES);
-            if (exists) {
-                ++coord_x;
-            }
+            ++coord_x;
             break;
     }
-    // if coordinates were not changed, there was a collision
-    if (coord_x == coord_x_old && coord_y == coord_y_old) {
-        return true;
-    }
-    return false;
 }
 
 void Pacman::increaseScore(int scoreAdd) {
@@ -115,11 +122,13 @@ void Pacman::increaseScore(int scoreAdd) {
 }
 
 void Pacman::die(){
-    lives--;
 
-    Sleep(500);
+    Sleep(1000);
+    board->changeValue(coord_x, coord_y, 0);
     --lives;
     if (lives != 0) {
+        for (int i = 0; i < 4; i++)
+            board->changeValue(board->getGhosts()[i]->getCoord_x(), board->getGhosts()[i]->getCoord_y(), board->getGhosts()[i]->getPrevElem());
         board->initGame();
     }
     else {
@@ -129,7 +138,7 @@ void Pacman::die(){
 
 int Pacman::increaseKill() {
     killCount++;
-    int scoreAdd = 200 * pow(2, killCount - 1);
+    int scoreAdd = 200 * (int) pow(2, killCount - 1);
     increaseScore(scoreAdd);
     return scoreAdd;
 }

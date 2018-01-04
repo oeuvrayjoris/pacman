@@ -39,6 +39,8 @@ public:
 
     Pacman *getPacman() const;
 
+    Ghost *const *getGhosts() const;
+
     // Setters
 	void setLevelHeight(int new_m);
 	void setLevelWidth(int new_n);
