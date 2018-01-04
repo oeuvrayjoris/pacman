@@ -13,6 +13,7 @@
 #include <glimac/TrackballCamera.hpp>
 #include <glimac/FreeflyCamera.hpp>
 #include <glimac/Pacman.hpp>
+#include <glimac/Geometry.hpp>
 
 using namespace glimac;
 
@@ -58,6 +59,8 @@ int main(int argc, char** argv) {
 
     // Active test de profondeur du GPU
     glEnable(GL_DEPTH_TEST);
+
+    //bool res = Geometry::loadOBJ("pacman.obj", "pacman.mtl", 0);
 
     /**
     * Caméra

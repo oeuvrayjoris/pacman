@@ -4,6 +4,7 @@
 
 #include "glimac/Pacman.hpp"
 #include "glimac/Board.hpp"
+#include <unistd.h> // usleep()
 
 // Constructors
 Pacman::Pacman(Board *const board) : board(board) {
@@ -116,7 +117,7 @@ void Pacman::increaseScore(int scoreAdd) {
 void Pacman::die(){
     lives--;
 
-    Sleep(500);
+    usleep(1000000); // 1 second
     --lives;
     if (lives != 0) {
         board->initGame();

@@ -10,7 +10,7 @@
 #include <cstring>
 #include <algorithm> // for std::find
 #include <iterator> // for std::begin, std::end
-#include <afxres.h>
+//#include <afxres.h>
 #include <glimac/SDLWindowManager.hpp>
 #include <GL/glew.h>
 
