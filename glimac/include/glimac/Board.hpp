@@ -18,13 +18,16 @@ public:
     ~Board();
 
     // Methods
-    void build();
+    void load();
     void changeValue(int m, int n, int value);
     void launchGame();
     void initGame();
     void moveGhosts();
     void checkForDeath();
     void handleModes();
+
+    void importGame();
+    void exportGame();
 
 	// Getters
 	int getLevelHeight();

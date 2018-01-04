@@ -36,10 +36,11 @@ const int CLYDE  = 3;
 // COLORS
 const glm::vec3 WHITE_COLOR = glm::vec3(255, 255, 255);
 const glm::vec3 RED_COLOR = glm::vec3(255, 0, 0);
-const glm::vec3 PINK_COLOR = glm::vec3(255,105,180);
+const glm::vec3 MAGENTA_COLOR = glm::vec3(255,0,255);
 const glm::vec3 CYAN_COLOR = glm::vec3(0,255,255);
 const glm::vec3 ORANGE_COLOR = glm::vec3(255,165,0);
 const glm::vec3 BLUE_COLOR = glm::vec3(0,0,139);
+const glm::vec3 BLACK_COLOR = glm::vec3(0,0,0);
 
 
 

@@ -132,11 +132,11 @@ int main(int argc, char** argv) {
     Board *board = new Board;
     Pacman pacman(board);
 
-    pacman.setDir('d');
-    pacman.setDirOld('d');
-    pacman.setCoord_x(23);
-    pacman.setCoord_y(3);
-    char dir = 'd';
+    pacman.setDir('q');
+    pacman.setDirOld('q');
+    pacman.setCoord_x(19);
+    pacman.setCoord_y(12);
+    char dir = 'q';
 
     while(loop) {
         // Event loop:
