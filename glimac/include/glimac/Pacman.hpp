@@ -10,11 +10,12 @@
 #include <cstring>
 #include <algorithm> // for std::find
 #include <iterator> // for std::begin, std::end
+#include <afxres.h>
 #include <glimac/SDLWindowManager.hpp>
 #include <GL/glew.h>
 
 #include <glimac/Constants.hpp>
-#include "Board.hpp"
+class Board;
 
 class Pacman {
 
@@ -22,12 +23,23 @@ public:
     // Constructors
     Pacman(Board *const board);
 
-    // Getters
+    // Others methods
+    void move(char key);
+    void getDirection(char key);
+    bool testForCollision();
 
+    void increaseScore(int scoreAdd);
+    void die();
+    void lifeUp();
+    int increaseKill();
+
+    // Getters
     int getCoord_x() const;
     int getCoord_y() const;
     int getCoord_x_old() const;
     int getCoord_y_old() const;
+    int getCoord_x_init() const;
+    int getCoord_y_init() const;
     int getLeftDots() const;
     int getScore() const;
     const std::string &getName() const;
@@ -36,13 +48,17 @@ public:
     int getLives() const;
     int getSuper() const;
     int getKillCount() const;
+    int getWait() const;
+
+    void setWait(int wait);
 
     // Setters
-
     void setCoord_x(int coord_x);
     void setCoord_y(int coord_y);
     void setCoord_x_old(int coord_x_old);
     void setCoord_y_old(int coord_y_old);
+    void setCoord_x_init(int coord_x_init);
+    void setCoord_y_init(int coord_y_init);
     void setLeftDots(int leftDots);
     void setScore(int score);
     void setName(const std::string &name);
@@ -52,27 +68,18 @@ public:
     void setSuper(int super);
     void setKillCount(int killCount);
 
-    // Others methods
-
-    void move(char key);
-    void getDirection(char key);
-    bool testForCollision();
-
-    void increaseScore(int scoreAdd);
-    void loseLife();
-    void lifeUp();
-
 private:
     int coord_x;
     int coord_y;
     int coord_x_old;
     int coord_y_old;
+    int coord_x_init;
+    int coord_y_init;
 
     int wait;
 
     int leftDots;
     int score;
-    int scoreAdd;
     std::string name;
 
     char dir;

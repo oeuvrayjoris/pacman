@@ -3,11 +3,28 @@
 
 #include <iostream>
 #include <vector>
+#include "Constants.hpp"
+
+class Pacman;
+class Ghost;
+class Pellet;
 
 class Board {
 public:
 	// Constructors
 	Board();
+
+    // Destructor
+    ~Board();
+
+    // Methods
+    void build();
+    void changeValue(int m, int n, int value);
+    void launchGame();
+    void initGame();
+    void moveGhosts();
+    void checkForDeath();
+    void handleModes();
 
 	// Getters
 	int getLevelHeight();
@@ -25,15 +42,21 @@ public:
     void setGateCoord_y(int gateCoord_y);
     void setSuper(bool super);
 
-    // Methods
-	void build();
-	void changeValue(int m, int n, int value);
-
 private:
 	// Attr
 	int levelHeight;
 	int levelWidth;
 	std::vector<std::vector<int>> level;
+
+
+    int pelletTimer = PELLET_MAX;
+    //int pelletColor = WHITE;
+    int ghostModeTimer = MODE_MAX;
+
+    Pacman* pacman;
+    Ghost* ghosts[4];
+    Pellet* pellets[4];
+
 	int gateCoord_x;
 	int gateCoord_y;
     bool super;

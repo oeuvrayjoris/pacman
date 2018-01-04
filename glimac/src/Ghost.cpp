@@ -4,10 +4,12 @@
 
 #include "glimac/Ghost.hpp"
 
+// Constructors
 Ghost::Ghost(Board *const board) {
     // code here..
 }
 
+// Other methods
 void Ghost::move(int, int) {
     if (wait) {
         --wait;
@@ -119,6 +121,104 @@ void Ghost::getOpposite() {
         dirOpp = 'q';
 }
 
-void Ghost::dead() {
+void Ghost::die() {
     // code ...
+}
+
+// Getters
+int Ghost::getCoord_x() const {
+    return coord_x;
+}
+
+int Ghost::getCoord_y() const {
+    return coord_y;
+}
+
+int Ghost::getCoord_x_init() const {
+    return coord_x_init;
+}
+
+int Ghost::getCoord_y_init() const {
+    return coord_y_init;
+}
+
+int Ghost::getWait() const {
+    return wait;
+}
+
+char Ghost::getDir() const {
+    return dir;
+}
+
+char Ghost::getDirOld() const {
+    return dirOld;
+}
+
+char Ghost::getDirOpp() const {
+    return dirOpp;
+}
+
+char Ghost::getMode() const {
+    return mode;
+}
+
+char Ghost::getModeOld() const {
+    return modeOld;
+}
+
+glm::vec3 Ghost::getColor() const {
+    return color;
+}
+
+glm::vec3 Ghost::getColorInit() const {
+    return colorInit;
+}
+
+// Setters
+void Ghost::setCoord_x(int coord_x) {
+    Ghost::coord_x = coord_x;
+}
+
+void Ghost::setCoord_y(int coord_y) {
+    Ghost::coord_y = coord_y;
+}
+
+void Ghost::setCoord_x_init(int coord_x_old) {
+    Ghost::coord_x_init = coord_x_old;
+}
+
+void Ghost::setCoord_y_init(int coord_y_old) {
+    Ghost::coord_y_init = coord_y_old;
+}
+
+void Ghost::setWait(int wait) {
+    Ghost::wait = wait;
+}
+
+void Ghost::setDir(char dir) {
+    Ghost::dir = dir;
+}
+
+void Ghost::setDirOld(char dirOld) {
+    Ghost::dirOld = dirOld;
+}
+
+void Ghost::setDirOpp(char dirOpp) {
+    Ghost::dirOpp = dirOpp;
+}
+
+void Ghost::setMode(char mode) {
+    Ghost::mode = mode;
+}
+
+void Ghost::setModeOld(char modeOld) {
+    Ghost::modeOld = modeOld;
+}
+
+void Ghost::setColor(glm::vec3 color) {
+    Ghost::color = color;
+}
+
+void Ghost::setColorInit(glm::vec3 colorInit) {
+    Ghost::colorInit = colorInit;
 }

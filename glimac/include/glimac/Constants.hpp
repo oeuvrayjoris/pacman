@@ -5,27 +5,43 @@
 #ifndef IMACGL_CONSTANTS_HPP
 #define IMACGL_CONSTANTS_HPP
 
+#include <glimac/glm.hpp>
+
 // directions and icons
 const char ALL_DIRS[4] = {'z','q','s','d'};
 
 // Board properties
 const int NO_COLLISION_TILES[4] = {0, 1, 2, 3};
 
+
+
 // Timers
-const int SUPER_MAX   = 500;
-const int ONE_UP_MAX  = 13;
-const int PELLET_MAX  = 8;
-const int PACMAN_MAX  = 20;
-const int GHOST_MAX   = 20;
-const int RUN_MAX     = 16;
-const int DEAD_MAX    = 3;
-const int MODE_MAX    = 1000;
+const int SPEED_FACTOR = 3.5;
+
+const int SUPER_MAX   = 500 * SPEED_FACTOR;
+const int ONE_UP_MAX  = 13 * SPEED_FACTOR;
+const int PELLET_MAX  = 8 * SPEED_FACTOR;
+const int PACMAN_MAX  = 8 * SPEED_FACTOR;
+const int GHOST_MAX   = 10 * SPEED_FACTOR;
+const int RUN_MAX     = 16 * SPEED_FACTOR;
+const int DEAD_MAX    = 3 * SPEED_FACTOR;
+const int MODE_MAX    = 1000 * SPEED_FACTOR;
 
 // Ghost Names
 const int BLINKY = 0;
 const int PINKY  = 1;
 const int INKY   = 2;
 const int CLYDE  = 3;
+
+// COLORS
+const glm::vec3 WHITE_COLOR = glm::vec3(255, 255, 255);
+const glm::vec3 RED_COLOR = glm::vec3(255, 0, 0);
+const glm::vec3 PINK_COLOR = glm::vec3(255,105,180);
+const glm::vec3 CYAN_COLOR = glm::vec3(0,255,255);
+const glm::vec3 ORANGE_COLOR = glm::vec3(255,165,0);
+const glm::vec3 BLUE_COLOR = glm::vec3(0,0,139);
+
+
 
 /*
  * 0 - Empty case

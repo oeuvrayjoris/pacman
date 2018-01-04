@@ -76,8 +76,6 @@ int main(int argc, char** argv) {
     Cube cube(1.0);
     Sphere sphere(1, 32, 16);
 
-    Board *board = new Board;
-
     GLuint vbo;
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -130,6 +128,8 @@ int main(int argc, char** argv) {
     glm::ivec2 previousMousePosition = windowManager.getMousePosition();
     glm::ivec2 mousePosition = windowManager.getMousePosition();
 
+
+    Board *board = new Board;
     Pacman pacman(board);
 
     pacman.setDir('d');
