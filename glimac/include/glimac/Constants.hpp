@@ -12,6 +12,7 @@ const char ALL_DIRS[4] = {'z','q','s','d'};
 
 // Board properties
 const int NO_COLLISION_TILES[4] = {0, 1, 2, 3};
+const int COLLISION_CREATURES[5] = {10, 11, 12, 13, 14};
 
 
 

@@ -168,7 +168,6 @@ int main(int argc, char** argv) {
                     break;
             }
 
-
             if (windowManager.isMouseButtonPressed(SDL_BUTTON_RIGHT)) {
                 mousePosition = windowManager.getMousePosition();
                 if (mousePosition.x < previousMousePosition.x) {
@@ -200,7 +199,8 @@ int main(int argc, char** argv) {
 
         previousMousePosition = mousePosition;
 
-        pacman.move(dir);
+        board->getPacman()->move(dir);
+        board->moveGhosts();
         
         /*********************************
          * HERE SHOULD COME THE RENDERING CODE

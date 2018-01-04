@@ -37,6 +37,8 @@ public:
     int getGateCoord_y() const;
     bool isSuper() const;
 
+    Pacman *getPacman() const;
+
     // Setters
 	void setLevelHeight(int new_m);
 	void setLevelWidth(int new_n);

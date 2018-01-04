@@ -5,32 +5,114 @@
 #include "glimac/Ghost.hpp"
 
 // Constructors
-Ghost::Ghost(Board *const board) {
-    // code here..
+Ghost::Ghost(Board *const board) : board(board) {
+
 }
 
 // Other methods
-void Ghost::move(int, int) {
+void Ghost::move(int target_x, int target_y) {
     if (wait) {
         --wait;
     }
     else {
-        switch (mode) { // c = chasing, w = waiting, e = exiting, t = eatable, a = eaten, r = running, n = entering
-            case 'w':
-
+        int elem;
+        switch (mode) { // c = chasing, s = scattering, f = frightened, d = died // w = waiting, e = exiting, n = entering
+            case 'w': // They bounce up and down
+                wait = GHOST_MAX;
+                coord_x_old = coord_x;
+                coord_y_old = coord_y;
+                if (coord_x == board->getGateCoord_x() + 2) {
+                    coord_x++;
+                }
+                else {
+                    coord_x--;
+                }
+                elem = board->getLevel()[coord_x][coord_y];
+                board->changeValue(coord_x_old, coord_y_old, elem);
+                board->changeValue(coord_x, coord_y, id);
+                break;
+            case 'e': // Find a path to the gate
+                wait = GHOST_MAX;
+                coord_x_old = coord_x;
+                coord_y_old = coord_y;
+                if (coord_x > board->getGateCoord_x() + 1) {
+                    --coord_x;
+                }
+                else if (coord_y < board->getGateCoord_y()) {
+                    ++coord_y;
+                }
+                else if (coord_y > board->getGateCoord_y()) {
+                    --coord_y;
+                }
+                else if (coord_x != board->getGateCoord_x() - 1) { // the ghost is on the door
+                    --coord_x;
+                }
+                else { // If the ghost isn't in the prison anymore
+                    modeOld = mode;
+                    if (color == BLUE_COLOR) { // put as frightened
+                        mode = 'f'; //
+                    }
+                    else {
+                        mode = 's'; // put as chasing
+                    }
+                    dir = 'q'; // a Ghost ALWAYS goes to the left after leaving the prison
+                    dirOld = 'w';
+                    wait = 0;
+                }
+                elem = board->getLevel()[coord_x][coord_y];
+                board->changeValue(coord_x_old, coord_y_old, elem);
+                board->changeValue(coord_x, coord_y, id);
+                board->changeValue(board->getGateCoord_x(), board->getGateCoord_y(), 20); // We place our gate where it was
+                break;
+            case 'n': // Entering in the prison
+                if (coord_x != board->getGateCoord_y() + 1) {
+                    dir = 's';
+                    changeCoords();
+                    wait = DEAD_MAX;
+                    board->changeValue(board->getGateCoord_x(), board->getGateCoord_y(), 20); // We place our gate where it was
+                }
+                else { // We set the ghost ready to exit
+                    color = colorInit;
+                    mode = 'e';
+                    wait = GHOST_MAX;
+                }
+                break;
+            case 's': // The ghost is scattering, going in randoms position (normally it should target a corner of the maze)
+                getOpposite();
+                if (modeOld == 'e') {
+                    modeOld = mode;
+                }
+                if (mode != modeOld) { // If we were already out, we just reverse direction
+                    dir = dirOpp;
+                    changeCoords();
+                    modeOld = mode;
+                }
+                else {
+                    randomDirection();
+                }
+                dirOld = dir;
                 wait = GHOST_MAX;
                 break;
-            case 'e':
+            case 'c': // Chase the pacman
+                // will be handled after
                 break;
-            case 'c':
+            case 'f': // The ghost is frigthned (for the moment it moves randomly, but slower than before, it should avoid the pacman)
+                getOpposite();
+                if (modeOld == 'e') {
+                    modeOld = mode;
+                }
+                if (mode != modeOld) { // If we were already out, we just reverse direction
+                    dir = dirOpp;
+                    changeCoords();
+                    modeOld = mode;
+                }
+                else {
+                    randomDirection();
+                }
+                dirOld = dir;
+                wait = RUN_MAX;
                 break;
-            case 't':
-                break;
-            case 'a':
-                break;
-            case 'r':
-                break;
-            case 'n':
+            case 'd': // If the ghost died, he returns to the prison
                 break;
         }
     }
@@ -42,11 +124,17 @@ void Ghost::targetObject(bool[4]) {
 
 void Ghost::randomDirection() {
     getOpposite();
+    bool goOpposite = testForCollision_Creatures();
+    if (goOpposite) {
+        dir = dirOpp;
+        return;
+    }
     do {
         do {
-            dir = ALL_DIRS[rand()%4];
+            dir = ALL_DIRS[rand() % 4];
         } while (dir == dirOpp);
-    } while(testForCollision() == true);
+    } while(testForCollision() == true && testForCollision_Creatures() == false);
+    changeCoords();
 }
 
 bool Ghost::testForCollision() {
@@ -87,7 +175,46 @@ bool Ghost::testForCollision() {
     return true;
 }
 
+bool Ghost::testForCollision_Creatures() {
+    int elem;
+    bool exists;
+    switch (dir) {
+        case 'q':
+            elem = board->getLevel()[coord_x][coord_y - 1];
+            exists = std::find(std::begin(COLLISION_CREATURES), std::end(COLLISION_CREATURES), elem) != std::end(COLLISION_CREATURES);
+            // if travelling through the tunnel at the left
+            if (exists) {
+                return true;
+            }
+            break;
+        case 'd':
+            elem = board->getLevel()[coord_x][coord_y + 1];
+            exists = std::find(std::begin(COLLISION_CREATURES), std::end(COLLISION_CREATURES), elem) != std::end(COLLISION_CREATURES);
+            // if travelling through the tunnel at the right
+            if (exists) {
+                return true;
+            }
+            break;
+        case 'z':
+            elem = board->getLevel()[coord_x - 1][coord_y];
+            exists = std::find(std::begin(COLLISION_CREATURES), std::end(COLLISION_CREATURES), elem) != std::end(COLLISION_CREATURES);
+            if (exists) {
+                return true;
+            }
+            break;
+        case 's':
+            elem = board->getLevel()[coord_x + 1][coord_y];
+            exists = std::find(std::begin(COLLISION_CREATURES), std::end(COLLISION_CREATURES), elem) != std::end(COLLISION_CREATURES);
+            if (exists) {
+                return true;
+            }
+            break;
+    }
+    return false;
+}
+
 void Ghost::changeCoords() {
+    board->changeValue(coord_x, coord_y, prevElem);
     switch(dir) {
         case 'q':
             if (coord_y == 0)
@@ -108,6 +235,12 @@ void Ghost::changeCoords() {
             ++coord_x;
             break;
     }
+
+    if (board->getLevel()[coord_x][coord_y] >= 0 && board->getLevel()[coord_x][coord_y] < 4)
+        prevElem = board->getLevel()[coord_x][coord_y];
+    board->changeValue(coord_x, coord_y, id);
+
+    //std::cout << "[" << coord_x << ", " << coord_y << "] - [" << coord_x_old << " , " << coord_y_old << "]" << std::endl;
 }
 
 void Ghost::getOpposite() {
@@ -122,7 +255,9 @@ void Ghost::getOpposite() {
 }
 
 void Ghost::die() {
-    // code ...
+    color = WHITE_COLOR;
+    modeOld = mode;
+    mode = 'd';
 }
 
 // Getters
@@ -140,6 +275,22 @@ int Ghost::getCoord_x_init() const {
 
 int Ghost::getCoord_y_init() const {
     return coord_y_init;
+}
+
+int Ghost::getCoord_x_old() const {
+    return coord_x_old;
+}
+
+int Ghost::getCoord_y_old() const {
+    return coord_y_old;
+}
+
+int Ghost::getId() const {
+    return id;
+}
+
+int Ghost::getPrevElem() const {
+    return prevElem;
 }
 
 int Ghost::getWait() const {
@@ -189,6 +340,22 @@ void Ghost::setCoord_x_init(int coord_x_old) {
 
 void Ghost::setCoord_y_init(int coord_y_old) {
     Ghost::coord_y_init = coord_y_old;
+}
+
+void Ghost::setCoord_x_old(int coord_x_old) {
+    Ghost::coord_x_old = coord_x_old;
+}
+
+void Ghost::setCoord_y_old(int coord_y_old) {
+    Ghost::coord_y_old = coord_y_old;
+}
+
+void Ghost::setId(int id) {
+    Ghost::id = id;
+}
+
+void Ghost::setPrevElem(int prevElem) {
+    Ghost::prevElem = prevElem;
 }
 
 void Ghost::setWait(int wait) {

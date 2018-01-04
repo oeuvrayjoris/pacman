@@ -21,6 +21,7 @@ void Pacman::move(char key) {
         if (testForCollision() == false) {
 
             if (board->getLevel()[coord_x][coord_y] != 0) {
+
                 int scoreAdd;
                 if (board->getLevel()[coord_x][coord_y] == 2) {
                     scoreAdd = 50;

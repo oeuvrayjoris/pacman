@@ -38,9 +38,9 @@ void Board::load() {
             {4, 1, 4, 4, 4, 4, 1, 4, 1, 4, 4, 4, 4, 4, 4, 4, 1, 4, 1, 4, 4, 4, 4, 1, 4},
             {4, 1, 4, 4, 4, 4, 1, 4, 1, 4, 4, 4, 4, 4, 4, 4, 1, 4, 1, 4, 4, 4, 4, 1, 4},
             {4, 1, 1, 1, 1, 1, 1, 4, 1, 1, 1, 1, 4, 1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 4},
-            {4, 4, 4, 4, 4, 4, 1, 4, 4, 4, 4, 0, 4, 1, 4, 4, 4, 4, 1, 4, 4, 4, 4, 4, 4},
-            {0, 0, 0, 0, 0, 4, 1, 4, 0, 0, 0, 0, 11, 0, 0, 0, 0, 4, 1, 4, 1, 1, 1, 1, 1},
-            {0, 0, 0, 0, 0, 4, 1, 4, 0, 4, 4, 4, 20, 4, 4, 4, 0, 4, 1, 4, 1, 1, 1, 1, 1},
+            {4, 4, 4, 4, 4, 4, 1, 4, 4, 4, 4, 1, 4, 1, 4, 4, 4, 4, 1, 4, 4, 4, 4, 4, 4},
+            {0, 0, 0, 0, 0, 4, 1, 4, 0, 0, 0, 0, 11, 0, 0, 0, 0, 4, 1, 4, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 4, 1, 4, 0, 4, 4, 4, 20, 4, 4, 4, 0, 4, 1, 4, 0, 0, 0, 0, 0},
             {4, 4, 4, 4, 4, 4, 1, 4, 0, 4, 0, 0, 0, 0, 0, 4, 0, 4, 1, 4, 4, 4, 4, 4, 4},
             {0, 0, 0, 0, 0, 0, 1, 1, 0, 4, 12, 0, 13, 0, 14, 4, 0, 1, 1, 0, 0, 0, 0, 0, 0},
             {4, 4, 4, 4, 4, 4, 1, 4, 0, 4, 0, 0, 0, 0, 0, 4, 0, 4, 1, 4, 4, 4, 4, 4, 4},
@@ -82,21 +82,33 @@ void Board::load() {
                     ghosts[BLINKY]->setCoord_x_init(i);
                     ghosts[BLINKY]->setCoord_y_init(j);
                     ghosts[BLINKY]->setColorInit(RED_COLOR);
+                    ghosts[BLINKY]->setId(elem);
+                    ghosts[BLINKY]->setPrevElem(0);
                     break;
                 case 12: // ghost 2
                     ghosts[PINKY]->setCoord_x_init(i);
                     ghosts[PINKY]->setCoord_y_init(j);
                     ghosts[PINKY]->setColorInit(MAGENTA_COLOR);
+                    ghosts[PINKY]->setId(elem);
+                    ghosts[PINKY]->setPrevElem(0);
                     break;
                 case 13: // ghost 3
                     ghosts[INKY]->setCoord_x_init(i);
                     ghosts[INKY]->setCoord_y_init(j);
                     ghosts[INKY]->setColorInit(CYAN_COLOR);
+                    ghosts[INKY]->setId(elem);
+                    ghosts[INKY]->setPrevElem(0);
                     break;
                 case 14: // ghost 4
                     ghosts[CLYDE]->setCoord_x_init(i);
                     ghosts[CLYDE]->setCoord_y_init(j);
                     ghosts[CLYDE]->setColorInit(ORANGE_COLOR);
+                    ghosts[CLYDE]->setId(elem);
+                    ghosts[CLYDE]->setPrevElem(0);
+                    break;
+                case 20:
+                    gateCoord_x = i;
+                    gateCoord_y = j;
                     break;
             }
         }
@@ -129,8 +141,9 @@ void Board::initGame(){
         ghosts[i]->setMode('w');
         ghosts[i]->setWait(0);
     }
-    ghosts[BLINKY]->setMode('c');
-    ghosts[BLINKY]->setModeOld('c');
+    ghosts[BLINKY]->setMode('s');
+    ghosts[BLINKY]->setModeOld('s');
+    ghosts[BLINKY]->setDir('q');
     if (pacman->getLeftDots() <= 235) {
         ghosts[PINKY]->setMode('e');
     }
@@ -154,17 +167,20 @@ void Board::moveGhosts() {
                 ghosts[i]->setMode('f'); // become frightened
             }
         }
-    } // We allow the ghosts to exit
+    }
+    // We allow the ghosts to exit
     if (pacman->getLeftDots() == 235 && ghosts[PINKY]->getMode() == 'w') {
         ghosts[PINKY]->setMode('e');
     }
     if (pacman->getLeftDots() == 200 && ghosts[INKY]->getMode() == 'w') {
         ghosts[INKY]->setMode('e');
+        std::cout << "INKY !" << std::endl;
     }
     if (pacman->getLeftDots() == 165 && ghosts[CLYDE]->getMode() == 'w') {
         ghosts[CLYDE]->setMode('e');
+        std::cout << "CLYDE !" << std::endl;
     }
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < 4; i++) {
         ghosts[i]->move(pacman->getCoord_x(), pacman->getCoord_y());
     }
 }
@@ -246,4 +262,8 @@ void Board::setGateCoord_y(int gateCoord_y) {
 
 void Board::setSuper(bool super) {
     Board::super = super;
+}
+
+Pacman *Board::getPacman() const {
+    return pacman;
 }
