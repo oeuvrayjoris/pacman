@@ -70,6 +70,9 @@ int main(int argc, char** argv) {
     //FreeflyCamera camera = FreeflyCamera();
     TrackballCamera camera = TrackballCamera();
 
+
+
+
     /**
     * Calcul des matrices de Transformation
     */

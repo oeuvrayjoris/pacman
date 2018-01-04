@@ -8,6 +8,8 @@ in vec2 vTexCoords; // Coordonnées de texture du sommet
 // Sortie du fragment shader
 out vec3 fFragColor;
 
+uniform sampler2D uTexture;
+
 void main() {
-  fFragColor = normalize(vNormal_vs);
+	fFragColor = vec3(texture(uTexture, vTexCoords));
 }
