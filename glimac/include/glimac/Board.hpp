@@ -38,7 +38,6 @@ public:
     bool isSuper() const;
 
     Pacman *getPacman() const;
-
     Ghost *const *getGhosts() const;
 
     // Setters
@@ -57,7 +56,7 @@ private:
 
 
     int pelletTimer = PELLET_MAX;
-    //int pelletColor = WHITE;
+    //int pelletColor = WHITE_COLOR;
     int ghostModeTimer = MODE_MAX;
 
     Pacman* pacman;

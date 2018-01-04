@@ -13,8 +13,6 @@ Board::Board() {
 		ghosts[i] = new Ghost(this);
 		pellets[i] = new Pellet(this);
 	}
-
-    load();
 }
 
 // Destructor

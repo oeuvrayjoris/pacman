@@ -130,12 +130,7 @@ int main(int argc, char** argv) {
 
 
     Board *board = new Board;
-    Pacman pacman(board);
-
-    pacman.setDir('q');
-    pacman.setDirOld('q');
-    pacman.setCoord_x(19);
-    pacman.setCoord_y(12);
+    board->launchGame();
     char dir = 'q';
 
     while(loop) {

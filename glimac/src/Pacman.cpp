@@ -132,7 +132,8 @@ void Pacman::die(){
         board->initGame();
     }
     else {
-        //board->PrintGameOver();
+        // Deal the game over case
+        //board->setGa
     }
 }
 
