@@ -209,16 +209,16 @@ int main(int argc, char** argv) {
             if (windowManager.isMouseButtonPressed(SDL_BUTTON_RIGHT)) {
                 mousePosition = windowManager.getMousePosition();
                 if (mousePosition.x < previousMousePosition.x) {
-                    camera.rotateLeft(0.5);
+                    camera.rotateLeft(1);
                 }
                 else if (mousePosition.x > previousMousePosition.x) {
-                    camera.rotateLeft(-0.5);
+                    camera.rotateLeft(-1);
                 }
                 if (mousePosition.y < previousMousePosition.y) {
-                    camera.rotateUp(0.5);
+                    camera.rotateUp(1);
                 }
                 else if (mousePosition.y > previousMousePosition.y) {
-                    camera.rotateUp(-0.5);
+                    camera.rotateUp(-1);
                 }
             }
             else if (windowManager.isMouseButtonPressed(SDL_BUTTON_MIDDLE)) {
@@ -248,7 +248,7 @@ int main(int argc, char** argv) {
         /* On récupère la ViewMatrix de la caméra à chaque tour de boucle */
         glm::mat4 globalMVMatrix = camera.getViewMatrix();
 
-        NormalMatrix = glm::transpose(glm::inverse(globalMVMatrix));
+        //NormalMatrix = glm::transpose(glm::inverse(globalMVMatrix));
 
 
         for (int i = 0; i < board->getLevelHeight(); i++) {
@@ -303,7 +303,6 @@ int main(int argc, char** argv) {
                         break;
                     case 10:
                         // Pacman
-                        //MVMatrix = glm::translate(MVMatrix, glm::vec3(0.2, 0, -0.4));
                         MVMatrix = glm::scale(MVMatrix, glm::vec3(0.25, 0.25, 0.25));
                         MVMatrix = glm::rotate(MVMatrix, 0.f, glm::vec3(0, 1, 0));
 
@@ -339,7 +338,6 @@ int main(int argc, char** argv) {
                         }
 
                         MVMatrix = glm::scale(MVMatrix, glm::vec3(4, 4, 4));
-                        //MVMatrix = glm::translate(MVMatrix, glm::vec3(-0.2, 0, 0.4));
                         break;
                     case 11:
                         // Ghost 1
