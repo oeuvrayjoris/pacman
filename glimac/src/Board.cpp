@@ -153,7 +153,6 @@ void Board::initGame(){
     }
 }
 
-
 void Board::moveGhosts() {
     // check for ghost mode changes
     if (pacman->getSuper() == SUPER_MAX) { // if Pacman just turned in super mode

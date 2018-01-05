@@ -33,16 +33,16 @@ void Ghost::move(int target_x, int target_y) {
                 wait = GHOST_MAX;
                 board->changeValue(coord_x, coord_y, prevElem);
                 if (coord_x > board->getGateCoord_x() + 1) {
-                    --coord_x;
+                    coord_x--;
                 }
                 else if (coord_y < board->getGateCoord_y()) {
-                    ++coord_y;
+                    coord_y++;
                 }
                 else if (coord_y > board->getGateCoord_y()) {
-                    --coord_y;
+                    coord_y--;
                 }
                 else if (coord_x != board->getGateCoord_x() - 1) { // the ghost is on the door, we make him going out completely
-                    --coord_x;
+                    coord_x--;
                 }
                 else { // If the ghost isn't in the prison anymore
                     modeOld = mode;
@@ -172,7 +172,7 @@ void Ghost::randomDirection() {
             do {
                 dir = ALL_DIRS[rand() % 4]; // we pick a random position different than the opposite
             } while (dir == dirOpp);
-        } while (testForCollision() == true /*&& testForCollision_Creatures() == false*/);
+        } while (testForCollision() == true && testForCollision_Creatures() == false);
         changeCoords();
     }
 }
@@ -260,19 +260,19 @@ void Ghost::changeCoords() {
             if (coord_y == 0) // If we go through the tunnel to the left
                 coord_y = board->getLevelWidth() - 1;
             else
-                --coord_y;
+                coord_y--;
             break;
         case 'd': // moving right
             if (coord_y == board->getLevelWidth() - 1) // If we go through the tunnel to the right
                 coord_y = 0;
             else
-                ++coord_y;
+                coord_y++;
             break;
         case 'z': // moving up
-            --coord_x;
+            coord_x--;
             break;
         case 's': // moving down
-            ++coord_x;
+            coord_x++;
             break;
     }
 

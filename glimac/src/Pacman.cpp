@@ -15,7 +15,7 @@ Pacman::Pacman(Board *const board) : board(board) {
 // Other methods
 void Pacman::move(char key) {
     if (wait) {
-        --wait;
+        wait--;
     }
     else {
         getDirection(key);
@@ -34,7 +34,7 @@ void Pacman::move(char key) {
                 else { // Normal dot
                     scoreAdd = 10;
                 }
-                --leftDots;
+                leftDots--;
                 increaseScore(scoreAdd);
             }
             board->changeValue(coord_x_old, coord_y_old, 0); // Modifications for the display
@@ -95,7 +95,7 @@ void Pacman::changeCoords() {
                 coord_y = board->getLevelWidth() - 1;
             }
             else {
-                --coord_y;
+                coord_y--;
             }
             break;
         case 'd': // moving right
@@ -104,15 +104,15 @@ void Pacman::changeCoords() {
                 coord_y = 0;
             }
             else {
-                ++coord_y;
+                coord_y++;
             }
             break;
         case 'z': // moving up
-            --coord_x;
+            coord_x--;
 
             break;
         case 's': // moving down
-            ++coord_x;
+            coord_x++;
             break;
     }
 }
@@ -120,7 +120,7 @@ void Pacman::changeCoords() {
 void Pacman::increaseScore(int scoreAdd) {
     // Gain a life for every time we cross a multiple of 10000
     if (score / 10000 < (score + scoreAdd) / 10000) {
-        ++lives;
+        lives++;
     }
     score += scoreAdd;
 }
