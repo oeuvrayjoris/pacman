@@ -113,11 +113,18 @@ int main(int argc, char** argv) {
     if(pImageSpace == NULL)
         std::cout << "SpaceMap == NULL" << std::endl;
 
+    std::unique_ptr<Image> pImagePacman = loadImage("../../assets/textures/PacmanMap.jpg");
+    if(pImagePacman == NULL)
+        std::cout << "PacmanMap == NULL" << std::endl;
+
     GLuint edgeTexture;
     glGenTextures(1, &edgeTexture);
 
     GLuint spaceTexture;
     glGenTextures(1, &spaceTexture);
+
+    GLuint pacmanTexture;
+    glGenTextures(1, &pacmanTexture);
 
     glBindTexture(GL_TEXTURE_2D, edgeTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pImageEdge->getWidth(), pImageEdge->getHeight(), 0, GL_RGBA, GL_FLOAT, pImageEdge->getPixels());
@@ -127,6 +134,12 @@ int main(int argc, char** argv) {
 
     glBindTexture(GL_TEXTURE_2D, spaceTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pImageSpace->getWidth(), pImageSpace->getHeight(), 0, GL_RGBA, GL_FLOAT, pImageSpace->getPixels());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glBindTexture(GL_TEXTURE_2D, pacmanTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pImagePacman->getWidth(), pImagePacman->getHeight(), 0, GL_RGBA, GL_FLOAT, pImagePacman->getPixels());
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -274,11 +287,12 @@ int main(int argc, char** argv) {
         /* On récupère la ViewMatrix de la caméra à chaque tour de boucle */
         glm::mat4 globalMVMatrix = camera.getViewMatrix();
 
-        /* Sol */
-        MVMatrix = glm::translate(globalMVMatrix, glm::vec3(0, 0, 0));
-        MVMatrix = glm::scale(MVMatrix, glm::vec3(30, 0.01, 30));
+        /* Environment */
 
-        glBindVertexArray(vao);
+        MVMatrix = glm::translate(globalMVMatrix, glm::vec3(0, 0, 0));
+        MVMatrix = glm::scale(MVMatrix, glm::vec3(30, 30, 30));
+
+        glBindVertexArray(vao2);
 
         texProgram.m_Program.use();
         glUniform1i(texProgram.uTexture, 0);
@@ -290,7 +304,7 @@ int main(int argc, char** argv) {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, spaceTexture);
 
-        glDrawArrays(GL_TRIANGLES, 0, cube.getVertexCount());
+        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, 0);
@@ -351,8 +365,22 @@ int main(int argc, char** argv) {
                         glUniformMatrix4fv(normalProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
                         glDrawArrays(GL_TRIANGLES, 0, cube.getVertexCount());
                         glBindVertexArray(0);
-                        /*
-                        glBindVertexArray(vao);
+                        break;
+                    case 10:
+                        // Pacman
+                        glBindVertexArray(vao2);
+
+                        switch(board->getPacman()->getDir()) {
+                            case 's':
+                                MVMatrix = glm::rotate(MVMatrix, 185.f, glm::vec3(0, 1, 0));
+                                break;
+                            case 'q':
+                                MVMatrix = glm::rotate(MVMatrix, 90.f, glm::vec3(0, 1, 0));
+                                break;
+                            case 'd':
+                                MVMatrix = glm::rotate(MVMatrix, -90.f, glm::vec3(0, 1, 0));
+                                break;
+                        }
 
                         texProgram.m_Program.use();
                         glUniform1i(texProgram.uTexture, 0);
@@ -362,23 +390,25 @@ int main(int argc, char** argv) {
                         glUniformMatrix4fv(texProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
 
                         glActiveTexture(GL_TEXTURE0);
-                        glBindTexture(GL_TEXTURE_2D, edgeTexture);
+                        glBindTexture(GL_TEXTURE_2D, pacmanTexture);
 
-                        glDrawArrays(GL_TRIANGLES, 0, cube.getVertexCount());
+                        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
 
                         glActiveTexture(GL_TEXTURE0);
                         glBindTexture(GL_TEXTURE_2D, 0);
 
-                        glBindVertexArray(0);*/
-                        break;
-                    case 10:
-                        // Pacman
-                        glBindVertexArray(vao2);
-                        normalProgram.m_Program.use();
-                        glUniformMatrix4fv(normalProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
-                        glUniformMatrix4fv(normalProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-                        glUniformMatrix4fv(normalProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
-                        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
+                        switch(board->getPacman()->getDir()) {
+                            case 's':
+                                MVMatrix = glm::rotate(MVMatrix, -185.f, glm::vec3(0, 1, 0));
+                                break;
+                            case 'q':
+                                MVMatrix = glm::rotate(MVMatrix, -90.f, glm::vec3(0, 1, 0));
+                                break;
+                            case 'd':
+                                MVMatrix = glm::rotate(MVMatrix, 90.f, glm::vec3(0, 1, 0));
+                                break;
+                        }
+
                         glBindVertexArray(0);
                         break;
                     case 11:
@@ -429,6 +459,7 @@ int main(int argc, char** argv) {
 
     glDeleteTextures(1, &edgeTexture);
     glDeleteTextures(1, &spaceTexture);
+    glDeleteTextures(1, &pacmanTexture);
 
     glDeleteBuffers(1, &vbo);
     glDeleteVertexArrays(1, &vao);
