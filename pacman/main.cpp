@@ -17,6 +17,30 @@
 
 using namespace glimac;
 
+struct EdgeProgram {
+    Program m_Program;
+
+    GLint uMVPMatrix;
+    GLint uMVMatrix;
+    GLint uNormalMatrix;
+    GLint uTexture;
+
+    EdgeProgram(const FilePath& applicationPath) {
+        std::string VS = "shaders/3D.vs.glsl";
+        std::string FS = "shaders/tex3D.fs.glsl";
+        #if __APPLE__
+            m_Program = loadProgram(VS, FS);
+        #else
+            m_Program = loadProgram(applicationPath.dirPath() + VS,
+                                              applicationPath.dirPath() + FS);
+        #endif
+        uMVPMatrix = glGetUniformLocation(m_Program.getGLId(), "uMVPMatrix");
+        uMVMatrix = glGetUniformLocation(m_Program.getGLId(), "uMVMatrix");
+        uNormalMatrix = glGetUniformLocation(m_Program.getGLId(), "uNormalMatrix");
+        uTexture = glGetUniformLocation(m_Program.getGLId(), "uTexture");
+    }
+};
+
 int main(int argc, char** argv) {
     GLuint width = 854;//1280;
     GLuint height = 480; //720;
