@@ -37,6 +37,9 @@ public:
     int getGateCoord_y() const;
     bool isSuper() const;
 
+    Pacman *getPacman() const;
+    Ghost *const *getGhosts() const;
+
     // Setters
 	void setLevelHeight(int new_m);
 	void setLevelWidth(int new_n);
@@ -53,7 +56,7 @@ private:
 
 
     int pelletTimer = PELLET_MAX;
-    //int pelletColor = WHITE;
+    //int pelletColor = WHITE_COLOR;
     int ghostModeTimer = MODE_MAX;
 
     Pacman* pacman;

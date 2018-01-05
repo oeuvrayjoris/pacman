@@ -26,11 +26,11 @@ public:
     // Others methods
     void move(char key);
     void getDirection(char key);
-    bool testForCollision();
+    void changeCoords();
+    bool validDirection();
 
     void increaseScore(int scoreAdd);
     void die();
-    void lifeUp();
     int increaseKill();
 
     // Getters
@@ -50,7 +50,6 @@ public:
     int getKillCount() const;
     int getWait() const;
 
-    void setWait(int wait);
 
     // Setters
     void setCoord_x(int coord_x);
@@ -67,6 +66,7 @@ public:
     void setLives(int lives);
     void setSuper(int super);
     void setKillCount(int killCount);
+    void setWait(int wait);
 
 private:
     int coord_x;

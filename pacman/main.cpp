@@ -166,12 +166,7 @@ int main(int argc, char** argv) {
 
 
     Board *board = new Board;
-    Pacman pacman(board);
-
-    pacman.setDir('q');
-    pacman.setDirOld('q');
-    pacman.setCoord_x(19);
-    pacman.setCoord_y(12);
+    board->launchGame();
     char dir = 'q';
 
     while(loop) {
@@ -204,7 +199,6 @@ int main(int argc, char** argv) {
                     break;
             }
 
-
             if (windowManager.isMouseButtonPressed(SDL_BUTTON_RIGHT)) {
                 mousePosition = windowManager.getMousePosition();
                 if (mousePosition.x < previousMousePosition.x) {
@@ -236,7 +230,10 @@ int main(int argc, char** argv) {
 
         previousMousePosition = mousePosition;
 
-        pacman.move(dir);
+        board->getPacman()->move(dir);
+        board->checkForDeath();
+        board->moveGhosts();
+        board->checkForDeath();
         
         /*********************************
          * HERE SHOULD COME THE RENDERING CODE

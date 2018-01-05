@@ -11,12 +11,13 @@
 const char ALL_DIRS[4] = {'z','q','s','d'};
 
 // Board properties
-const int NO_COLLISION_TILES[4] = {0, 1, 2, 3};
+const int NO_COLLISION_TILES[5] = {0, 1, 2, 3, 10};
+const int COLLISION_CREATURES[4] = {11, 12, 13, 14};
 
 
 
 // Timers
-const float SPEED_FACTOR = 3.5;
+const int SPEED_FACTOR = 3;
 
 const int SUPER_MAX   = 500 * SPEED_FACTOR;
 const int ONE_UP_MAX  = 13 * SPEED_FACTOR;

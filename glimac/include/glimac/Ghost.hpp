@@ -21,18 +21,28 @@ public:
 
     // Others methods
     void move(int, int);
-    void targetObject(bool[4]);
+    void targetObject(const bool[4]);
     void randomDirection();
     bool testForCollision();
+    bool testForCollision_Creatures();
     void changeCoords();
     void getOpposite();
     void die();
+
+    void blinkyBehaviour();
+    void pinkyBehaviour();
+    void inkyBehaviour();
+    void clydeBehaviour();
 
     // Getters
     int getCoord_x() const;
     int getCoord_y() const;
     int getCoord_x_init() const;
     int getCoord_y_init() const;
+    int getCoord_x_old() const;
+    int getCoord_y_old() const;
+    int getId() const;
+    int getPrevElem() const;
     int getWait() const;
     char getDir() const;
     char getDirOld() const;
@@ -47,6 +57,10 @@ public:
     void setCoord_y(int coord_y);
     void setCoord_x_init(int coord_x_old);
     void setCoord_y_init(int coord_y_old);
+    void setCoord_x_old(int coord_x_old);
+    void setCoord_y_old(int coord_y_old);
+    void setId(int id);
+    void setPrevElem(int prevElem);
     void setWait(int wait);
     void setDir(char dir);
     void setDirOld(char dirOld);
@@ -56,12 +70,18 @@ public:
     void setColor(glm::vec3 color);
     void setColorInit(glm::vec3 colorInit);
 
+
 private:
 
     int coord_x;
     int coord_y;
     int coord_x_init;
     int coord_y_init;
+    int coord_x_old;
+    int coord_y_old;
+    int id;
+    int prevElem;
+
     int wait;
     char dir;
     char dirOld;
