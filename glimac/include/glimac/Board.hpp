@@ -11,8 +11,8 @@ class Pellet;
 
 class Board {
 public:
-	// Constructors
-	Board();
+    // Constructors
+    Board();
 
     // Destructor
     ~Board();
@@ -22,6 +22,7 @@ public:
     void changeValue(int m, int n, int value);
     void launchGame();
     void initGame();
+    void nextLevel();
     void moveGhosts();
     void checkForDeath();
     void handleModes();
@@ -29,10 +30,10 @@ public:
     void importGame();
     void exportGame();
 
-	// Getters
-	int getLevelHeight();
-	int getLevelWidth();
-	std::vector<std::vector<int>> getLevel();
+    // Getters
+    int getLevelHeight();
+    int getLevelWidth();
+    std::vector<std::vector<int>> getLevel();
     int getGateCoord_x() const;
     int getGateCoord_y() const;
     bool isSuper() const;
@@ -41,18 +42,18 @@ public:
     Ghost *const *getGhosts() const;
 
     // Setters
-	void setLevelHeight(int new_m);
-	void setLevelWidth(int new_n);
-	void setLevel(std::vector<std::vector<int>> new_tab);
+    void setLevelHeight(int new_m);
+    void setLevelWidth(int new_n);
+    void setLevel(std::vector<std::vector<int>> new_tab);
     void setGateCoord_x(int gateCoord_x);
     void setGateCoord_y(int gateCoord_y);
     void setSuper(bool super);
 
 private:
-	// Attr
-	int levelHeight;
-	int levelWidth;
-	std::vector<std::vector<int>> level;
+    // Attr
+    int levelHeight;
+    int levelWidth;
+    std::vector<std::vector<int>> level;
 
 
     int pelletTimer = PELLET_MAX;
@@ -63,8 +64,8 @@ private:
     Ghost* ghosts[4];
     Pellet* pellets[4];
 
-	int gateCoord_x;
-	int gateCoord_y;
+    int gateCoord_x;
+    int gateCoord_y;
     bool super;
 };
 

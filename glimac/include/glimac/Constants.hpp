@@ -14,8 +14,6 @@ const char ALL_DIRS[4] = {'z','q','s','d'};
 const int NO_COLLISION_TILES[5] = {0, 1, 2, 3, 10};
 const int COLLISION_CREATURES[4] = {11, 12, 13, 14};
 
-
-
 // Timers
 const int SPEED_FACTOR = 3;
 
@@ -43,7 +41,14 @@ const glm::vec3 ORANGE_COLOR = glm::vec3(255,165,0);
 const glm::vec3 BLUE_COLOR = glm::vec3(0,0,139);
 const glm::vec3 BLACK_COLOR = glm::vec3(0,0,0);
 
-
+static void mySleep(int sleepMs) {
+#ifdef LINUX
+    usleep(sleepMs * 1000);   // usleep takes sleep time in us (1 millionth of a second)
+#endif
+#ifdef WINDOWS
+    Sleep(sleepMs);
+#endif
+}
 
 /*
  * 0 - Empty case

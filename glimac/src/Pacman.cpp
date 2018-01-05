@@ -127,6 +127,7 @@ void Pacman::increaseScore(int scoreAdd) {
 
 void Pacman::die(){
     lives--;
+    mySleep(1000);
     board->changeValue(coord_x, coord_y, 0);
     if (lives != 0) {
         for (int i = 0; i < 4; i++)

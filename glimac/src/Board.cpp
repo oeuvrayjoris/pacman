@@ -5,14 +5,14 @@
 
 /* CONSTRUCTOR */
 Board::Board() {
-	levelHeight = 25;
-	levelWidth = 25;
+    levelHeight = 25;
+    levelWidth = 25;
 
-	pacman = new Pacman(this);
-	for (int i = 0; i < 4; ++i) {
-		ghosts[i] = new Ghost(this);
-		pellets[i] = new Pellet(this);
-	}
+    pacman = new Pacman(this);
+    for (int i = 0; i < 4; ++i) {
+        ghosts[i] = new Ghost(this);
+        pellets[i] = new Pellet(this);
+    }
 }
 
 // Destructor
@@ -121,8 +121,6 @@ void Board::changeValue(int m, int n, int value) {
 void Board::launchGame() {
     pacman->setScore(0);
     pacman->setLives(3);
-    bool gameOver = false;
-    load();
 }
 
 // Initialize values at each game start/restart
@@ -151,6 +149,11 @@ void Board::initGame(){
     if (pacman->getLeftDots() <= 165) {
         ghosts[CLYDE]->setMode('e');
     }
+}
+
+void Board::nextLevel(){
+    // Faire un truc pour l'affichage
+    initGame();
 }
 
 void Board::moveGhosts() {
@@ -221,7 +224,7 @@ int Board::getLevelWidth(){
 }
 
 std::vector<std::vector<int>> Board::getLevel() {
-	return level;
+    return level;
 }
 
 int Board::getGateCoord_x() const {
@@ -246,15 +249,15 @@ Ghost *const *Board::getGhosts() const {
 
 /* SETTERS */
 void Board::setLevelHeight(int new_m){
-	levelHeight = new_m;
+    levelHeight = new_m;
 }
 
 void Board::setLevelWidth(int new_n){
-	levelWidth = new_n;
+    levelWidth = new_n;
 }
 
 void Board::setLevel(std::vector<std::vector<int>> new_tab) {
-	level = new_tab;
+    level = new_tab;
 }
 
 void Board::setGateCoord_x(int gateCoord_x) {
