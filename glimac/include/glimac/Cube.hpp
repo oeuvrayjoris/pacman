@@ -1,20 +1,21 @@
 #pragma once
 
 #include <vector>
+
 #include "common.hpp"
 
-class Cube {
+namespace glimac {
+
+	class Cube {
 	public:
-		// Constructor
 		Cube(float size);
 
-		// Methods
 		void build(float size);
-		const float* getDataPointer() const;
+		const ShapeVertex *getDataPointer() const;
 		GLsizei getVertexCount() const;
 
 	private:
-		// Attr
-		std::vector<float> m_Vertices;
-		GLsizei m_nVertexCount; // Nombre de sommets
-};
+		std::vector<ShapeVertex> m_Vertices;
+		GLsizei m_nVertexCount;
+	};
+}

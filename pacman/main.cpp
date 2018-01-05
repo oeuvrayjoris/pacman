@@ -41,6 +41,28 @@ struct EdgeProgram {
     }
 };
 
+struct NormalProgram {
+    Program m_Program;
+
+    GLint uMVPMatrix;
+    GLint uMVMatrix;
+    GLint uNormalMatrix;
+
+    NormalProgram(const FilePath& applicationPath) {
+        std::string VS = "shaders/3D.vs.glsl";
+        std::string FS = "shaders/normals.fs.glsl";
+#if __APPLE__
+        m_Program = loadProgram(VS, FS);
+#else
+        m_Program = loadProgram(applicationPath.dirPath() + VS,
+                                              applicationPath.dirPath() + FS);
+#endif
+        uMVPMatrix = glGetUniformLocation(m_Program.getGLId(), "uMVPMatrix");
+        uMVMatrix = glGetUniformLocation(m_Program.getGLId(), "uMVMatrix");
+        uNormalMatrix = glGetUniformLocation(m_Program.getGLId(), "uNormalMatrix");
+    }
+};
+
 int main(int argc, char** argv) {
     GLuint width = 854;//1280;
     GLuint height = 480; //720;
@@ -54,18 +76,10 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
     }
 
+    // Chargement des shaders
     FilePath applicationPath(argv[0]);
-
-    std::string VS = "shaders/3D.vs.glsl";
-    std::string FS = "shaders/normals.fs.glsl";
-
-#if __APPLE__
-    Program program = loadProgram(VS, FS);
-#else
-    Program program = loadProgram(applicationPath.dirPath() + VS,
-                                      applicationPath.dirPath() + FS);
-#endif
-    program.use();
+    EdgeProgram edgeProgram(applicationPath);
+    NormalProgram normalProgram(applicationPath);
 
     std::cout << "OpenGL Version : " << glGetString(GL_VERSION) << std::endl;
     std::cout << "GLEW Version : " << glewGetString(GLEW_VERSION) << std::endl;
@@ -73,13 +87,6 @@ int main(int argc, char** argv) {
     /*********************************
      * HERE SHOULD COME THE INITIALIZATION CODE
      *********************************/
-
-    /**
-    * Uniform Variable
-    */
-    GLint uMVPMatrix = glGetUniformLocation(program.getGLId(), "uMVPMatrix");
-    GLint uMVMatrix = glGetUniformLocation(program.getGLId(), "uMVMatrix");
-    GLint uNormalMatrix = glGetUniformLocation(program.getGLId(), "uNormalMatrix");
 
     // Active test de profondeur du GPU
     glEnable(GL_DEPTH_TEST);
@@ -89,12 +96,27 @@ int main(int argc, char** argv) {
         std::cout << "Error loading pacman.obj" << std::endl;
     */
 
-    /**
-    * Caméra
-    */
+    // Cameras
     //FreeflyCamera camera = FreeflyCamera();
     TrackballCamera camera = TrackballCamera();
 
+
+    /**
+     * Textures
+     */
+
+    std::unique_ptr<Image> pImageEdge = loadImage("../../assets/textures/EdgeMap2.png");
+    if(pImageEdge == NULL)
+        std::cout << "Edge == NULL" << std::endl;
+
+    GLuint edgeTexture;
+    glGenTextures(1, &edgeTexture);
+
+    glBindTexture(GL_TEXTURE_2D, edgeTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pImageEdge->getWidth(), pImageEdge->getHeight(), 0, GL_RGBA, GL_FLOAT, pImageEdge->getPixels());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     /**
     * Calcul des matrices de Transformation
@@ -110,7 +132,7 @@ int main(int argc, char** argv) {
     GLuint vbo;
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, cube.getVertexCount()*sizeof(float), cube.getDataPointer(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, cube.getVertexCount()*sizeof(ShapeVertex), cube.getDataPointer(), GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     GLuint vbo2;
@@ -144,9 +166,9 @@ int main(int argc, char** argv) {
     glEnableVertexAttribArray(VERTEX_ATTR_TEXCOORDS);
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glVertexAttribPointer(VERTEX_ATTR_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(float), (const GLvoid*) (0*sizeof(GLfloat)));
-    glVertexAttribPointer(VERTEX_ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, sizeof(float), (const GLvoid*) (0*sizeof(GLfloat)));
-    glVertexAttribPointer(VERTEX_ATTR_TEXCOORDS, 2, GL_FLOAT, GL_FALSE, sizeof(float), (const GLvoid*) (0*sizeof(GLfloat)));
+    glVertexAttribPointer(VERTEX_ATTR_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(ShapeVertex), (const GLvoid*) offsetof(ShapeVertex, position));
+    glVertexAttribPointer(VERTEX_ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, sizeof(ShapeVertex), (const GLvoid*) offsetof(ShapeVertex, normal));
+    glVertexAttribPointer(VERTEX_ATTR_TEXCOORDS, 2, GL_FLOAT, GL_FALSE, sizeof(ShapeVertex), (const GLvoid*) offsetof(ShapeVertex, texCoords));
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
@@ -268,8 +290,6 @@ int main(int argc, char** argv) {
         /* On récupère la ViewMatrix de la caméra à chaque tour de boucle */
         glm::mat4 globalMVMatrix = camera.getViewMatrix();
 
-        //NormalMatrix = glm::transpose(glm::inverse(globalMVMatrix));
-
         for (int i = 0; i < board->getLevelHeight(); i++) {
             MVMatrix = glm::translate(globalMVMatrix, glm::vec3(-3.9, 6.5, 0));
             MVMatrix = glm::scale(MVMatrix, glm::vec3(0.15, 0.15, 0.15));
@@ -287,9 +307,10 @@ int main(int argc, char** argv) {
                         MVMatrix = glm::rotate(MVMatrix, windowManager.getTime(), glm::vec3(0, 1, 0));
                         MVMatrix = glm::scale(MVMatrix, glm::vec3(0.25, 0.25, 0.25));
                         glBindVertexArray(vao2);
-                        glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
-                        glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-                        glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+                        normalProgram.m_Program.use();
+                        glUniformMatrix4fv(normalProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+                        glUniformMatrix4fv(normalProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+                        glUniformMatrix4fv(normalProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
                         glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
                         glBindVertexArray(0);
                         MVMatrix = glm::scale(MVMatrix, glm::vec3(4.0, 4.0, 4.0));
@@ -300,9 +321,10 @@ int main(int argc, char** argv) {
                         MVMatrix = glm::rotate(MVMatrix, windowManager.getTime(), glm::vec3(0, 1, 0));
                         MVMatrix = glm::scale(MVMatrix, glm::vec3(0.5, 0.5, 0.5));
                         glBindVertexArray(vao2);
-                        glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
-                        glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-                        glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+                        normalProgram.m_Program.use();
+                        glUniformMatrix4fv(normalProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+                        glUniformMatrix4fv(normalProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+                        glUniformMatrix4fv(normalProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
                         glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
                         glBindVertexArray(0);
                         MVMatrix = glm::scale(MVMatrix, glm::vec3(2.0, 2.0, 2.0));
@@ -313,20 +335,39 @@ int main(int argc, char** argv) {
                         break;
                     case 4:
                         // Edge
+                        /*glBindVertexArray(vao);
+
+                        edgeProgram.m_Program.use();
+                        glUniform1i(edgeProgram.uTexture, 0);
+
+                        glUniformMatrix4fv(normalProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+                        glUniformMatrix4fv(normalProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+                        glUniformMatrix4fv(normalProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
+
+                        glActiveTexture(GL_TEXTURE0);
+                        glBindTexture(GL_TEXTURE_2D, edgeTexture);
+
+                        glDrawArrays(GL_TRIANGLES, 0, cube.getVertexCount());
+
+                        glActiveTexture(GL_TEXTURE0);
+                        glBindTexture(GL_TEXTURE_2D, 0);
+
+                        glBindVertexArray(0);*/
                         glBindVertexArray(vao);
-                        glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
-                        glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-                        glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+                        normalProgram.m_Program.use();
+                        glUniformMatrix4fv(normalProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+                        glUniformMatrix4fv(normalProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+                        glUniformMatrix4fv(normalProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
                         glDrawArrays(GL_TRIANGLES, 0, cube.getVertexCount());
                         glBindVertexArray(0);
                         break;
                     case 10:
                         // Pacman
-
                         glBindVertexArray(vao2);
-                        glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
-                        glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-                        glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+                        normalProgram.m_Program.use();
+                        glUniformMatrix4fv(normalProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+                        glUniformMatrix4fv(normalProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+                        glUniformMatrix4fv(normalProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
                         glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
                         glBindVertexArray(0);
 
@@ -363,42 +404,43 @@ int main(int argc, char** argv) {
                                 break;
                         }
 
-                        MVMatrix = glm::scale(MVMatrix, glm::vec3(4, 4, 4));*/
+                        MVMatrix = glm::scale(MVMatrix, glm::vec3(4, 4, 4));
+                        */
                         break;
                     case 11:
                         // Ghost 1
                         glBindVertexArray(vao2);
-                        glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
-                        glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-                        glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
-                        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
+                        normalProgram.m_Program.use();
+                        glUniformMatrix4fv(normalProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+                        glUniformMatrix4fv(normalProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+                        glUniformMatrix4fv(normalProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));                        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
                         glBindVertexArray(0);
                         break;
                     case 12:
                         // Ghost 2
                         glBindVertexArray(vao2);
-                        glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
-                        glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-                        glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
-                        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
+                        normalProgram.m_Program.use();
+                        glUniformMatrix4fv(normalProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+                        glUniformMatrix4fv(normalProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+                        glUniformMatrix4fv(normalProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));                        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
                         glBindVertexArray(0);
                         break;
                     case 13:
                         // Ghost 3
                         glBindVertexArray(vao2);
-                        glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
-                        glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-                        glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
-                        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
+                        normalProgram.m_Program.use();
+                        glUniformMatrix4fv(normalProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+                        glUniformMatrix4fv(normalProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+                        glUniformMatrix4fv(normalProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));                        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
                         glBindVertexArray(0);
                         break;
                     case 14:
                         // Ghost 4
                         glBindVertexArray(vao2);
-                        glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
-                        glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-                        glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
-                        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
+                        normalProgram.m_Program.use();
+                        glUniformMatrix4fv(normalProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+                        glUniformMatrix4fv(normalProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+                        glUniformMatrix4fv(normalProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));                        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
                         glBindVertexArray(0);
                         break;
                     default:
@@ -410,6 +452,8 @@ int main(int argc, char** argv) {
         // Update the display
         windowManager.swapBuffers();
     }
+
+    glDeleteTextures(1, &edgeTexture);
 
     glDeleteBuffers(1, &vbo);
     glDeleteVertexArrays(1, &vao);
