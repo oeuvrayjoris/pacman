@@ -17,7 +17,7 @@
 
 using namespace glimac;
 
-struct EdgeProgram {
+struct TexProgram {
     Program m_Program;
 
     GLint uMVPMatrix;
@@ -25,7 +25,7 @@ struct EdgeProgram {
     GLint uNormalMatrix;
     GLint uTexture;
 
-    EdgeProgram(const FilePath& applicationPath) {
+    TexProgram(const FilePath& applicationPath) {
         std::string VS = "shaders/3D.vs.glsl";
         std::string FS = "shaders/tex3D.fs.glsl";
         #if __APPLE__
@@ -78,7 +78,7 @@ int main(int argc, char** argv) {
 
     // Chargement des shaders
     FilePath applicationPath(argv[0]);
-    EdgeProgram edgeProgram(applicationPath);
+    TexProgram texProgram(applicationPath);
     NormalProgram normalProgram(applicationPath);
 
     std::cout << "OpenGL Version : " << glGetString(GL_VERSION) << std::endl;
@@ -105,15 +105,28 @@ int main(int argc, char** argv) {
      * Textures
      */
 
-    std::unique_ptr<Image> pImageEdge = loadImage("../../assets/textures/EdgeMap2.png");
+    std::unique_ptr<Image> pImageEdge = loadImage("../../assets/textures/EdgeMap.jpg");
     if(pImageEdge == NULL)
-        std::cout << "Edge == NULL" << std::endl;
+        std::cout << "EdgeMap == NULL" << std::endl;
+
+    std::unique_ptr<Image> pImageSpace = loadImage("../../assets/textures/SpaceMap.jpg");
+    if(pImageSpace == NULL)
+        std::cout << "SpaceMap == NULL" << std::endl;
 
     GLuint edgeTexture;
     glGenTextures(1, &edgeTexture);
 
+    GLuint spaceTexture;
+    glGenTextures(1, &spaceTexture);
+
     glBindTexture(GL_TEXTURE_2D, edgeTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pImageEdge->getWidth(), pImageEdge->getHeight(), 0, GL_RGBA, GL_FLOAT, pImageEdge->getPixels());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glBindTexture(GL_TEXTURE_2D, spaceTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pImageSpace->getWidth(), pImageSpace->getHeight(), 0, GL_RGBA, GL_FLOAT, pImageSpace->getPixels());
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -140,18 +153,6 @@ int main(int argc, char** argv) {
     glBindBuffer(GL_ARRAY_BUFFER, vbo2);
     glBufferData(GL_ARRAY_BUFFER, sphere.getVertexCount()*sizeof(ShapeVertex), sphere.getDataPointer(), GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    /*GLuint vbo_pacman;
-    glGenBuffers(1, &vbo_pacman);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo_pacman);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, pacman_obj.getVertexCount()*sizeof(Geometry::Vertex), pacman_obj.getVertexBuffer(), GL_STATIC_DRAW);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-    GLuint ibo_pacman;
-    glGenBuffers(1, &ibo_pacman);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo_pacman);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, pacman_obj.getIndexCount()*sizeof(Geometry::Vertex), pacman_obj.getIndexBuffer(), GL_STATIC_DRAW);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);*/
 
     GLuint vao;
     glGenVertexArrays(1, &vao);
@@ -186,23 +187,6 @@ int main(int argc, char** argv) {
     glVertexAttribPointer(VERTEX_ATTR_TEXCOORDS, 2, GL_FLOAT, GL_FALSE, sizeof(ShapeVertex), (const GLvoid*) offsetof(ShapeVertex, texCoords));
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
-
-    /*GLuint vao_pacman;
-    glGenVertexArrays(1, &vao_pacman);
-    glBindVertexArray(vao_pacman);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo_pacman);
-
-    glEnableVertexAttribArray(VERTEX_ATTR_POSITION);
-    glEnableVertexAttribArray(VERTEX_ATTR_NORMAL);
-    glEnableVertexAttribArray(VERTEX_ATTR_TEXCOORDS);
-
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_pacman);
-    glVertexAttribPointer(VERTEX_ATTR_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(Geometry::Vertex), (const GLvoid*) offsetof(Geometry::Vertex, m_Position));
-    glVertexAttribPointer(VERTEX_ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, sizeof(Geometry::Vertex), (const GLvoid*) offsetof(Geometry::Vertex, m_Normal));
-    glVertexAttribPointer(VERTEX_ATTR_TEXCOORDS, 2, GL_FLOAT, GL_FALSE, sizeof(Geometry::Vertex), (const GLvoid*) offsetof(Geometry::Vertex, m_TexCoords));
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);*/
 
     // Application loop
     bool loop = true;
@@ -290,6 +274,31 @@ int main(int argc, char** argv) {
         /* On récupère la ViewMatrix de la caméra à chaque tour de boucle */
         glm::mat4 globalMVMatrix = camera.getViewMatrix();
 
+        /* Sol */
+        MVMatrix = glm::translate(globalMVMatrix, glm::vec3(0, 0, 0));
+        MVMatrix = glm::scale(MVMatrix, glm::vec3(30, 0.01, 30));
+
+        glBindVertexArray(vao);
+
+        texProgram.m_Program.use();
+        glUniform1i(texProgram.uTexture, 0);
+
+        glUniformMatrix4fv(texProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+        glUniformMatrix4fv(texProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+        glUniformMatrix4fv(texProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, spaceTexture);
+
+        glDrawArrays(GL_TRIANGLES, 0, cube.getVertexCount());
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+        glBindVertexArray(0);
+
+        /* Plateau de jeu */
+
         for (int i = 0; i < board->getLevelHeight(); i++) {
             MVMatrix = glm::translate(globalMVMatrix, glm::vec3(-3.9, 6.5, 0));
             MVMatrix = glm::scale(MVMatrix, glm::vec3(0.15, 0.15, 0.15));
@@ -335,14 +344,22 @@ int main(int argc, char** argv) {
                         break;
                     case 4:
                         // Edge
-                        /*glBindVertexArray(vao);
-
-                        edgeProgram.m_Program.use();
-                        glUniform1i(edgeProgram.uTexture, 0);
-
+                        glBindVertexArray(vao);
+                        normalProgram.m_Program.use();
                         glUniformMatrix4fv(normalProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
                         glUniformMatrix4fv(normalProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
                         glUniformMatrix4fv(normalProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
+                        glDrawArrays(GL_TRIANGLES, 0, cube.getVertexCount());
+                        glBindVertexArray(0);
+                        /*
+                        glBindVertexArray(vao);
+
+                        texProgram.m_Program.use();
+                        glUniform1i(texProgram.uTexture, 0);
+
+                        glUniformMatrix4fv(texProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+                        glUniformMatrix4fv(texProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+                        glUniformMatrix4fv(texProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
 
                         glActiveTexture(GL_TEXTURE0);
                         glBindTexture(GL_TEXTURE_2D, edgeTexture);
@@ -353,13 +370,6 @@ int main(int argc, char** argv) {
                         glBindTexture(GL_TEXTURE_2D, 0);
 
                         glBindVertexArray(0);*/
-                        glBindVertexArray(vao);
-                        normalProgram.m_Program.use();
-                        glUniformMatrix4fv(normalProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
-                        glUniformMatrix4fv(normalProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-                        glUniformMatrix4fv(normalProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
-                        glDrawArrays(GL_TRIANGLES, 0, cube.getVertexCount());
-                        glBindVertexArray(0);
                         break;
                     case 10:
                         // Pacman
@@ -370,42 +380,6 @@ int main(int argc, char** argv) {
                         glUniformMatrix4fv(normalProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
                         glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
                         glBindVertexArray(0);
-
-                        /*
-                         MVMatrix = glm::scale(MVMatrix, glm::vec3(0.25, 0.25, 0.25));
-                         switch(pacman.getDir()) {
-                            case 'z':
-                                MVMatrix = glm::rotate(MVMatrix, 180.f, glm::vec3(0, 1, 0));
-                                break;
-                            case 'q':
-                                MVMatrix = glm::rotate(MVMatrix, -90.f, glm::vec3(0, 1, 0));
-                                break;
-                            case 'd':
-                                MVMatrix = glm::rotate(MVMatrix, 90.f, glm::vec3(0, 1, 0));
-                                break;
-                        }
-
-                        glBindVertexArray(vao_pacman);
-                        glUniformMatrix4fv(uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
-                        glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-                        glUniformMatrix4fv(uNormalMatrix, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
-                        glDrawElements(GL_TRIANGLES, pacman_obj.getIndexCount(), GL_UNSIGNED_INT, 0);
-                        glBindVertexArray(0);
-
-                        switch(pacman.getDir()) {
-                            case 'z':
-                                MVMatrix = glm::rotate(MVMatrix, -180.f, glm::vec3(0, 1, 0));
-                                break;
-                            case 'q':
-                                MVMatrix = glm::rotate(MVMatrix, 90.f, glm::vec3(0, 1, 0));
-                                break;
-                            case 'd':
-                                MVMatrix = glm::rotate(MVMatrix, -90.f, glm::vec3(0, 1, 0));
-                                break;
-                        }
-
-                        MVMatrix = glm::scale(MVMatrix, glm::vec3(4, 4, 4));
-                        */
                         break;
                     case 11:
                         // Ghost 1
@@ -454,16 +428,13 @@ int main(int argc, char** argv) {
     }
 
     glDeleteTextures(1, &edgeTexture);
+    glDeleteTextures(1, &spaceTexture);
 
     glDeleteBuffers(1, &vbo);
     glDeleteVertexArrays(1, &vao);
 
     glDeleteBuffers(1, &vbo2);
     glDeleteVertexArrays(1, &vao2);
-    /*
-    glDeleteBuffers(1, &vbo_pacman);
-    glDeleteVertexArrays(1, &vao_pacman);
-    */
 
     return EXIT_SUCCESS;
 }
