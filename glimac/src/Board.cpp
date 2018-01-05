@@ -125,8 +125,8 @@ void Board::launchGame() {
     load();
 }
 
+// Initialize values at each game start/restart
 void Board::initGame(){
-
     pacman->setCoord_x(pacman->getCoord_x_init());
     pacman->setCoord_y(pacman->getCoord_y_init());
     pacman->setDir('q');
@@ -153,9 +153,10 @@ void Board::initGame(){
     }
 }
 
+
 void Board::moveGhosts() {
     // check for ghost mode changes
-    if (pacman->getSuper() == SUPER_MAX) {
+    if (pacman->getSuper() == SUPER_MAX) { // if Pacman just turned in super mode
         pacman->setKillCount(0);
         for (int i = 0; i < 4; ++i) {
             if (ghosts[i]->getMode() != 'd') { // if the ghost is not dead yet

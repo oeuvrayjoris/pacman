@@ -163,16 +163,16 @@ void Ghost::targetObject(bool const favorableDirs[4]) {
 
 void Ghost::randomDirection() {
     getOpposite();
-    bool goOpposite = testForCollision_Creatures();
+    bool goOpposite = testForCollision_Creatures(); // if 2 Ghosts are colliding
     if (goOpposite) {
         dir = dirOpp;
     }
     else {
         do {
             do {
-                dir = ALL_DIRS[rand() % 4];
+                dir = ALL_DIRS[rand() % 4]; // we pick a random position different than the opposite
             } while (dir == dirOpp);
-        } while (testForCollision() == true && testForCollision_Creatures() == false);
+        } while (testForCollision() == true /*&& testForCollision_Creatures() == false*/);
         changeCoords();
     }
 }
@@ -256,28 +256,28 @@ bool Ghost::testForCollision_Creatures() {
 void Ghost::changeCoords() {
     board->changeValue(coord_x, coord_y, prevElem);
     switch(dir) {
-        case 'q':
+        case 'q': // moving left
             if (coord_y == 0) // If we go through the tunnel to the left
                 coord_y = board->getLevelWidth() - 1;
             else
                 --coord_y;
             break;
-        case 'd':
+        case 'd': // moving right
             if (coord_y == board->getLevelWidth() - 1) // If we go through the tunnel to the right
                 coord_y = 0;
             else
                 ++coord_y;
             break;
-        case 'z':
+        case 'z': // moving up
             --coord_x;
             break;
-        case 's':
+        case 's': // moving down
             ++coord_x;
             break;
     }
 
-    if (board->getLevel()[coord_x][coord_y] >= 0 && board->getLevel()[coord_x][coord_y] < 4)
-        prevElem = board->getLevel()[coord_x][coord_y];
+    if (board->getLevel()[coord_x][coord_y] >= 0 && board->getLevel()[coord_x][coord_y] < 4) // Deal with collision with ghost/pacman so we dont duplicate symbols..
+        prevElem = board->getLevel()[coord_x][coord_y]; // prevElem can only be dots, pellets, fruits or empty cases
     board->changeValue(coord_x, coord_y, id);
 }
 
