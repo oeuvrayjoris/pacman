@@ -338,7 +338,7 @@ int main(int argc, char** argv) {
         glUniformMatrix4fv(texProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, spaceTexture);
+        glBindTexture(GL_TEXTURE_2D, pinkyTexture);
 
         glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
 
