@@ -122,11 +122,11 @@ int main(int argc, char** argv) {
         std::cout << "ClydeMap == NULL" << std::endl;
 
     std::unique_ptr<Image> pImageInky = loadImage("../../assets/textures/InkyMap.jpg");
-    if(pImageClyde == NULL)
+    if(pImageInky == NULL)
         std::cout << "InkyMap == NULL" << std::endl;
 
     std::unique_ptr<Image> pImagePinky = loadImage("../../assets/textures/PinkyMap.jpg");
-    if(pImageClyde == NULL)
+    if(pImagePinky == NULL)
         std::cout << "PinkyMap == NULL" << std::endl;
 
     GLuint spaceTexture;
@@ -249,6 +249,8 @@ int main(int argc, char** argv) {
 
     Board *board = new Board;
     board->launchGame();
+    board->load();
+
     char dir = 'q';
 
     while(loop) {
