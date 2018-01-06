@@ -124,6 +124,10 @@ int main(int argc, char** argv) {
     if(pImagePinky == NULL)
         std::cout << "PinkyMap == NULL" << std::endl;
 
+    std::unique_ptr<Image> pImageCoeur = loadImage("../../assets/textures/CoeurMap.png");
+    if(pImageCoeur == NULL)
+        std::cout << "CoeurMap == NULL" << std::endl;
+
     GLuint spaceTexture;
     glGenTextures(1, &spaceTexture);
 
@@ -141,6 +145,9 @@ int main(int argc, char** argv) {
 
     GLuint pinkyTexture;
     glGenTextures(1, &pinkyTexture);
+
+    GLuint coeurTexture;
+    glGenTextures(1, &coeurTexture);
 
     glBindTexture(GL_TEXTURE_2D, spaceTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pImageSpace->getWidth(), pImageSpace->getHeight(), 0, GL_RGBA, GL_FLOAT, pImageSpace->getPixels());
@@ -174,6 +181,12 @@ int main(int argc, char** argv) {
 
     glBindTexture(GL_TEXTURE_2D, pinkyTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pImagePinky->getWidth(), pImagePinky->getHeight(), 0, GL_RGBA, GL_FLOAT, pImagePinky->getPixels());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glBindTexture(GL_TEXTURE_2D, coeurTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pImageCoeur->getWidth(), pImageCoeur->getHeight(), 0, GL_RGBA, GL_FLOAT, pImageCoeur->getPixels());
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -338,12 +351,40 @@ int main(int argc, char** argv) {
         glUniformMatrix4fv(texProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, pinkyTexture);
+        glBindTexture(GL_TEXTURE_2D, spaceTexture);
 
         glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, 0);
+
+        glBindVertexArray(0);
+
+        /* Nombre de vies */
+        MVMatrix = glm::translate(globalMVMatrix, glm::vec3(0, 7, -1));
+        MVMatrix = glm::scale(MVMatrix, glm::vec3(0.25, 0.25, 0.25));
+        MVMatrix = glm::rotate(MVMatrix, 90.f, glm::vec3(1, 0, 0));
+
+        glBindVertexArray(vao);
+
+        texProgram.m_Program.use();
+        glUniform1i(texProgram.uTexture, 0);
+
+        for (int i=0; i<board->getPacman()->getLives(); i++) {
+            glUniformMatrix4fv(texProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+            glUniformMatrix4fv(texProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+            glUniformMatrix4fv(texProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
+
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, coeurTexture);
+
+            glDrawArrays(GL_TRIANGLES, 0, cube.getVertexCount());
+
+            MVMatrix = glm::translate(MVMatrix, glm::vec3(3, 0, 0));
+
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, 0);
+        }
 
         glBindVertexArray(0);
 
@@ -547,6 +588,7 @@ int main(int argc, char** argv) {
     glDeleteTextures(1, &clydeTexture);
     glDeleteTextures(1, &inkyTexture);
     glDeleteTextures(1, &pinkyTexture);
+    glDeleteTextures(1, &coeurTexture);
 
     glDeleteBuffers(1, &vbo);
     glDeleteVertexArrays(1, &vao);
