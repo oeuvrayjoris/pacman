@@ -91,11 +91,6 @@ int main(int argc, char** argv) {
     // Active test de profondeur du GPU
     glEnable(GL_DEPTH_TEST);
 
-    /*Geometry pacman_obj;
-    if(!pacman_obj.loadOBJ("../../assets/models/pacman.obj", "../../assets/models/pacman.mtl", false))
-        std::cout << "Error loading pacman.obj" << std::endl;
-    */
-
     // Cameras
     //FreeflyCamera camera = FreeflyCamera();
     TrackballCamera camera = TrackballCamera();
@@ -454,8 +449,6 @@ int main(int argc, char** argv) {
                         break;
                     case 11:
                         // Ghost Blinky
-                        MVMatrix = glm::rotate(MVMatrix, windowManager.getTime(), glm::vec3(0, 1, 0));
-
                         glBindVertexArray(vao2);
 
                         texProgram.m_Program.use();
@@ -474,8 +467,6 @@ int main(int argc, char** argv) {
                         glBindTexture(GL_TEXTURE_2D, 0);
 
                         glBindVertexArray(0);
-
-                        MVMatrix = glm::rotate(MVMatrix, -windowManager.getTime(), glm::vec3(0, 1, 0));
                         break;
                     case 12:
                         // Ghost Pinky
