@@ -30,6 +30,9 @@
 *.out
 *.app
 
+# Photoshop
+*.psd
+
 # Cmake
 /CMake
 /cmake-build-debug
