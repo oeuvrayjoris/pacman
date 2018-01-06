@@ -105,10 +105,6 @@ int main(int argc, char** argv) {
      * Textures
      */
 
-    std::unique_ptr<Image> pImageEdge = loadImage("../../assets/textures/EdgeMap.jpg");
-    if(pImageEdge == NULL)
-        std::cout << "EdgeMap == NULL" << std::endl;
-
     std::unique_ptr<Image> pImageSpace = loadImage("../../assets/textures/SpaceMap.jpg");
     if(pImageSpace == NULL)
         std::cout << "SpaceMap == NULL" << std::endl;
@@ -117,8 +113,21 @@ int main(int argc, char** argv) {
     if(pImagePacman == NULL)
         std::cout << "PacmanMap == NULL" << std::endl;
 
-    GLuint edgeTexture;
-    glGenTextures(1, &edgeTexture);
+    std::unique_ptr<Image> pImageBlinky = loadImage("../../assets/textures/BlinkyMap.jpg");
+    if(pImageBlinky == NULL)
+        std::cout << "BlinkyMap == NULL" << std::endl;
+
+    std::unique_ptr<Image> pImageClyde = loadImage("../../assets/textures/ClydeMap.jpg");
+    if(pImageClyde == NULL)
+        std::cout << "ClydeMap == NULL" << std::endl;
+
+    std::unique_ptr<Image> pImageInky = loadImage("../../assets/textures/InkyMap.jpg");
+    if(pImageClyde == NULL)
+        std::cout << "InkyMap == NULL" << std::endl;
+
+    std::unique_ptr<Image> pImagePinky = loadImage("../../assets/textures/PinkyMap.jpg");
+    if(pImageClyde == NULL)
+        std::cout << "PinkyMap == NULL" << std::endl;
 
     GLuint spaceTexture;
     glGenTextures(1, &spaceTexture);
@@ -126,11 +135,17 @@ int main(int argc, char** argv) {
     GLuint pacmanTexture;
     glGenTextures(1, &pacmanTexture);
 
-    glBindTexture(GL_TEXTURE_2D, edgeTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pImageEdge->getWidth(), pImageEdge->getHeight(), 0, GL_RGBA, GL_FLOAT, pImageEdge->getPixels());
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glBindTexture(GL_TEXTURE_2D, 0);
+    GLuint blinkyTexture;
+    glGenTextures(1, &blinkyTexture);
+
+    GLuint clydeTexture;
+    glGenTextures(1, &clydeTexture);
+
+    GLuint inkyTexture;
+    glGenTextures(1, &inkyTexture);
+
+    GLuint pinkyTexture;
+    glGenTextures(1, &pinkyTexture);
 
     glBindTexture(GL_TEXTURE_2D, spaceTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pImageSpace->getWidth(), pImageSpace->getHeight(), 0, GL_RGBA, GL_FLOAT, pImageSpace->getPixels());
@@ -140,6 +155,30 @@ int main(int argc, char** argv) {
 
     glBindTexture(GL_TEXTURE_2D, pacmanTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pImagePacman->getWidth(), pImagePacman->getHeight(), 0, GL_RGBA, GL_FLOAT, pImagePacman->getPixels());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glBindTexture(GL_TEXTURE_2D, blinkyTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pImageBlinky->getWidth(), pImageBlinky->getHeight(), 0, GL_RGBA, GL_FLOAT, pImageBlinky->getPixels());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glBindTexture(GL_TEXTURE_2D, clydeTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pImageClyde->getWidth(), pImageClyde->getHeight(), 0, GL_RGBA, GL_FLOAT, pImageClyde->getPixels());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glBindTexture(GL_TEXTURE_2D, inkyTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pImageInky->getWidth(), pImageInky->getHeight(), 0, GL_RGBA, GL_FLOAT, pImageInky->getPixels());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glBindTexture(GL_TEXTURE_2D, pinkyTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pImagePinky->getWidth(), pImagePinky->getHeight(), 0, GL_RGBA, GL_FLOAT, pImagePinky->getPixels());
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -372,7 +411,7 @@ int main(int argc, char** argv) {
 
                         switch(board->getPacman()->getDir()) {
                             case 's':
-                                MVMatrix = glm::rotate(MVMatrix, 185.f, glm::vec3(0, 1, 0));
+                                MVMatrix = glm::rotate(MVMatrix, 180.f, glm::vec3(0, 1, 0));
                                 break;
                             case 'q':
                                 MVMatrix = glm::rotate(MVMatrix, 90.f, glm::vec3(0, 1, 0));
@@ -399,7 +438,7 @@ int main(int argc, char** argv) {
 
                         switch(board->getPacman()->getDir()) {
                             case 's':
-                                MVMatrix = glm::rotate(MVMatrix, -185.f, glm::vec3(0, 1, 0));
+                                MVMatrix = glm::rotate(MVMatrix, -180.f, glm::vec3(0, 1, 0));
                                 break;
                             case 'q':
                                 MVMatrix = glm::rotate(MVMatrix, -90.f, glm::vec3(0, 1, 0));
@@ -412,39 +451,91 @@ int main(int argc, char** argv) {
                         glBindVertexArray(0);
                         break;
                     case 11:
-                        // Ghost 1
+                        // Ghost Blinky
+                        MVMatrix = glm::rotate(MVMatrix, windowManager.getTime(), glm::vec3(0, 1, 0));
+
                         glBindVertexArray(vao2);
-                        normalProgram.m_Program.use();
-                        glUniformMatrix4fv(normalProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
-                        glUniformMatrix4fv(normalProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-                        glUniformMatrix4fv(normalProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));                        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
+
+                        texProgram.m_Program.use();
+                        glUniform1i(texProgram.uTexture, 0);
+
+                        glUniformMatrix4fv(texProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+                        glUniformMatrix4fv(texProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+                        glUniformMatrix4fv(texProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
+
+                        glActiveTexture(GL_TEXTURE0);
+                        glBindTexture(GL_TEXTURE_2D, blinkyTexture);
+
+                        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
+
+                        glActiveTexture(GL_TEXTURE0);
+                        glBindTexture(GL_TEXTURE_2D, 0);
+
                         glBindVertexArray(0);
+
+                        MVMatrix = glm::rotate(MVMatrix, -windowManager.getTime(), glm::vec3(0, 1, 0));
                         break;
                     case 12:
-                        // Ghost 2
+                        // Ghost Pinky
                         glBindVertexArray(vao2);
-                        normalProgram.m_Program.use();
-                        glUniformMatrix4fv(normalProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
-                        glUniformMatrix4fv(normalProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-                        glUniformMatrix4fv(normalProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));                        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
+
+                        texProgram.m_Program.use();
+                        glUniform1i(texProgram.uTexture, 0);
+
+                        glUniformMatrix4fv(texProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+                        glUniformMatrix4fv(texProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+                        glUniformMatrix4fv(texProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
+
+                        glActiveTexture(GL_TEXTURE0);
+                        glBindTexture(GL_TEXTURE_2D, pinkyTexture);
+
+                        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
+
+                        glActiveTexture(GL_TEXTURE0);
+                        glBindTexture(GL_TEXTURE_2D, 0);
+
                         glBindVertexArray(0);
                         break;
                     case 13:
-                        // Ghost 3
+                        // Ghost Inky
                         glBindVertexArray(vao2);
-                        normalProgram.m_Program.use();
-                        glUniformMatrix4fv(normalProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
-                        glUniformMatrix4fv(normalProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-                        glUniformMatrix4fv(normalProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));                        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
+
+                        texProgram.m_Program.use();
+                        glUniform1i(texProgram.uTexture, 0);
+
+                        glUniformMatrix4fv(texProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+                        glUniformMatrix4fv(texProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+                        glUniformMatrix4fv(texProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
+
+                        glActiveTexture(GL_TEXTURE0);
+                        glBindTexture(GL_TEXTURE_2D, inkyTexture);
+
+                        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
+
+                        glActiveTexture(GL_TEXTURE0);
+                        glBindTexture(GL_TEXTURE_2D, 0);
+
                         glBindVertexArray(0);
                         break;
                     case 14:
-                        // Ghost 4
+                        // Ghost Clyde
                         glBindVertexArray(vao2);
-                        normalProgram.m_Program.use();
-                        glUniformMatrix4fv(normalProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
-                        glUniformMatrix4fv(normalProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-                        glUniformMatrix4fv(normalProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));                        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
+
+                        texProgram.m_Program.use();
+                        glUniform1i(texProgram.uTexture, 0);
+
+                        glUniformMatrix4fv(texProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+                        glUniformMatrix4fv(texProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+                        glUniformMatrix4fv(texProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
+
+                        glActiveTexture(GL_TEXTURE0);
+                        glBindTexture(GL_TEXTURE_2D, clydeTexture);
+
+                        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
+
+                        glActiveTexture(GL_TEXTURE0);
+                        glBindTexture(GL_TEXTURE_2D, 0);
+
                         glBindVertexArray(0);
                         break;
                     default:
@@ -457,9 +548,12 @@ int main(int argc, char** argv) {
         windowManager.swapBuffers();
     }
 
-    glDeleteTextures(1, &edgeTexture);
     glDeleteTextures(1, &spaceTexture);
     glDeleteTextures(1, &pacmanTexture);
+    glDeleteTextures(1, &blinkyTexture);
+    glDeleteTextures(1, &clydeTexture);
+    glDeleteTextures(1, &inkyTexture);
+    glDeleteTextures(1, &pinkyTexture);
 
     glDeleteBuffers(1, &vbo);
     glDeleteVertexArrays(1, &vao);
