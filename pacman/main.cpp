@@ -12,6 +12,7 @@
 #include <glimac/Board.hpp>
 #include <glimac/TrackballCamera.hpp>
 #include <glimac/Camera3.hpp>
+#include <glimac/Camera1.hpp>
 #include <glimac/FreeflyCamera.hpp>
 #include <glimac/Pacman.hpp>
 #include <glimac/Geometry.hpp>
@@ -96,6 +97,8 @@ int main(int argc, char** argv) {
     //FreeflyCamera camera = FreeflyCamera();
     TrackballCamera camera = TrackballCamera();
     Camera3 camera3 = Camera3();
+    Camera1 camera1 = Camera1();
+    int camera_choice = 1;
 
     /**
      * Textures
@@ -284,6 +287,12 @@ int main(int argc, char** argv) {
                         case SDLK_s:
                             dir = 's';
                             break;
+                        case SDLK_c:
+                            if(camera_choice == 1)
+                                camera_choice = 3;
+                            else
+                                camera_choice = 1;
+                            break;
                         case SDLK_UP:
                             break;
                         case SDLK_DOWN:
@@ -294,34 +303,6 @@ int main(int argc, char** argv) {
                     break;
                 default:
                     break;
-            }
-
-            if (windowManager.isMouseButtonPressed(SDL_BUTTON_RIGHT)) {
-                mousePosition = windowManager.getMousePosition();
-                if (mousePosition.x < previousMousePosition.x) {
-                    camera.rotateLeft(1);
-                }
-                else if (mousePosition.x > previousMousePosition.x) {
-                    camera.rotateLeft(-1);
-                }
-                if (mousePosition.y < previousMousePosition.y) {
-                    camera.rotateUp(1);
-                }
-                else if (mousePosition.y > previousMousePosition.y) {
-                    camera.rotateUp(-1);
-                }
-            }
-            else if (windowManager.isMouseButtonPressed(SDL_BUTTON_MIDDLE)) {
-                // On récupére la position de la souris
-                mousePosition = windowManager.getMousePosition();
-                if (mousePosition.y < previousMousePosition.y)
-                {
-                    camera.moveFront(-0.05);
-                }
-                else if (mousePosition.y > previousMousePosition.y)
-                {
-                    camera.moveFront(0.05);
-                }
             }
         }
 
@@ -339,7 +320,11 @@ int main(int argc, char** argv) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         /* On récupère la ViewMatrix de la caméra à chaque tour de boucle */
-        glm::mat4 globalMVMatrix = camera3.getViewMatrix();
+        glm::mat4 globalMVMatrix;
+        if(camera_choice == 1)
+            globalMVMatrix = camera1.getViewMatrix();
+        else
+            globalMVMatrix = camera3.getViewMatrix();
 
         /* Environment */
 
@@ -396,8 +381,7 @@ int main(int argc, char** argv) {
         /* Plateau de jeu */
 
         for (int i = 0; i < board->getLevelHeight(); i++) {
-            MVMatrix = glm::translate(globalMVMatrix, glm::vec3(0, 0, 0));
-            MVMatrix = glm::scale(MVMatrix, glm::vec3(0.15, 0.15, 0.15));
+            MVMatrix = glm::scale(globalMVMatrix, glm::vec3(0.15, 0.15, 0.15));
             MVMatrix = glm::translate(MVMatrix, glm::vec3(0, 0, 2*i));
 
             for (int j = 0; j < board->getLevelWidth(); j++) {
@@ -450,10 +434,12 @@ int main(int argc, char** argv) {
                         break;
                     case 10:
                         // Pacman
+
                         /* Camera3 */
                         camera3.setX(j*-0.325);
-                        camera3.setY(i*0.205);
-                        camera3.setZ(i*-0.29);
+                        camera3.setY(0.20+i*0.205);
+                        camera3.setZ(-2+i*-0.29);
+                        
                         glBindVertexArray(vao2);
 
                         switch(board->getPacman()->getDir()) {
