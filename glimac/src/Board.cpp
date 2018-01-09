@@ -202,7 +202,75 @@ void Board::checkForDeath() {
 }
 
 void Board::handleModes() {
+    // handle super pacman
+    if (pacman->getSuper()) {
+        pacman->setSuper(pacman->getSuper() - 1); // decrease super counter
+        if (pacman->getSuper() <= 112 && pacman->getSuper() % 28 == 0) { // We alternate the color of the ghosts
+            for (int i = 0; i < 4; ++i)
+                if (ghosts[i]->getColor() == BLUE_COLOR) {
+                    ghosts[i]->setColor(WHITE_COLOR);
+                }
+        }
+        if (pacman->getSuper() <= 98 && (pacman->getSuper() + 14) % 28 == 0) {
+            for (int i = 0; i < 4; ++i) {
+                if (ghosts[i]->getColor() == WHITE_COLOR && ghosts[i]->getMode() != 'd' && ghosts[i]->getMode() != 'n') {
+                    ghosts[i]->setColor(BLUE_COLOR);
+                }
+            }
+        }
+        if (!pacman->getSuper()) {
+            for (int i = 0; i < 4; ++i) {
+                if (ghosts[i]->getMode() != 'd' && ghosts[i]->getMode() != 'n') { // If they are not dead / entering the prison
+                    ghosts[i]->setColor(ghosts[i]->getColorInit());
+                }
+                if (ghosts[i]->getMode() == 'f') { // if the ghost was frightned
+                    ghosts[i]->setModeOld(ghosts[i]->getMode());
+                    //ghosts[i]->setMode('c');
+                    ghosts[i]->setMode('s'); // he starts scaterring
+                }
+            }
+        }
+    }
+    /* A SUPPRIMER                      /!\
+    // handle flashing 1UP
+    if (oneUpTimer) {
+        --oneUpTimer;
+    }
+    else {
+        if (oneUpColor == WHITE) {
+            oneUpColor = BLACK;
+        }
+        else {
+            oneUpColor = WHITE;
+        }
+        SetTextColor(oneUpColor);
+        SetCursorPosition(-3, 3);
+        cout << "1UP";
+        oneUpTimer = ONE_UP_MAX;
+    }
+    */
 
+    // We alternate chase and scatter mode          /!\ Décommenter quand le 'c' sera fait
+    /*
+    if (ghostModeTimer) {
+        --ghostModeTimer;
+        if (ghostModeTimer == MODE_MAX / 4) {
+            for (int i = 0; i < 4; ++i) {
+                if (ghosts[i]->GetMode() == 'c') {
+                    ghosts[i]->SetMode('s');
+                }
+            }
+        }
+    }
+    else {
+        for (int i = 0; i < 4; ++i) {
+            if (ghosts[i]->GetMode() == 's') {
+                ghosts[i]->SetMode('c');
+            }
+        }
+        ghostModeTimer = MODE_MAX;
+    }
+     */
 }
 
 void importGame() {

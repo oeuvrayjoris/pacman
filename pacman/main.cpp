@@ -312,6 +312,7 @@ int main(int argc, char** argv) {
         board->checkForDeath();
         board->moveGhosts();
         board->checkForDeath();
+        board->handleModes();
         
         /*********************************
          * HERE SHOULD COME THE RENDERING CODE
