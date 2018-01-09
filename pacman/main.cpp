@@ -266,7 +266,7 @@ int main(int argc, char** argv) {
 
     char dir = 'q';
 
-    while(loop) {
+    while(loop && board->getPacman()->getLives() != 0) {
         // Event loop:
         SDL_Event e;
         while (windowManager.pollEvent(e)) {
@@ -322,6 +322,8 @@ int main(int argc, char** argv) {
             break;
         }
         if (!loop)
+            break;
+        if (gameOver)
             break;
         
         /*********************************
@@ -601,6 +603,8 @@ int main(int argc, char** argv) {
 
     glDeleteBuffers(1, &vbo2);
     glDeleteVertexArrays(1, &vao2);
+
+    delete board;
 
     return EXIT_SUCCESS;
 }
