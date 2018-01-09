@@ -262,6 +262,7 @@ int main(int argc, char** argv) {
     Board *board = new Board;
     board->launchGame();
     board->load();
+    bool gameOver = false;
 
     char dir = 'q';
 
@@ -310,9 +311,18 @@ int main(int argc, char** argv) {
 
         board->getPacman()->move(dir);
         board->checkForDeath();
+        if (!board->getPacman()->getLives()) {
+            gameOver = true;
+            break;
+        }
         board->moveGhosts();
         board->checkForDeath();
-        board->handleModes();
+        if (!board->getPacman()->getLives()) {
+            gameOver = true;
+            break;
+        }
+        if (!loop)
+            break;
         
         /*********************************
          * HERE SHOULD COME THE RENDERING CODE
