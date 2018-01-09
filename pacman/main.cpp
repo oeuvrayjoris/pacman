@@ -266,328 +266,349 @@ int main(int argc, char** argv) {
 
     char dir = 'q';
 
-    while(loop && board->getPacman()->getLives() != 0) {
-        // Event loop:
-        SDL_Event e;
-        while (windowManager.pollEvent(e)) {
-            switch(e.type) {
-                case SDL_QUIT:
-                    loop = false;
-                    break;
-                case SDL_KEYDOWN:
-                    switch(e.key.keysym.sym) {
-                        case SDLK_q:
-                            dir = 'q';
-                            break;
-                        case SDLK_d:
-                            dir = 'd';
-                            break;
-                        case SDLK_z:
-                            dir = 'z';
-                            break;
-                        case SDLK_s:
-                            dir = 's';
-                            break;
-                        case SDLK_c:
-                            if(camera_choice == 1)
-                                camera_choice = 3;
-                            else
-                                camera_choice = 1;
-                            break;
-                        case SDLK_UP:
-                            break;
-                        case SDLK_DOWN:
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        previousMousePosition = mousePosition;
-
-        board->getPacman()->move(dir);
-        board->checkForDeath();
-        if (!board->getPacman()->getLives()) {
-            gameOver = true;
-            break;
-        }
-        board->moveGhosts();
-        board->checkForDeath();
-        if (!board->getPacman()->getLives()) {
-            gameOver = true;
-            break;
-        }
-        if (!loop)
-            break;
-        if (gameOver)
-            break;
-        
-        /*********************************
-         * HERE SHOULD COME THE RENDERING CODE
-         *********************************/
-
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        /* On récupère la ViewMatrix de la caméra à chaque tour de boucle */
-        glm::mat4 globalMVMatrix;
-        if(camera_choice == 1)
-            globalMVMatrix = camera1.getViewMatrix();
-        else
-            globalMVMatrix = camera3.getViewMatrix();
-
-        /* Environment */
-
-        MVMatrix = glm::translate(globalMVMatrix, glm::vec3(0, 0, 0));
-        MVMatrix = glm::scale(MVMatrix, glm::vec3(30, 30, 30));
-
-        glBindVertexArray(vao2);
-
-        texProgram.m_Program.use();
-        glUniform1i(texProgram.uTexture, 0);
-
-        glUniformMatrix4fv(texProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
-        glUniformMatrix4fv(texProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-        glUniformMatrix4fv(texProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, spaceTexture);
-
-        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, 0);
-
-        glBindVertexArray(0);
-
-        /* Nombre de vies */
-        MVMatrix = glm::translate(globalMVMatrix, glm::vec3(0, 7, -1));
-        MVMatrix = glm::scale(MVMatrix, glm::vec3(0.25, 0.25, 0.25));
-        MVMatrix = glm::rotate(MVMatrix, 90.f, glm::vec3(1, 0, 0));
-
-        glBindVertexArray(vao);
-
-        texProgram.m_Program.use();
-        glUniform1i(texProgram.uTexture, 0);
-
-        for (int i=0; i<board->getPacman()->getLives(); i++) {
-            glUniformMatrix4fv(texProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
-            glUniformMatrix4fv(texProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-            glUniformMatrix4fv(texProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
-
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, coeurTexture);
-
-            glDrawArrays(GL_TRIANGLES, 0, cube.getVertexCount());
-
-            MVMatrix = glm::translate(MVMatrix, glm::vec3(3, 0, 0));
-
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, 0);
-        }
-
-        glBindVertexArray(0);
-
-        /* Plateau de jeu */
-
-        for (int i = 0; i < board->getLevelHeight(); i++) {
-            MVMatrix = glm::scale(globalMVMatrix, glm::vec3(0.15, 0.15, 0.15));
-            MVMatrix = glm::translate(MVMatrix, glm::vec3(0, 0, 2*i));
-
-            for (int j = 0; j < board->getLevelWidth(); j++) {
-                MVMatrix = glm::translate(MVMatrix, glm::vec3(2, 0, 0));
-
-                switch(board->getLevel()[i][j]) {
-                    case 0:
-                        // Empty case
+    for (int numLevel = 1; numLevel < 100; numLevel++) {
+        while (loop && board->getPacman()->getLives() != 0) {
+            // Event loop:
+            SDL_Event e;
+            while (windowManager.pollEvent(e)) {
+                switch (e.type) {
+                    case SDL_QUIT:
+                        loop = false;
                         break;
-                    case 1:
-                        // Dot case
-                        MVMatrix = glm::rotate(MVMatrix, windowManager.getTime(), glm::vec3(0, 1, 0));
-                        MVMatrix = glm::scale(MVMatrix, glm::vec3(0.25, 0.25, 0.25));
-                        glBindVertexArray(vao2);
-                        normalProgram.m_Program.use();
-                        glUniformMatrix4fv(normalProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
-                        glUniformMatrix4fv(normalProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-                        glUniformMatrix4fv(normalProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
-                        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
-                        glBindVertexArray(0);
-                        MVMatrix = glm::scale(MVMatrix, glm::vec3(4.0, 4.0, 4.0));
-                        MVMatrix = glm::rotate(MVMatrix, -windowManager.getTime(), glm::vec3(0, 1, 0));
-                        break;
-                    case 2:
-                        // Pellet case
-                        MVMatrix = glm::rotate(MVMatrix, windowManager.getTime(), glm::vec3(0, 1, 0));
-                        MVMatrix = glm::scale(MVMatrix, glm::vec3(0.5, 0.5, 0.5));
-                        glBindVertexArray(vao2);
-                        normalProgram.m_Program.use();
-                        glUniformMatrix4fv(normalProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
-                        glUniformMatrix4fv(normalProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-                        glUniformMatrix4fv(normalProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
-                        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
-                        glBindVertexArray(0);
-                        MVMatrix = glm::scale(MVMatrix, glm::vec3(2.0, 2.0, 2.0));
-                        MVMatrix = glm::rotate(MVMatrix, -windowManager.getTime(), glm::vec3(0, 1, 0));
-                        break;
-                    case 3:
-                        // Bonus fruit case
-                        break;
-                    case 4:
-                        // Edge
-                        glBindVertexArray(vao);
-                        normalProgram.m_Program.use();
-                        glUniformMatrix4fv(normalProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
-                        glUniformMatrix4fv(normalProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-                        glUniformMatrix4fv(normalProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
-                        glDrawArrays(GL_TRIANGLES, 0, cube.getVertexCount());
-                        glBindVertexArray(0);
-                        break;
-                    case 10:
-                        // Pacman
-
-                        /* Camera3 */
-                        camera3.setX(j*-0.325);
-                        camera3.setY(0.20+i*0.205);
-                        camera3.setZ(-2+i*-0.29);
-                        
-                        glBindVertexArray(vao2);
-
-                        switch(board->getPacman()->getDir()) {
-                            case 's':
-                                MVMatrix = glm::rotate(MVMatrix, 180.f, glm::vec3(0, 1, 0));
+                    case SDL_KEYDOWN:
+                        switch (e.key.keysym.sym) {
+                            case SDLK_q:
+                                dir = 'q';
                                 break;
-                            case 'q':
-                                MVMatrix = glm::rotate(MVMatrix, 90.f, glm::vec3(0, 1, 0));
+                            case SDLK_d:
+                                dir = 'd';
                                 break;
-                            case 'd':
-                                MVMatrix = glm::rotate(MVMatrix, -90.f, glm::vec3(0, 1, 0));
+                            case SDLK_z:
+                                dir = 'z';
+                                break;
+                            case SDLK_s:
+                                dir = 's';
+                                break;
+                            case SDLK_c:
+                                if (camera_choice == 1)
+                                    camera_choice = 3;
+                                else
+                                    camera_choice = 1;
+                                break;
+                            case SDLK_UP:
+                                break;
+                            case SDLK_DOWN:
+                                break;
+                            default:
                                 break;
                         }
-
-                        texProgram.m_Program.use();
-                        glUniform1i(texProgram.uTexture, 0);
-
-                        glUniformMatrix4fv(texProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
-                        glUniformMatrix4fv(texProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-                        glUniformMatrix4fv(texProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
-
-                        glActiveTexture(GL_TEXTURE0);
-                        glBindTexture(GL_TEXTURE_2D, pacmanTexture);
-
-                        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
-
-                        glActiveTexture(GL_TEXTURE0);
-                        glBindTexture(GL_TEXTURE_2D, 0);
-
-                        switch(board->getPacman()->getDir()) {
-                            case 's':
-                                MVMatrix = glm::rotate(MVMatrix, -180.f, glm::vec3(0, 1, 0));
-                                break;
-                            case 'q':
-                                MVMatrix = glm::rotate(MVMatrix, -90.f, glm::vec3(0, 1, 0));
-                                break;
-                            case 'd':
-                                MVMatrix = glm::rotate(MVMatrix, 90.f, glm::vec3(0, 1, 0));
-                                break;
-                        }
-
-                        glBindVertexArray(0);
-                        break;
-                    case 11:
-                        // Ghost Blinky
-                        glBindVertexArray(vao2);
-
-                        texProgram.m_Program.use();
-                        glUniform1i(texProgram.uTexture, 0);
-
-                        glUniformMatrix4fv(texProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
-                        glUniformMatrix4fv(texProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-                        glUniformMatrix4fv(texProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
-
-                        glActiveTexture(GL_TEXTURE0);
-                        glBindTexture(GL_TEXTURE_2D, blinkyTexture);
-
-                        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
-
-                        glActiveTexture(GL_TEXTURE0);
-                        glBindTexture(GL_TEXTURE_2D, 0);
-
-                        glBindVertexArray(0);
-                        break;
-                    case 12:
-                        // Ghost Pinky
-                        glBindVertexArray(vao2);
-
-                        texProgram.m_Program.use();
-                        glUniform1i(texProgram.uTexture, 0);
-
-                        glUniformMatrix4fv(texProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
-                        glUniformMatrix4fv(texProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-                        glUniformMatrix4fv(texProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
-
-                        glActiveTexture(GL_TEXTURE0);
-                        glBindTexture(GL_TEXTURE_2D, pinkyTexture);
-
-                        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
-
-                        glActiveTexture(GL_TEXTURE0);
-                        glBindTexture(GL_TEXTURE_2D, 0);
-
-                        glBindVertexArray(0);
-                        break;
-                    case 13:
-                        // Ghost Inky
-                        glBindVertexArray(vao2);
-
-                        texProgram.m_Program.use();
-                        glUniform1i(texProgram.uTexture, 0);
-
-                        glUniformMatrix4fv(texProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
-                        glUniformMatrix4fv(texProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-                        glUniformMatrix4fv(texProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
-
-                        glActiveTexture(GL_TEXTURE0);
-                        glBindTexture(GL_TEXTURE_2D, inkyTexture);
-
-                        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
-
-                        glActiveTexture(GL_TEXTURE0);
-                        glBindTexture(GL_TEXTURE_2D, 0);
-
-                        glBindVertexArray(0);
-                        break;
-                    case 14:
-                        // Ghost Clyde
-                        glBindVertexArray(vao2);
-
-                        texProgram.m_Program.use();
-                        glUniform1i(texProgram.uTexture, 0);
-
-                        glUniformMatrix4fv(texProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
-                        glUniformMatrix4fv(texProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-                        glUniformMatrix4fv(texProgram.uNormalMatrix, 1, GL_FALSE, glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
-
-                        glActiveTexture(GL_TEXTURE0);
-                        glBindTexture(GL_TEXTURE_2D, clydeTexture);
-
-                        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
-
-                        glActiveTexture(GL_TEXTURE0);
-                        glBindTexture(GL_TEXTURE_2D, 0);
-
-                        glBindVertexArray(0);
                         break;
                     default:
                         break;
                 }
             }
-        }
 
-        // Update the display
-        windowManager.swapBuffers();
+            previousMousePosition = mousePosition;
+
+            board->getPacman()->move(dir);
+            board->checkForDeath();
+            if (!board->getPacman()->getLives()) {
+                gameOver = true;
+                break;
+            }
+            board->moveGhosts();
+            board->checkForDeath();
+            if (!board->getPacman()->getLives()) {
+                gameOver = true;
+                break;
+            }
+            if (!loop)
+                break;
+            board->handleModes();
+
+            /*********************************
+             * HERE SHOULD COME THE RENDERING CODE
+             *********************************/
+
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+            /* On récupère la ViewMatrix de la caméra à chaque tour de boucle */
+            glm::mat4 globalMVMatrix;
+            if (camera_choice == 1)
+                globalMVMatrix = camera1.getViewMatrix();
+            else
+                globalMVMatrix = camera3.getViewMatrix();
+
+            /* Environment */
+
+            MVMatrix = glm::translate(globalMVMatrix, glm::vec3(0, 0, 0));
+            MVMatrix = glm::scale(MVMatrix, glm::vec3(30, 30, 30));
+
+            glBindVertexArray(vao2);
+
+            texProgram.m_Program.use();
+            glUniform1i(texProgram.uTexture, 0);
+
+            glUniformMatrix4fv(texProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+            glUniformMatrix4fv(texProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+            glUniformMatrix4fv(texProgram.uNormalMatrix, 1, GL_FALSE,
+                               glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
+
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, spaceTexture);
+
+            glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
+
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, 0);
+
+            glBindVertexArray(0);
+
+            /* Nombre de vies */
+            MVMatrix = glm::translate(globalMVMatrix, glm::vec3(0, 7, -1));
+            MVMatrix = glm::scale(MVMatrix, glm::vec3(0.25, 0.25, 0.25));
+            MVMatrix = glm::rotate(MVMatrix, 90.f, glm::vec3(1, 0, 0));
+
+            glBindVertexArray(vao);
+
+            texProgram.m_Program.use();
+            glUniform1i(texProgram.uTexture, 0);
+
+            for (int i = 0; i < board->getPacman()->getLives(); i++) {
+                glUniformMatrix4fv(texProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+                glUniformMatrix4fv(texProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+                glUniformMatrix4fv(texProgram.uNormalMatrix, 1, GL_FALSE,
+                                   glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
+
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, coeurTexture);
+
+                glDrawArrays(GL_TRIANGLES, 0, cube.getVertexCount());
+
+                MVMatrix = glm::translate(MVMatrix, glm::vec3(3, 0, 0));
+
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, 0);
+            }
+
+            glBindVertexArray(0);
+
+            /* Plateau de jeu */
+
+            for (int i = 0; i < board->getLevelHeight(); i++) {
+                MVMatrix = glm::scale(globalMVMatrix, glm::vec3(0.15, 0.15, 0.15));
+                MVMatrix = glm::translate(MVMatrix, glm::vec3(0, 0, 2 * i));
+
+                for (int j = 0; j < board->getLevelWidth(); j++) {
+                    MVMatrix = glm::translate(MVMatrix, glm::vec3(2, 0, 0));
+
+                    switch (board->getLevel()[i][j]) {
+                        case 0:
+                            // Empty case
+                            break;
+                        case 1:
+                            // Dot case
+                            MVMatrix = glm::rotate(MVMatrix, windowManager.getTime(), glm::vec3(0, 1, 0));
+                            MVMatrix = glm::scale(MVMatrix, glm::vec3(0.25, 0.25, 0.25));
+                            glBindVertexArray(vao2);
+                            normalProgram.m_Program.use();
+                            glUniformMatrix4fv(normalProgram.uMVPMatrix, 1, GL_FALSE,
+                                               glm::value_ptr(ProjMatrix * MVMatrix));
+                            glUniformMatrix4fv(normalProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+                            glUniformMatrix4fv(normalProgram.uNormalMatrix, 1, GL_FALSE,
+                                               glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
+                            glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
+                            glBindVertexArray(0);
+                            MVMatrix = glm::scale(MVMatrix, glm::vec3(4.0, 4.0, 4.0));
+                            MVMatrix = glm::rotate(MVMatrix, -windowManager.getTime(), glm::vec3(0, 1, 0));
+                            break;
+                        case 2:
+                            // Pellet case
+                            MVMatrix = glm::rotate(MVMatrix, windowManager.getTime(), glm::vec3(0, 1, 0));
+                            MVMatrix = glm::scale(MVMatrix, glm::vec3(0.5, 0.5, 0.5));
+                            glBindVertexArray(vao2);
+                            normalProgram.m_Program.use();
+                            glUniformMatrix4fv(normalProgram.uMVPMatrix, 1, GL_FALSE,
+                                               glm::value_ptr(ProjMatrix * MVMatrix));
+                            glUniformMatrix4fv(normalProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+                            glUniformMatrix4fv(normalProgram.uNormalMatrix, 1, GL_FALSE,
+                                               glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
+                            glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
+                            glBindVertexArray(0);
+                            MVMatrix = glm::scale(MVMatrix, glm::vec3(2.0, 2.0, 2.0));
+                            MVMatrix = glm::rotate(MVMatrix, -windowManager.getTime(), glm::vec3(0, 1, 0));
+                            break;
+                        case 3:
+                            // Bonus fruit case
+                            break;
+                        case 4:
+                            // Edge
+                            glBindVertexArray(vao);
+                            normalProgram.m_Program.use();
+                            glUniformMatrix4fv(normalProgram.uMVPMatrix, 1, GL_FALSE,
+                                               glm::value_ptr(ProjMatrix * MVMatrix));
+                            glUniformMatrix4fv(normalProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+                            glUniformMatrix4fv(normalProgram.uNormalMatrix, 1, GL_FALSE,
+                                               glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
+                            glDrawArrays(GL_TRIANGLES, 0, cube.getVertexCount());
+                            glBindVertexArray(0);
+                            break;
+                        case 10:
+                            // Pacman
+
+                            /* Camera3 */
+                            camera3.setX(j * -0.325);
+                            camera3.setY(0.20 + i * 0.205);
+                            camera3.setZ(-2 + i * -0.29);
+
+                            glBindVertexArray(vao2);
+
+                            switch (board->getPacman()->getDir()) {
+                                case 's':
+                                    MVMatrix = glm::rotate(MVMatrix, 180.f, glm::vec3(0, 1, 0));
+                                    break;
+                                case 'q':
+                                    MVMatrix = glm::rotate(MVMatrix, 90.f, glm::vec3(0, 1, 0));
+                                    break;
+                                case 'd':
+                                    MVMatrix = glm::rotate(MVMatrix, -90.f, glm::vec3(0, 1, 0));
+                                    break;
+                            }
+
+                            texProgram.m_Program.use();
+                            glUniform1i(texProgram.uTexture, 0);
+
+                            glUniformMatrix4fv(texProgram.uMVPMatrix, 1, GL_FALSE,
+                                               glm::value_ptr(ProjMatrix * MVMatrix));
+                            glUniformMatrix4fv(texProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+                            glUniformMatrix4fv(texProgram.uNormalMatrix, 1, GL_FALSE,
+                                               glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
+
+                            glActiveTexture(GL_TEXTURE0);
+                            glBindTexture(GL_TEXTURE_2D, pacmanTexture);
+
+                            glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
+
+                            glActiveTexture(GL_TEXTURE0);
+                            glBindTexture(GL_TEXTURE_2D, 0);
+
+                            switch (board->getPacman()->getDir()) {
+                                case 's':
+                                    MVMatrix = glm::rotate(MVMatrix, -180.f, glm::vec3(0, 1, 0));
+                                    break;
+                                case 'q':
+                                    MVMatrix = glm::rotate(MVMatrix, -90.f, glm::vec3(0, 1, 0));
+                                    break;
+                                case 'd':
+                                    MVMatrix = glm::rotate(MVMatrix, 90.f, glm::vec3(0, 1, 0));
+                                    break;
+                            }
+
+                            glBindVertexArray(0);
+                            break;
+                        case 11:
+                            // Ghost Blinky
+                            glBindVertexArray(vao2);
+
+                            texProgram.m_Program.use();
+                            glUniform1i(texProgram.uTexture, 0);
+
+                            glUniformMatrix4fv(texProgram.uMVPMatrix, 1, GL_FALSE,
+                                               glm::value_ptr(ProjMatrix * MVMatrix));
+                            glUniformMatrix4fv(texProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+                            glUniformMatrix4fv(texProgram.uNormalMatrix, 1, GL_FALSE,
+                                               glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
+
+                            glActiveTexture(GL_TEXTURE0);
+                            glBindTexture(GL_TEXTURE_2D, blinkyTexture);
+
+                            glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
+
+                            glActiveTexture(GL_TEXTURE0);
+                            glBindTexture(GL_TEXTURE_2D, 0);
+
+                            glBindVertexArray(0);
+                            break;
+                        case 12:
+                            // Ghost Pinky
+                            glBindVertexArray(vao2);
+
+                            texProgram.m_Program.use();
+                            glUniform1i(texProgram.uTexture, 0);
+
+                            glUniformMatrix4fv(texProgram.uMVPMatrix, 1, GL_FALSE,
+                                               glm::value_ptr(ProjMatrix * MVMatrix));
+                            glUniformMatrix4fv(texProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+                            glUniformMatrix4fv(texProgram.uNormalMatrix, 1, GL_FALSE,
+                                               glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
+
+                            glActiveTexture(GL_TEXTURE0);
+                            glBindTexture(GL_TEXTURE_2D, pinkyTexture);
+
+                            glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
+
+                            glActiveTexture(GL_TEXTURE0);
+                            glBindTexture(GL_TEXTURE_2D, 0);
+
+                            glBindVertexArray(0);
+                            break;
+                        case 13:
+                            // Ghost Inky
+                            glBindVertexArray(vao2);
+
+                            texProgram.m_Program.use();
+                            glUniform1i(texProgram.uTexture, 0);
+
+                            glUniformMatrix4fv(texProgram.uMVPMatrix, 1, GL_FALSE,
+                                               glm::value_ptr(ProjMatrix * MVMatrix));
+                            glUniformMatrix4fv(texProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+                            glUniformMatrix4fv(texProgram.uNormalMatrix, 1, GL_FALSE,
+                                               glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
+
+                            glActiveTexture(GL_TEXTURE0);
+                            glBindTexture(GL_TEXTURE_2D, inkyTexture);
+
+                            glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
+
+                            glActiveTexture(GL_TEXTURE0);
+                            glBindTexture(GL_TEXTURE_2D, 0);
+
+                            glBindVertexArray(0);
+                            break;
+                        case 14:
+                            // Ghost Clyde
+                            glBindVertexArray(vao2);
+
+                            texProgram.m_Program.use();
+                            glUniform1i(texProgram.uTexture, 0);
+
+                            glUniformMatrix4fv(texProgram.uMVPMatrix, 1, GL_FALSE,
+                                               glm::value_ptr(ProjMatrix * MVMatrix));
+                            glUniformMatrix4fv(texProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+                            glUniformMatrix4fv(texProgram.uNormalMatrix, 1, GL_FALSE,
+                                               glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
+
+                            glActiveTexture(GL_TEXTURE0);
+                            glBindTexture(GL_TEXTURE_2D, clydeTexture);
+
+                            glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
+
+                            glActiveTexture(GL_TEXTURE0);
+                            glBindTexture(GL_TEXTURE_2D, 0);
+
+                            glBindVertexArray(0);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+
+            // Update the display
+            windowManager.swapBuffers();
+        }
+        if (gameOver)
+            break;
     }
 
     glDeleteTextures(1, &spaceTexture);
