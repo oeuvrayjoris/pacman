@@ -104,31 +104,31 @@ int main(int argc, char** argv) {
      * Textures
      */
 
-    std::unique_ptr<Image> pImageSpace = loadImage("../../assets/textures/SpaceMap.jpg");
+    std::unique_ptr<Image> pImageSpace = loadImage(applicationPath.dirPath() + "../assets/textures/SpaceMap.jpg");
     if(pImageSpace == NULL)
         std::cout << "SpaceMap == NULL" << std::endl;
 
-    std::unique_ptr<Image> pImagePacman = loadImage("../../assets/textures/PacmanMap.jpg");
+    std::unique_ptr<Image> pImagePacman = loadImage(applicationPath.dirPath() +"../assets/textures/PacmanMap.jpg");
     if(pImagePacman == NULL)
         std::cout << "PacmanMap == NULL" << std::endl;
 
-    std::unique_ptr<Image> pImageBlinky = loadImage("../../assets/textures/BlinkyMap.jpg");
+    std::unique_ptr<Image> pImageBlinky = loadImage(applicationPath.dirPath() +"../assets/textures/BlinkyMap.jpg");
     if(pImageBlinky == NULL)
         std::cout << "BlinkyMap == NULL" << std::endl;
 
-    std::unique_ptr<Image> pImageClyde = loadImage("../../assets/textures/ClydeMap.jpg");
+    std::unique_ptr<Image> pImageClyde = loadImage(applicationPath.dirPath() +"../assets/textures/ClydeMap.jpg");
     if(pImageClyde == NULL)
         std::cout << "ClydeMap == NULL" << std::endl;
 
-    std::unique_ptr<Image> pImageInky = loadImage("../../assets/textures/InkyMap.jpg");
+    std::unique_ptr<Image> pImageInky = loadImage(applicationPath.dirPath() +"../assets/textures/InkyMap.jpg");
     if(pImageInky == NULL)
         std::cout << "InkyMap == NULL" << std::endl;
 
-    std::unique_ptr<Image> pImagePinky = loadImage("../../assets/textures/PinkyMap.jpg");
+    std::unique_ptr<Image> pImagePinky = loadImage(applicationPath.dirPath() +"../assets/textures/PinkyMap.jpg");
     if(pImagePinky == NULL)
         std::cout << "PinkyMap == NULL" << std::endl;
 
-    std::unique_ptr<Image> pImageCoeur = loadImage("../../assets/textures/CoeurMap.png");
+    std::unique_ptr<Image> pImageCoeur = loadImage(applicationPath.dirPath() +"../assets/textures/CoeurMap.png");
     if(pImageCoeur == NULL)
         std::cout << "CoeurMap == NULL" << std::endl;
 
@@ -261,13 +261,14 @@ int main(int argc, char** argv) {
 
     Board *board = new Board;
     board->launchGame();
-    board->load();
     bool gameOver = false;
 
     char dir = 'q';
 
     for (int numLevel = 1; numLevel < 100; numLevel++) {
-        while (loop && board->getPacman()->getLives() != 0) {
+
+        board->load();
+        while (loop && board->getPacman()->getLeftDots() != 0) {
             // Event loop:
             SDL_Event e;
             while (windowManager.pollEvent(e)) {
