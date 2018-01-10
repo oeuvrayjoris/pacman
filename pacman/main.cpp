@@ -104,6 +104,35 @@ int main(int argc, char** argv) {
      * Textures
      */
 
+#if __APPLE__
+    std::unique_ptr<Image> pImageSpace = loadImage("../../assets/textures/SpaceMap.jpg");
+    if(pImageSpace == NULL)
+        std::cout << "SpaceMap == NULL" << std::endl;
+
+    std::unique_ptr<Image> pImagePacman = loadImage("../../assets/textures/PacmanMap.jpg");
+    if(pImagePacman == NULL)
+        std::cout << "PacmanMap == NULL" << std::endl;
+
+    std::unique_ptr<Image> pImageBlinky = loadImage("../../assets/textures/BlinkyMap.jpg");
+    if(pImageBlinky == NULL)
+        std::cout << "BlinkyMap == NULL" << std::endl;
+
+    std::unique_ptr<Image> pImageClyde = loadImage("../../assets/textures/ClydeMap.jpg");
+    if(pImageClyde == NULL)
+        std::cout << "ClydeMap == NULL" << std::endl;
+
+    std::unique_ptr<Image> pImageInky = loadImage("../../assets/textures/InkyMap.jpg");
+    if(pImageInky == NULL)
+        std::cout << "InkyMap == NULL" << std::endl;
+
+    std::unique_ptr<Image> pImagePinky = loadImage("../../assets/textures/PinkyMap.jpg");
+    if(pImagePinky == NULL)
+        std::cout << "PinkyMap == NULL" << std::endl;
+
+    std::unique_ptr<Image> pImageCoeur = loadImage("../../assets/textures/CoeurMap.png");
+    if(pImageCoeur == NULL)
+        std::cout << "CoeurMap == NULL" << std::endl;
+#else
     std::unique_ptr<Image> pImageSpace = loadImage(applicationPath.dirPath() + "../assets/textures/SpaceMap.jpg");
     if(pImageSpace == NULL)
         std::cout << "SpaceMap == NULL" << std::endl;
@@ -131,7 +160,8 @@ int main(int argc, char** argv) {
     std::unique_ptr<Image> pImageCoeur = loadImage(applicationPath.dirPath() +"../assets/textures/CoeurMap.png");
     if(pImageCoeur == NULL)
         std::cout << "CoeurMap == NULL" << std::endl;
-
+#endif
+    
     GLuint spaceTexture;
     glGenTextures(1, &spaceTexture);
 
