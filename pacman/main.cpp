@@ -365,34 +365,29 @@ int main(int argc, char** argv) {
 
             glBindVertexArray(0);
 
-            /* Nombre de vies */
-            MVMatrix = glm::translate(globalMVMatrix, glm::vec3(0, 7, -1));
-            MVMatrix = glm::scale(MVMatrix, glm::vec3(0.25, 0.25, 0.25));
-            MVMatrix = glm::rotate(MVMatrix, 90.f, glm::vec3(1, 0, 0));
+            /* Menu */
+
+            /*MVMatrix = glm::translate(globalMVMatrix, glm::vec3(0, 0, 0));
 
             glBindVertexArray(vao);
 
             texProgram.m_Program.use();
             glUniform1i(texProgram.uTexture, 0);
 
-            for (int i = 0; i < board->getPacman()->getLives(); i++) {
-                glUniformMatrix4fv(texProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
-                glUniformMatrix4fv(texProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-                glUniformMatrix4fv(texProgram.uNormalMatrix, 1, GL_FALSE,
-                                   glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
+            glUniformMatrix4fv(texProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
+            glUniformMatrix4fv(texProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+            glUniformMatrix4fv(texProgram.uNormalMatrix, 1, GL_FALSE,
+                               glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
 
-                glActiveTexture(GL_TEXTURE0);
-                glBindTexture(GL_TEXTURE_2D, coeurTexture);
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, menuTexture1);
 
-                glDrawArrays(GL_TRIANGLES, 0, cube.getVertexCount());
+            glDrawArrays(GL_TRIANGLES, 0, cube.getVertexCount());
 
-                MVMatrix = glm::translate(MVMatrix, glm::vec3(3, 0, 0));
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, 0);
 
-                glActiveTexture(GL_TEXTURE0);
-                glBindTexture(GL_TEXTURE_2D, 0);
-            }
-
-            glBindVertexArray(0);
+            glBindVertexArray(0);*/
 
             /* Plateau de jeu */
 
