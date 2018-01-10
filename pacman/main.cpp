@@ -262,6 +262,7 @@ int main(int argc, char** argv) {
     Board *board = new Board;
     board->launchGame();
     bool gameOver = false;
+    bool pause = false;
 
     char dir = 'q';
 
@@ -296,6 +297,9 @@ int main(int argc, char** argv) {
                                 else
                                     camera_choice = 1;
                                 break;
+                            case SDLK_ESCAPE:
+                                pause = !pause;
+                                break;
                             case SDLK_UP:
                                 break;
                             case SDLK_DOWN:
@@ -311,21 +315,25 @@ int main(int argc, char** argv) {
 
             previousMousePosition = mousePosition;
 
-            board->getPacman()->move(dir);
-            board->checkForDeath();
-            if (!board->getPacman()->getLives()) {
-                gameOver = true;
-                break;
+
+
+            if (!pause) {
+                board->getPacman()->move(dir);
+                board->checkForDeath();
+                if (!board->getPacman()->getLives()) {
+                    gameOver = true;
+                    break;
+                }
+                board->moveGhosts();
+                board->checkForDeath();
+                if (!board->getPacman()->getLives()) {
+                    gameOver = true;
+                    break;
+                }
+                if (!loop)
+                    break;
+                board->handleModes();
             }
-            board->moveGhosts();
-            board->checkForDeath();
-            if (!board->getPacman()->getLives()) {
-                gameOver = true;
-                break;
-            }
-            if (!loop)
-                break;
-            board->handleModes();
 
             /*********************************
              * HERE SHOULD COME THE RENDERING CODE
