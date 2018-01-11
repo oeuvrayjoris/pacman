@@ -136,6 +136,7 @@ void Board::initGame(){
         ghosts[i]->setCoord_y(ghosts[i]->getCoord_y_init());
         ghosts[i]->setMode('w');
         ghosts[i]->setWait(0);
+        ghosts[i]->setPrevElem(0);
     }
     ghosts[BLINKY]->setMode('s');
     ghosts[BLINKY]->setModeOld('s');
