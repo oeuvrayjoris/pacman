@@ -518,7 +518,7 @@ int main(int argc, char** argv) {
                                     if(menu_choice < 2)
                                         menu_choice = 2;
                                     else
-                                        menu_choice = 1;
+                                        menu_choice -= 1;
                                 break;
                             case SDLK_DOWN:
                                 degree -= 0.1;
@@ -526,7 +526,7 @@ int main(int argc, char** argv) {
                                 if (menu_choice > 1)
                                         menu_choice = 1;
                                 else
-                                    menu_choice = 2;
+                                    menu_choice += 1;
                                 break;
                             case SDLK_KP_ENTER:
                                 if(step == 0 || step == 2) {
