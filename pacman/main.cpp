@@ -109,7 +109,7 @@ int main(int argc, char** argv) {
     if(pImageSpace == NULL)
         std::cout << "SpaceMap == NULL" << std::endl;
 
-    std::unique_ptr<Image> pImagePacman = loadImage("../../assets/textures/PacmanMap.jpg");
+    std::unique_ptr<Image> pImagePacman = loadImage("../../assets/textures/NovelliMap.jpg");
     if(pImagePacman == NULL)
         std::cout << "PacmanMap == NULL" << std::endl;
 
@@ -168,6 +168,10 @@ int main(int argc, char** argv) {
     std::unique_ptr<Image> pImageOver3 = loadImage("../../assets/textures/Over3Map.jpg");
     if(pImageOver3 == NULL)
         std::cout << "Over3Map == NULL" << std::endl;
+
+    std::unique_ptr<Image> pImageDot = loadImage("../../assets/textures/DotMap.jpg");
+    if(pImageDot == NULL)
+        std::cout << "DotMap == NULL" << std::endl;
 #else
     std::unique_ptr<Image> pImageSpace = loadImage(applicationPath.dirPath() + "../assets/textures/SpaceMap.jpg");
     if(pImageSpace == NULL)
@@ -232,6 +236,10 @@ int main(int argc, char** argv) {
     std::unique_ptr<Image> pImageOver3 = loadImage(applicationPath.dirPath() + "../assets/textures/Over3Map.jpg");
     if(pImageOver3 == NULL)
         std::cout << "Over3Map == NULL" << std::endl;
+
+    std::unique_ptr<Image> pImageDot = loadImage(applicationPath.dirPath() + "../assets/textures/DotMap.jpg");
+    if(pImageDot == NULL)
+        std::cout << "DotMap == NULL" << std::endl;
 #endif
 
     GLuint spaceTexture;
@@ -281,6 +289,9 @@ int main(int argc, char** argv) {
 
     GLuint over3Texture;
     glGenTextures(1, &over3Texture);
+
+    GLuint dotTexture;
+    glGenTextures(1, &dotTexture);
 
     glBindTexture(GL_TEXTURE_2D, spaceTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pImageSpace->getWidth(), pImageSpace->getHeight(), 0, GL_RGBA, GL_FLOAT, pImageSpace->getPixels());
@@ -374,6 +385,12 @@ int main(int argc, char** argv) {
 
     glBindTexture(GL_TEXTURE_2D, over3Texture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pImageOver3->getWidth(), pImageOver3->getHeight(), 0, GL_RGBA, GL_FLOAT, pImageOver3->getPixels());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glBindTexture(GL_TEXTURE_2D, dotTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pImageDot->getWidth(), pImageDot->getHeight(), 0, GL_RGBA, GL_FLOAT, pImageDot->getPixels());
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -501,6 +518,7 @@ int main(int argc, char** argv) {
                                 if(step == 0 || step == 2) {
                                     if(menu_choice == 2) {
                                         step = 1; // On entre dans le jeu
+                                        pause = false;
                                         menu_choice = 3; // reinit
                                     }
 
@@ -520,6 +538,7 @@ int main(int argc, char** argv) {
                                 if(step == 0 || step == 2) {
                                     if(menu_choice == 2) {
                                         step = 1; // On entre dans le jeu
+                                        pause = false;
                                         menu_choice = 3; // reinit
                                     }
 
@@ -688,35 +707,54 @@ int main(int argc, char** argv) {
                                     break;
                                 case 1:
                                     // Dot case
-                                    MVMatrix = glm::rotate(MVMatrix, windowManager.getTime(), glm::vec3(0, 1, 0));
                                     MVMatrix = glm::scale(MVMatrix, glm::vec3(0.25, 0.25, 0.25));
                                     glBindVertexArray(vao2);
-                                    normalProgram.m_Program.use();
-                                    glUniformMatrix4fv(normalProgram.uMVPMatrix, 1, GL_FALSE,
+
+                                    texProgram.m_Program.use();
+                                    glUniform1i(texProgram.uTexture, 0);
+
+                                    glUniformMatrix4fv(texProgram.uMVPMatrix, 1, GL_FALSE,
                                                        glm::value_ptr(ProjMatrix * MVMatrix));
-                                    glUniformMatrix4fv(normalProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-                                    glUniformMatrix4fv(normalProgram.uNormalMatrix, 1, GL_FALSE,
+                                    glUniformMatrix4fv(texProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+                                    glUniformMatrix4fv(texProgram.uNormalMatrix, 1, GL_FALSE,
                                                        glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
+
+                                    glActiveTexture(GL_TEXTURE0);
+                                    glBindTexture(GL_TEXTURE_2D, dotTexture);
+
                                     glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
+
+                                    glActiveTexture(GL_TEXTURE0);
+                                    glBindTexture(GL_TEXTURE_2D, 0);
+
                                     glBindVertexArray(0);
                                     MVMatrix = glm::scale(MVMatrix, glm::vec3(4.0, 4.0, 4.0));
-                                    MVMatrix = glm::rotate(MVMatrix, -windowManager.getTime(), glm::vec3(0, 1, 0));
                                     break;
                                 case 2:
                                     // Pellet case
-                                    MVMatrix = glm::rotate(MVMatrix, windowManager.getTime(), glm::vec3(0, 1, 0));
                                     MVMatrix = glm::scale(MVMatrix, glm::vec3(0.5, 0.5, 0.5));
+
                                     glBindVertexArray(vao2);
-                                    normalProgram.m_Program.use();
-                                    glUniformMatrix4fv(normalProgram.uMVPMatrix, 1, GL_FALSE,
+
+                                    texProgram.m_Program.use();
+                                    glUniform1i(texProgram.uTexture, 0);
+
+                                    glUniformMatrix4fv(texProgram.uMVPMatrix, 1, GL_FALSE,
                                                        glm::value_ptr(ProjMatrix * MVMatrix));
-                                    glUniformMatrix4fv(normalProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-                                    glUniformMatrix4fv(normalProgram.uNormalMatrix, 1, GL_FALSE,
+                                    glUniformMatrix4fv(texProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+                                    glUniformMatrix4fv(texProgram.uNormalMatrix, 1, GL_FALSE,
                                                        glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
+
+                                    glActiveTexture(GL_TEXTURE0);
+                                    glBindTexture(GL_TEXTURE_2D, dotTexture);
+
                                     glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
+
+                                    glActiveTexture(GL_TEXTURE0);
+                                    glBindTexture(GL_TEXTURE_2D, 0);
+
                                     glBindVertexArray(0);
                                     MVMatrix = glm::scale(MVMatrix, glm::vec3(2.0, 2.0, 2.0));
-                                    MVMatrix = glm::rotate(MVMatrix, -windowManager.getTime(), glm::vec3(0, 1, 0));
                                     break;
                                 case 3:
                                     // Bonus fruit case
@@ -989,6 +1027,7 @@ int main(int argc, char** argv) {
     glDeleteTextures(1, &over1Texture);
     glDeleteTextures(1, &over2Texture);
     glDeleteTextures(1, &over3Texture);
+    glDeleteTextures(1, &dotTexture);
 
     glDeleteBuffers(1, &vbo);
     glDeleteVertexArrays(1, &vao);
