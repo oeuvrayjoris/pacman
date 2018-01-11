@@ -18,7 +18,6 @@ const int COLLISION_CREATURES[4] = {11, 12, 13, 14};
 const int SPEED_FACTOR = 2;
 
 const int SUPER_MAX   = 500 * SPEED_FACTOR;
-const int ONE_UP_MAX  = 13 * SPEED_FACTOR;
 const int PELLET_MAX  = 8 * SPEED_FACTOR;
 const int PACMAN_MAX  = 8 * SPEED_FACTOR;
 const int GHOST_MAX   = 10 * SPEED_FACTOR;
