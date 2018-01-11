@@ -140,6 +140,14 @@ int main(int argc, char** argv) {
     if(pImagePinky == NULL)
         std::cout << "PinkyMap == NULL" << std::endl;
 
+    std::unique_ptr<Image> pImageFrighten = loadImage("../../assets/textures/FrightenMap.jpg");
+    if(pImageFrighten == NULL)
+        std::cout << "FrightenMap == NULL" << std::endl;
+
+    std::unique_ptr<Image> pImageEaten = loadImage("../../assets/textures/EatenMap.jpg");
+    if(pImageEaten == NULL)
+        std::cout << "EatenMap == NULL" << std::endl;
+
     std::unique_ptr<Image> pImageCoeur = loadImage("../../assets/textures/CoeurMap.png");
     if(pImageCoeur == NULL)
         std::cout << "CoeurMap == NULL" << std::endl;
@@ -208,6 +216,14 @@ int main(int argc, char** argv) {
     if(pImagePinky == NULL)
         std::cout << "PinkyMap == NULL" << std::endl;
 
+    std::unique_ptr<Image> pImageFrighten = loadImage(applicationPath.dirPath() +"../assets/textures/FrightenMap.jpg");
+    if(pImageFrighten == NULL)
+        std::cout << "FrightenMap == NULL" << std::endl;
+
+    std::unique_ptr<Image> pImageEaten = loadImage(applicationPath.dirPath() +"../assets/textures/EatenMap.jpg");
+    if(pImageEaten == NULL)
+        std::cout << "EatenMap == NULL" << std::endl;
+
     std::unique_ptr<Image> pImageCoeur = loadImage(applicationPath.dirPath() +"../assets/textures/CoeurMap.png");
     if(pImageCoeur == NULL)
         std::cout << "CoeurMap == NULL" << std::endl;
@@ -270,6 +286,12 @@ int main(int argc, char** argv) {
 
     GLuint pinkyTexture;
     glGenTextures(1, &pinkyTexture);
+
+    GLuint frightenTexture;
+    glGenTextures(1, &frightenTexture);
+
+    GLuint eatenTexture;
+    glGenTextures(1, &eatenTexture);
 
     GLuint coeurTexture;
     glGenTextures(1, &coeurTexture);
@@ -336,6 +358,18 @@ int main(int argc, char** argv) {
 
     glBindTexture(GL_TEXTURE_2D, pinkyTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pImagePinky->getWidth(), pImagePinky->getHeight(), 0, GL_RGBA, GL_FLOAT, pImagePinky->getPixels());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glBindTexture(GL_TEXTURE_2D, frightenTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pImageFrighten->getWidth(), pImageFrighten->getHeight(), 0, GL_RGBA, GL_FLOAT, pImageFrighten->getPixels());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glBindTexture(GL_TEXTURE_2D, eatenTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pImageEaten->getWidth(), pImageEaten->getHeight(), 0, GL_RGBA, GL_FLOAT, pImageEaten->getPixels());
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -922,7 +956,13 @@ int main(int argc, char** argv) {
                                                        glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
 
                                     glActiveTexture(GL_TEXTURE0);
-                                    glBindTexture(GL_TEXTURE_2D, blinkyTexture);
+
+                                    if (board->getGhosts()[BLINKY]->getMode() == 'f')
+                                        glBindTexture(GL_TEXTURE_2D, frightenTexture);
+                                    else if (board->getGhosts()[BLINKY]->getMode() != 'd')
+                                        glBindTexture(GL_TEXTURE_2D, eatenTexture);
+                                    else
+                                        glBindTexture(GL_TEXTURE_2D, blinkyTexture);
 
                                     glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
 
@@ -945,7 +985,13 @@ int main(int argc, char** argv) {
                                                        glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
 
                                     glActiveTexture(GL_TEXTURE0);
-                                    glBindTexture(GL_TEXTURE_2D, pinkyTexture);
+
+                                    if (board->getGhosts()[PINKY]->getMode() == 'f')
+                                        glBindTexture(GL_TEXTURE_2D, frightenTexture);
+                                    else if (board->getGhosts()[PINKY]->getMode() != 'd')
+                                        glBindTexture(GL_TEXTURE_2D, eatenTexture);
+                                    else
+                                        glBindTexture(GL_TEXTURE_2D, pinkyTexture);
 
                                     glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
 
@@ -968,7 +1014,13 @@ int main(int argc, char** argv) {
                                                        glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
 
                                     glActiveTexture(GL_TEXTURE0);
-                                    glBindTexture(GL_TEXTURE_2D, inkyTexture);
+
+                                    if (board->getGhosts()[INKY]->getMode() == 'f')
+                                        glBindTexture(GL_TEXTURE_2D, frightenTexture);
+                                    else if (board->getGhosts()[INKY]->getMode() != 'd')
+                                        glBindTexture(GL_TEXTURE_2D, eatenTexture);
+                                    else
+                                        glBindTexture(GL_TEXTURE_2D, inkyTexture);
 
                                     glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
 
@@ -991,7 +1043,13 @@ int main(int argc, char** argv) {
                                                        glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
 
                                     glActiveTexture(GL_TEXTURE0);
-                                    glBindTexture(GL_TEXTURE_2D, clydeTexture);
+
+                                    if (board->getGhosts()[CLYDE]->getMode() == 'f')
+                                        glBindTexture(GL_TEXTURE_2D, frightenTexture);
+                                    else if (board->getGhosts()[CLYDE]->getMode() != 'd')
+                                        glBindTexture(GL_TEXTURE_2D, eatenTexture);
+                                    else
+                                        glBindTexture(GL_TEXTURE_2D, clydeTexture);
 
                                     glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
 
@@ -1102,6 +1160,8 @@ int main(int argc, char** argv) {
     glDeleteTextures(1, &clydeTexture);
     glDeleteTextures(1, &inkyTexture);
     glDeleteTextures(1, &pinkyTexture);
+    glDeleteTextures(1, &frightenTexture);
+    glDeleteTextures(1, &eatenTexture);
     glDeleteTextures(1, &coeurTexture);
     glDeleteTextures(1, &menu1Texture);
     glDeleteTextures(1, &menu2Texture);
