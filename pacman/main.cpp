@@ -458,19 +458,21 @@ int main(int argc, char** argv) {
     glm::ivec2 previousMousePosition = windowManager.getMousePosition();
     glm::ivec2 mousePosition = windowManager.getMousePosition();
 
-    Board *board = new Board;
-    board->launchGame();
-    bool pause = false;
+
+	Board *board = new Board;
+    bool pause = true;
     int menu_choice = 3;
     int step = 0; // 0 = menu, 1 = game, 2 = echap, 3 = game over
+    board->launchGame(); // Initialize Pacman life and score
+    board->load(); // Initialize the game
     float degree = 0;
     float pi = 3.14159265359;
 
     char dir = 'q';
 
     for (int numLevel = 1; numLevel < 100; numLevel++) {
-
-        board->load();
+	    board->load();
+	    char dir = 'q';
         while (loop && board->getPacman()->getLeftDots() != 0) {
             // Event loop:
             SDL_Event e;
@@ -500,7 +502,9 @@ int main(int argc, char** argv) {
                                     camera_choice = 1;
                                 break;
                             case SDLK_ESCAPE:
-                                pause = !pause;
+                            	if (pause)
+                            		pause = false;
+                            	else pause = true;
                                 if(step == 2) {
                                     step = 1;
                                 }
@@ -575,12 +579,18 @@ int main(int argc, char** argv) {
                 board->getPacman()->move(dir);
                 board->checkForDeath();
                 if (!board->getPacman()->getLives()) {
-                    step = 3;
+                    step = 3; // Affichage du gameOver 
+				    board->launchGame(); // We reset the pacman lives to 3, and score to 0
+				    board->load(); // We reload the level
+				    numLevel = 0; // We reset the gameLevel to 0 (will be 1 after the end of the loop)
                 }
                 board->moveGhosts();
                 board->checkForDeath();
                 if (!board->getPacman()->getLives()) {
-                    step = 3;
+                    step = 3; // Affichage du gameOver
+				    board->launchGame();
+				    board->load(); // We reload the level
+				    numLevel = 0; // We reset the gameLevel to 0 (will be 1 after the end of the loop)
                 }
                 if (!loop)
                     break;
