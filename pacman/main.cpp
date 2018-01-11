@@ -959,7 +959,7 @@ int main(int argc, char** argv) {
 
                                     if (board->getGhosts()[BLINKY]->getMode() == 'f')
                                         glBindTexture(GL_TEXTURE_2D, frightenTexture);
-                                    else if (board->getGhosts()[BLINKY]->getMode() != 'd')
+                                    else if (board->getGhosts()[BLINKY]->getMode() == 'd' || board->getGhosts()[BLINKY]->getMode() == 'n')
                                         glBindTexture(GL_TEXTURE_2D, eatenTexture);
                                     else
                                         glBindTexture(GL_TEXTURE_2D, blinkyTexture);
@@ -988,7 +988,7 @@ int main(int argc, char** argv) {
 
                                     if (board->getGhosts()[PINKY]->getMode() == 'f')
                                         glBindTexture(GL_TEXTURE_2D, frightenTexture);
-                                    else if (board->getGhosts()[PINKY]->getMode() != 'd')
+                                    else if (board->getGhosts()[PINKY]->getMode() == 'd' || board->getGhosts()[BLINKY]->getMode() == 'n')
                                         glBindTexture(GL_TEXTURE_2D, eatenTexture);
                                     else
                                         glBindTexture(GL_TEXTURE_2D, pinkyTexture);
@@ -1017,7 +1017,7 @@ int main(int argc, char** argv) {
 
                                     if (board->getGhosts()[INKY]->getMode() == 'f')
                                         glBindTexture(GL_TEXTURE_2D, frightenTexture);
-                                    else if (board->getGhosts()[INKY]->getMode() != 'd')
+                                    else if (board->getGhosts()[INKY]->getMode() == 'd' || board->getGhosts()[BLINKY]->getMode() == 'n')
                                         glBindTexture(GL_TEXTURE_2D, eatenTexture);
                                     else
                                         glBindTexture(GL_TEXTURE_2D, inkyTexture);
@@ -1046,7 +1046,7 @@ int main(int argc, char** argv) {
 
                                     if (board->getGhosts()[CLYDE]->getMode() == 'f')
                                         glBindTexture(GL_TEXTURE_2D, frightenTexture);
-                                    else if (board->getGhosts()[CLYDE]->getMode() != 'd')
+                                    else if (board->getGhosts()[CLYDE]->getMode() == 'd' || board->getGhosts()[BLINKY]->getMode() == 'n')
                                         glBindTexture(GL_TEXTURE_2D, eatenTexture);
                                     else
                                         glBindTexture(GL_TEXTURE_2D, clydeTexture);
