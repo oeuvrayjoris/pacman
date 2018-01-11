@@ -96,12 +96,12 @@ int main(int argc, char** argv) {
     std::cout << "OpenGL Version : " << glGetString(GL_VERSION) << std::endl;
     std::cout << "GLEW Version : " << glewGetString(GLEW_VERSION) << std::endl;
     std::cout << argv[0] << std::endl;
-    
 
 
     /*********************************
      * HERE SHOULD COME THE INITIALIZATION CODE
      *********************************/
+
 
     // Active test de profondeur du GPU
     glEnable(GL_DEPTH_TEST);
@@ -414,6 +414,10 @@ int main(int argc, char** argv) {
 
     ProjMatrix = glm::perspective(glm::radians(70.f), (float) width / height, 0.1f, 100.f);
 
+    /**
+    * Création des différents objets
+    */
+
     Cube cube(1.0);
     Sphere sphere(1, 32, 16);
 
@@ -470,11 +474,14 @@ int main(int argc, char** argv) {
     glm::ivec2 mousePosition = windowManager.getMousePosition();
 
 
+    /**
+    * Création des éléménts du jeu
+    */
+
 	Board *board = new Board;
     bool pause = true;
     int menu_choice = 3;
-    int step = 0; // 0 = menu, 1 = game, 2 = echap, 3 = game over
-    board->launchGame(); // Initialize Pacman life and score
+    int step = 0; // Different screens of our applications. 0 = menu, 1 = game, 2 = echap, 3 = game over
 
     //std::string fileName = "./pacman/datas/levels/test.json"; // FOR LINUX
     std::string fileName = "../../pacman/datas/levels/test.json"; // FOR clion Windows
@@ -487,7 +494,10 @@ int main(int argc, char** argv) {
 
     // We iterate through the 100 levels
     for (int numLevel = 1; numLevel < 100; numLevel++) {
-        board->load(fileName, 0);
+        if (board->getPacman()->getLives())
+            board->load(fileName, 0); // we don't need to reset pacman lives and score
+        else
+            board->load(fileName, 1);
 	    char dir = 'q';
         while (loop && board->getPacman()->getLeftDots() != 0) {
             // Event loop:
@@ -609,8 +619,7 @@ int main(int argc, char** argv) {
                     prevLives = board->getPacman()->getLives();
                 }
                 if (!board->getPacman()->getLives()) {
-                    step = 3; // Affichage du gameOver 
-				    board->launchGame(); // We reset the pacman lives to 3, and score to 0
+                    step = 3; // Displays gameOver
                     board->load(fileName, 1); // We reload the level
 				    numLevel = 0; // We reset the gameLevel to 0 (will be 1 after the end of the loop)
                     dir = 'q';
@@ -622,8 +631,7 @@ int main(int argc, char** argv) {
                     prevLives = board->getPacman()->getLives();
                 }
                 if (!board->getPacman()->getLives()) {
-                    step = 3; // Affichage du gameOver
-				    board->launchGame();
+                    step = 3; // Displays gameOver
                     board->load(fileName, 1); // We reload the level
 				    numLevel = 0; // We reset the gameLevel to 0 (will be 1 after the end of the loop)
                     dir = 'q';
