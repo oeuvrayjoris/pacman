@@ -56,6 +56,9 @@ void Board::load() {
     };
     levelWidth = level.at(0).size();
     levelHeight = level.size();
+
+    //loadConfig();
+
     pacman->setLeftDots(0);
 
     int elem, k = 0;
@@ -274,11 +277,33 @@ void Board::handleModes() {
      */
 }
 
-void importGame() {
+void Board::loadConfig() {
 
+    DataManager dataManager;
+    std::string fileName = "./pacman/datas/levels/test.json";
+    rapidjson::Document d = dataManager.importFromJson(fileName);
+
+    level.clear();
+
+    levelHeight = d["levelHeight"].GetInt();
+    levelWidth = d["levelWidth"].GetInt();
+    pacman->setScore(d["score"].GetInt());
+    pacman->setLives(d["lives"].GetInt());
+
+    const rapidjson::Value &jsonLevel = d["level"];
+
+    for (rapidjson::SizeType i = 0; i < jsonLevel.Size(); i++) { // Uses SizeType instead of size_t
+        std::cout << "{";
+        const rapidjson::Value &jsonSubLevel = jsonLevel[i];
+        std::vector<int> subVector;
+        for (rapidjson::SizeType j = 0; j < jsonSubLevel.Size(); j++){
+            subVector.push_back(jsonSubLevel[j].GetInt());
+        }
+        level.push_back(subVector);
+    }
 }
 
-void exportGame() {
+void Board::exportGame() {
 
 }
 

@@ -10,18 +10,22 @@
 #include "../rapidjson/document.h"
 #include "../rapidjson/writer.h"
 #include "../rapidjson/stringbuffer.h"
+#include "../rapidjson/filereadstream.h"
 #include "Board.hpp"
 #include "Pacman.hpp"
 #include "Ghost.hpp"
+#include <cstdio>
+#include <stdexcept>               // std::runtime_error
+#include "../rapidjson/error/error.h" // rapidjson::ParseResult
 
 class DataManager {
 
 public:
     DataManager();
 
-    rapidjson::Document importFromJson(std::string fileName);
+    rapidjson::Document importFromJson(std::string &fileName);
 
-    void exportInJson(std::string datas[]);
+    void exportInJson();
 
 };
 
