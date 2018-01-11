@@ -95,6 +95,9 @@ int main(int argc, char** argv) {
 
     std::cout << "OpenGL Version : " << glGetString(GL_VERSION) << std::endl;
     std::cout << "GLEW Version : " << glewGetString(GLEW_VERSION) << std::endl;
+    std::cout << argv[0] << std::endl;
+    
+
 
     /*********************************
      * HERE SHOULD COME THE INITIALIZATION CODE

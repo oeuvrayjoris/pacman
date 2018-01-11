@@ -4,6 +4,8 @@
 #include <iostream>
 #include <vector>
 #include "Constants.hpp"
+#include <rapidjson/document.h>
+#include <glimac/DataManager.hpp>
 
 class Pacman;
 class Ghost;
@@ -27,7 +29,7 @@ public:
     void checkForDeath();
     void handleModes();
 
-    void importGame();
+    void loadConfig(rapidjson::Document &d);
     void exportGame();
 
     // Getters

@@ -27,6 +27,7 @@ Board::~Board() {
 /* METHODS */
 
 void Board::load() {
+    /*
     level = {
             {4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4},
             {4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4},
@@ -56,6 +57,13 @@ void Board::load() {
     };
     levelWidth = level.at(0).size();
     levelHeight = level.size();
+    */
+
+    DataManager dataManager;
+    std::string fileName = "./pacman/datas/levels/test.json";
+    rapidjson::Document d = dataManager.importFromJson(fileName);
+    loadConfig(d);
+
     pacman->setLeftDots(0);
 
     int elem, k = 0;
@@ -274,11 +282,29 @@ void Board::handleModes() {
      */
 }
 
-void importGame() {
+void Board::loadConfig(rapidjson::Document &d) {
 
+    level.clear();
+
+    levelHeight = d["levelHeight"].GetInt();
+    levelWidth = d["levelWidth"].GetInt();
+    pacman->setScore(d["score"].GetInt());
+    pacman->setLives(d["lives"].GetInt());
+
+    const rapidjson::Value &jsonLevel = d["level"];
+
+    for (rapidjson::SizeType i = 0; i < jsonLevel.Size(); i++) { // Uses SizeType instead of size_t
+        std::cout << "{";
+        const rapidjson::Value &jsonSubLevel = jsonLevel[i];
+        std::vector<int> subVector;
+        for (rapidjson::SizeType j = 0; j < jsonSubLevel.Size(); j++){
+            subVector.push_back(jsonSubLevel[j].GetInt());
+        }
+        level.push_back(subVector);
+    }
 }
 
-void exportGame() {
+void Board::exportGame() {
 
 }
 
