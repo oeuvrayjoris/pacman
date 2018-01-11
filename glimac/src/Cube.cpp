@@ -86,8 +86,8 @@ namespace glimac {
 
         std::vector<float> uv = {
                 0, 0, // Left
+                0, 0,
                 0, size,
-                size, size,
                 size, size, // Back
                 0, 0,
                 0, size,

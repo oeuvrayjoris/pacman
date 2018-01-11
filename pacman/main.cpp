@@ -463,6 +463,8 @@ int main(int argc, char** argv) {
     bool pause = false;
     int menu_choice = 3;
     int step = 0; // 0 = menu, 1 = game, 2 = echap, 3 = game over
+    float degree = 0;
+    float pi = 3.14159265359;
 
     char dir = 'q';
 
@@ -507,10 +509,14 @@ int main(int argc, char** argv) {
                                 }
                                 break;
                             case SDLK_UP:
+                                degree += 0.1;
+                                //std::cout << degree << std::endl;
                                     if(menu_choice < 2)
                                         menu_choice += 1;
                                 break;
                             case SDLK_DOWN:
+                                degree -= 0.1;
+                                //std::cout << degree << std::endl;
                                 if (menu_choice > 1)
                                         menu_choice -= 1;
                                 break;
@@ -592,8 +598,8 @@ int main(int argc, char** argv) {
                     // Menu
                     MVMatrix = glm::translate(glm::mat4(1.f), glm::vec3(0, 0, 0.2));
                     MVMatrix = glm::scale(MVMatrix, glm::vec3(16 / 9, 1, 1));
-                    MVMatrix = glm::rotate(MVMatrix, (float) 3.14 / 2, glm::vec3(0, 1, 0));
-                    MVMatrix = glm::rotate(MVMatrix, (float) 3.14 / 2, glm::vec3(1, 0, 0));
+                    MVMatrix = glm::rotate(MVMatrix, pi/2, glm::vec3(0, 1, 0));
+                    MVMatrix = glm::rotate(MVMatrix, pi/2, glm::vec3(1, 0, 0));
 
                     glBindVertexArray(vao);
 
@@ -632,17 +638,16 @@ int main(int argc, char** argv) {
                     // Game
 
                     // Nombre de vies
-                    /*MVMatrix = glm::translate(glm::mat4(1.f), glm::vec3(0,0,-4));
-                    MVMatrix = glm::scale(MVMatrix, glm::vec3(0.1, 0.1, 0.1));
-                    MVMatrix = glm::rotate(MVMatrix, (float) 3.14 / 2, glm::vec3(0, 1, 0));
-                    MVMatrix = glm::rotate(MVMatrix, (float) 3.14 / 2, glm::vec3(1, 0, 0));
+                    MVMatrix = glm::translate(glm::mat4(1.f), glm::vec3(-3.2,-1.7,-3));
+                    MVMatrix = glm::scale(MVMatrix, glm::vec3(0.2, 0.2, 0.2));
+                    MVMatrix = glm::rotate(MVMatrix, pi/2, glm::vec3(1, 0, 0));
 
                     glBindVertexArray(vao);
 
-                    texProgram.m_Program.use();
-                    glUniform1i(texProgram.uTexture, 0);
-
                     for (int i=0; i<board->getPacman()->getLives(); i++) {
+                        texProgram.m_Program.use();
+                        glUniform1i(texProgram.uTexture, 0);
+
                         glUniformMatrix4fv(texProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
                         glUniformMatrix4fv(texProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
                         glUniformMatrix4fv(texProgram.uNormalMatrix, 1, GL_FALSE,
@@ -652,14 +657,16 @@ int main(int argc, char** argv) {
 
                         glBindTexture(GL_TEXTURE_2D, coeurTexture);
 
-                        glDrawArrays(GL_TRIANGLES, 0, cube.getVertexCount());
+                        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
 
                         glActiveTexture(GL_TEXTURE0);
                         glBindTexture(GL_TEXTURE_2D, 0);
+
+                        MVMatrix = glm::translate(MVMatrix, glm::vec3(2.2,0,0));
                     }
 
                     glBindVertexArray(0);
-                    */
+
                     /* On récupère la ViewMatrix de la caméra à chaque tour de boucle */
                     glm::mat4 globalMVMatrix;
                     if (camera_choice == 1)
@@ -782,13 +789,13 @@ int main(int argc, char** argv) {
 
                                     switch (board->getPacman()->getDir()) {
                                         case 's':
-                                            MVMatrix = glm::rotate(MVMatrix, (float)3.14, glm::vec3(0, 1, 0));
+                                            MVMatrix = glm::rotate(MVMatrix, pi, glm::vec3(0, 1, 0));
                                             break;
                                         case 'q':
-                                            MVMatrix = glm::rotate(MVMatrix, (float)3.14/2, glm::vec3(0, 1, 0));
+                                            MVMatrix = glm::rotate(MVMatrix, pi/2, glm::vec3(0, 1, 0));
                                             break;
                                         case 'd':
-                                            MVMatrix = glm::rotate(MVMatrix, (float)-3.14/2, glm::vec3(0, 1, 0));
+                                            MVMatrix = glm::rotate(MVMatrix, -pi/2, glm::vec3(0, 1, 0));
                                             break;
                                     }
 
@@ -811,13 +818,13 @@ int main(int argc, char** argv) {
 
                                     switch (board->getPacman()->getDir()) {
                                         case 's':
-                                            MVMatrix = glm::rotate(MVMatrix, (float)-3.14, glm::vec3(0, 1, 0));
+                                            MVMatrix = glm::rotate(MVMatrix, -pi, glm::vec3(0, 1, 0));
                                             break;
                                         case 'q':
-                                            MVMatrix = glm::rotate(MVMatrix, (float)-3.14/2, glm::vec3(0, 1, 0));
+                                            MVMatrix = glm::rotate(MVMatrix, -pi/2, glm::vec3(0, 1, 0));
                                             break;
                                         case 'd':
-                                            MVMatrix = glm::rotate(MVMatrix, (float)3.14/2, glm::vec3(0, 1, 0));
+                                            MVMatrix = glm::rotate(MVMatrix, pi/2, glm::vec3(0, 1, 0));
                                             break;
                                     }
 
@@ -926,8 +933,8 @@ int main(int argc, char** argv) {
                     // Echap
                     MVMatrix = glm::translate(glm::mat4(1.f), glm::vec3(0, 0, 0.2));
                     MVMatrix = glm::scale(MVMatrix, glm::vec3(16 / 9, 1, 1));
-                    MVMatrix = glm::rotate(MVMatrix, (float) 3.14 / 2, glm::vec3(0, 1, 0));
-                    MVMatrix = glm::rotate(MVMatrix, (float) 3.14 / 2, glm::vec3(1, 0, 0));
+                    MVMatrix = glm::rotate(MVMatrix, pi / 2, glm::vec3(0, 1, 0));
+                    MVMatrix = glm::rotate(MVMatrix, pi / 2, glm::vec3(1, 0, 0));
 
                     glBindVertexArray(vao);
 
@@ -966,8 +973,8 @@ int main(int argc, char** argv) {
                     // Game over
                     MVMatrix = glm::translate(glm::mat4(1.f), glm::vec3(0, 0, 0.2));
                     MVMatrix = glm::scale(MVMatrix, glm::vec3(16 / 9, 1, 1));
-                    MVMatrix = glm::rotate(MVMatrix, (float) 3.14 / 2, glm::vec3(0, 1, 0));
-                    MVMatrix = glm::rotate(MVMatrix, (float) 3.14 / 2, glm::vec3(1, 0, 0));
+                    MVMatrix = glm::rotate(MVMatrix, pi / 2, glm::vec3(0, 1, 0));
+                    MVMatrix = glm::rotate(MVMatrix, pi / 2, glm::vec3(1, 0, 0));
 
                     glBindVertexArray(vao);
 
