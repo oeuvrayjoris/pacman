@@ -134,7 +134,7 @@ void Pacman::die(){
             board->changeValue(board->getGhosts()[i]->getCoord_x(), board->getGhosts()[i]->getCoord_y(), board->getGhosts()[i]->getPrevElem());
         board->initGame(); // We place our elements as their initial locations
     }
-    SDL_Delay(1000);
+    SDL_Delay(1150);
 }
 
 int Pacman::increaseKill() {
