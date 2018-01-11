@@ -518,14 +518,16 @@ int main(int argc, char** argv) {
                                 std::cout << "Camera " << camera_choice << std::endl;
                                 break;
                             case SDLK_ESCAPE:
-                            	if (pause)
-                            		pause = false;
-                            	else pause = true;
-                                if(step == 2) {
-                                    step = 1;
-                                }
-                                else {
-                                    step = 2;
+                                if (step != 0 && step != 3) {
+                                	if (pause)
+                                		pause = false;
+                                	else pause = true;
+                                    if(step == 2) {
+                                        step = 1;
+                                    }
+                                    else {
+                                        step = 2;
+                                    }
                                 }
                                 break;
                             case SDLK_UP:
@@ -547,7 +549,7 @@ int main(int argc, char** argv) {
                                         menu_choice = 3; // reinit
                                     }
 
-                                    else
+                                    else if(menu_choice == 1)
                                         return EXIT_SUCCESS; // On quitte le jeu
                                 }
                                 else if(step == 3) { // Game over
@@ -556,7 +558,7 @@ int main(int argc, char** argv) {
                                         pause = true;
                                         menu_choice = 3; // reinit
                                     }
-                                    else
+                                    else if(menu_choice == 1)
                                         return EXIT_SUCCESS; // On quitte le jeu
                                 }
                                 break;
@@ -567,7 +569,7 @@ int main(int argc, char** argv) {
                                         menu_choice = 3; // reinit
                                     }
 
-                                    else
+                                    else if(menu_choice == 1)
                                         return EXIT_SUCCESS; // On quitte le jeu
                                 }
                                 else if(step == 3) { // Game over
@@ -576,7 +578,7 @@ int main(int argc, char** argv) {
                                         pause = true;
                                         menu_choice = 3; // reinit
                                     }
-                                    else
+                                    else if(menu_choice == 1)
                                         return EXIT_SUCCESS; // On quitte le jeu
                                 }
                                 break;
