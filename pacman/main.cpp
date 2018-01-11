@@ -10,10 +10,8 @@
 #include <glimac/common.hpp>
 #include <vector>
 #include <glimac/Board.hpp>
-#include <glimac/TrackballCamera.hpp>
 #include <glimac/Camera3.hpp>
 #include <glimac/Camera1.hpp>
-#include <glimac/FreeflyCamera.hpp>
 #include <glimac/Pacman.hpp>
 #include <glimac/Geometry.hpp>
 
@@ -94,8 +92,6 @@ int main(int argc, char** argv) {
     glEnable(GL_DEPTH_TEST);
 
     // Cameras
-    //FreeflyCamera camera = FreeflyCamera();
-    TrackballCamera camera = TrackballCamera();
     Camera3 camera3 = Camera3();
     Camera1 camera1 = Camera1();
     int camera_choice = 1;
@@ -500,6 +496,7 @@ int main(int argc, char** argv) {
                                     camera_choice = 3;
                                 else
                                     camera_choice = 1;
+                                std::cout << "Camera " << camera_choice << std::endl;
                                 break;
                             case SDLK_ESCAPE:
                             	if (pause)
@@ -513,14 +510,10 @@ int main(int argc, char** argv) {
                                 }
                                 break;
                             case SDLK_UP:
-                                degree += 0.1;
-                                //std::cout << degree << std::endl;
                                     if(menu_choice < 2)
                                         menu_choice += 1;
                                 break;
                             case SDLK_DOWN:
-                                degree -= 0.1;
-                                //std::cout << degree << std::endl;
                                 if (menu_choice > 1)
                                         menu_choice -= 1;
                                 break;
@@ -792,8 +785,8 @@ int main(int argc, char** argv) {
                                     // Pacman
 
                                     camera3.setX(j * -0.325);
-                                    camera3.setY(0.20 + i * 0.205);
-                                    camera3.setZ(-2 + i * -0.29);
+                                    camera3.setY(0.3 + 4.4/23*i);
+                                    camera3.setZ(-2.0 - 4.1/23*i);
 
                                     glBindVertexArray(vao2);
 

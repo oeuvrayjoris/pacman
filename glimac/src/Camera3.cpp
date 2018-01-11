@@ -31,6 +31,7 @@ void Camera3::setAngleX(float new_angle_x) {
 
 void Camera3::moveX(float val) {
     x+=val;
+
 }
 
 void Camera3::moveY(float val) {
