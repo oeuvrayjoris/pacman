@@ -756,9 +756,9 @@ int main(int argc, char** argv) {
                     glUniform3f(normalProgram.uLightDir_vs, uLightDirVec.x, uLightDirVec.y, uLightDirVec.z);
 
                     if (board->getPacman()->getSuper())
-                        glUniform3f(normalProgram.uLightIntensity, 0.f, 0.f, 2.f);
+                        glUniform3f(normalProgram.uLightIntensity, 1.f, 3.f, 1.f);
                     else
-                        glUniform3f(normalProgram.uLightIntensity, 0.f, 2.f, 0.f);
+                        glUniform3f(normalProgram.uLightIntensity, 1.f, 1.f, 3.f);
 
 
                     /* Plateau de jeu */
