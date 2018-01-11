@@ -127,13 +127,14 @@ void Pacman::increaseScore(int scoreAdd) {
 
 void Pacman::die(){
     lives--;
-    mySleep(3000);
+    //mySleep(3000);
     board->changeValue(coord_x, coord_y, 0);
     if (lives != 0) {
         for (int i = 0; i < 4; i++)
             board->changeValue(board->getGhosts()[i]->getCoord_x(), board->getGhosts()[i]->getCoord_y(), board->getGhosts()[i]->getPrevElem());
         board->initGame(); // We place our elements as their initial locations
     }
+    SDL_Delay(1150);
 }
 
 int Pacman::increaseKill() {
