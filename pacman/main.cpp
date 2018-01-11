@@ -515,14 +515,16 @@ int main(int argc, char** argv) {
                                 std::cout << "Camera " << camera_choice << std::endl;
                                 break;
                             case SDLK_ESCAPE:
-                            	if (pause)
-                            		pause = false;
-                            	else pause = true;
-                                if(step == 2) {
-                                    step = 1;
-                                }
-                                else {
-                                    step = 2;
+                                if (step != 0 && step != 3) {
+                                	if (pause)
+                                		pause = false;
+                                	else pause = true;
+                                    if(step == 2) {
+                                        step = 1;
+                                    }
+                                    else {
+                                        step = 2;
+                                    }
                                 }
                                 break;
                             case SDLK_UP:
