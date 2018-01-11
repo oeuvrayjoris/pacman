@@ -544,7 +544,7 @@ int main(int argc, char** argv) {
                                         menu_choice = 3; // reinit
                                     }
 
-                                    else
+                                    else if(menu_choice == 1)
                                         return EXIT_SUCCESS; // On quitte le jeu
                                 }
                                 else if(step == 3) { // Game over
@@ -553,7 +553,7 @@ int main(int argc, char** argv) {
                                         pause = true;
                                         menu_choice = 3; // reinit
                                     }
-                                    else
+                                    else if(menu_choice == 1)
                                         return EXIT_SUCCESS; // On quitte le jeu
                                 }
                                 break;
@@ -564,7 +564,7 @@ int main(int argc, char** argv) {
                                         menu_choice = 3; // reinit
                                     }
 
-                                    else
+                                    else if(menu_choice == 1)
                                         return EXIT_SUCCESS; // On quitte le jeu
                                 }
                                 else if(step == 3) { // Game over
@@ -573,7 +573,7 @@ int main(int argc, char** argv) {
                                         pause = true;
                                         menu_choice = 3; // reinit
                                     }
-                                    else
+                                    else if(menu_choice == 1)
                                         return EXIT_SUCCESS; // On quitte le jeu
                                 }
                                 break;
