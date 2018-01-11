@@ -484,15 +484,19 @@ int main(int argc, char** argv) {
                     case SDL_KEYDOWN:
                         switch (e.key.keysym.sym) {
                             case SDLK_q:
-                                dir = 'q';
+                                if (step == 1)
+                                    dir = 'q';
                                 break;
                             case SDLK_d:
-                                dir = 'd';
+                                if (step == 1)
+                                    dir = 'd';
                                 break;
                             case SDLK_z:
-                                dir = 'z';
+                                if (step == 1)
+                                    dir = 'z';
                                 break;
                             case SDLK_s:
+                                if (step == 1)
                                 dir = 's';
                                 break;
                             case SDLK_c:
@@ -528,7 +532,6 @@ int main(int argc, char** argv) {
                                 if(step == 0 || step == 2) {
                                     if(menu_choice == 2) {
                                         step = 1; // On entre dans le jeu
-                                        pause = false;
                                         menu_choice = 3; // reinit
                                     }
 
@@ -538,6 +541,7 @@ int main(int argc, char** argv) {
                                 else if(step == 3) { // Game over
                                     if(menu_choice == 2) {
                                         step = 0; // On revient au menu
+                                        pause = true;
                                         menu_choice = 3; // reinit
                                     }
                                     else
@@ -548,7 +552,6 @@ int main(int argc, char** argv) {
                                 if(step == 0 || step == 2) {
                                     if(menu_choice == 2) {
                                         step = 1; // On entre dans le jeu
-                                        pause = false;
                                         menu_choice = 3; // reinit
                                     }
 
@@ -558,6 +561,7 @@ int main(int argc, char** argv) {
                                 else if(step == 3) { // Game over
                                     if(menu_choice == 2) {
                                         step = 0; // On revient au menu
+                                        pause = true;
                                         menu_choice = 3; // reinit
                                     }
                                     else
@@ -567,7 +571,6 @@ int main(int argc, char** argv) {
                             default:
                                 break;
                         }
-                        break;
                     default:
                         break;
                 }
@@ -575,26 +578,41 @@ int main(int argc, char** argv) {
 
             previousMousePosition = mousePosition;
 
+            if (step == 1)
+                pause = false;
+            else pause = true;
             if(!pause) {
+                int prevLives = board->getPacman()->getLives();
                 board->getPacman()->move(dir);
                 board->checkForDeath();
+                if (prevLives != board->getPacman()->getLives()) {
+                    dir = 'q';
+                    prevLives = board->getPacman()->getLives();
+                }
                 if (!board->getPacman()->getLives()) {
                     step = 3; // Affichage du gameOver 
 				    board->launchGame(); // We reset the pacman lives to 3, and score to 0
 				    board->load(); // We reload the level
 				    numLevel = 0; // We reset the gameLevel to 0 (will be 1 after the end of the loop)
+                    dir = 'q';
                 }
                 board->moveGhosts();
                 board->checkForDeath();
+                if (prevLives != board->getPacman()->getLives()) {
+                    dir = 'q';
+                    prevLives = board->getPacman()->getLives();
+                }
                 if (!board->getPacman()->getLives()) {
                     step = 3; // Affichage du gameOver
 				    board->launchGame();
 				    board->load(); // We reload the level
 				    numLevel = 0; // We reset the gameLevel to 0 (will be 1 after the end of the loop)
+                    dir = 'q';
                 }
                 if (!loop)
                     break;
                 board->handleModes();
+                std::cout << dir << std::endl;
             }
 
             /*********************************
