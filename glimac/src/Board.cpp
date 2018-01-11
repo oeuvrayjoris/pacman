@@ -26,38 +26,32 @@ Board::~Board() {
 
 /* METHODS */
 
-void Board::load() {
-    level = {
-            {4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4},
-            {4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4},
-            {4, 2, 4, 4, 4, 4, 1, 4, 4, 4, 4, 1, 4, 1, 4, 4, 4, 4, 1, 4, 4, 4, 4, 2, 4},
-            {4, 1, 4, 4, 4, 4, 1, 4, 4, 4, 4, 1, 4, 1, 4, 4, 4, 4, 1, 4, 4, 4, 4, 1, 4},
-            {4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4},
-            {4, 1, 4, 4, 4, 4, 1, 4, 1, 4, 4, 4, 4, 4, 4, 4, 1, 4, 1, 4, 4, 4, 4, 1, 4},
-            {4, 1, 4, 4, 4, 4, 1, 4, 1, 4, 4, 4, 4, 4, 4, 4, 1, 4, 1, 4, 4, 4, 4, 1, 4},
-            {4, 1, 1, 1, 1, 1, 1, 4, 1, 1, 1, 1, 4, 1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 4},
-            {4, 4, 4, 4, 4, 4, 1, 4, 4, 4, 4, 1, 4, 1, 4, 4, 4, 4, 1, 4, 4, 4, 4, 4, 4},
-            {0, 0, 0, 0, 0, 4, 1, 4, 0, 0, 0, 0, 11, 0, 0, 0, 0, 4, 1, 4, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 4, 1, 4, 0, 4, 4, 4, 20, 4, 4, 4, 0, 4, 1, 4, 0, 0, 0, 0, 0},
-            {4, 4, 4, 4, 4, 4, 1, 4, 0, 4, 0, 0, 0, 0, 0, 4, 0, 4, 1, 4, 4, 4, 4, 4, 4},
-            {0, 0, 0, 0, 0, 0, 1, 0, 0, 4, 12, 0, 13, 0, 14, 4, 0, 0, 1, 0, 0, 0, 0, 0, 0},
-            {4, 4, 4, 4, 4, 4, 1, 4, 0, 4, 0, 0, 0, 0, 0, 4, 0, 4, 1, 4, 4, 4, 4, 4, 4},
-            {0, 0, 0, 0, 0, 4, 1, 4, 0, 4, 4, 4, 4, 4, 4, 4, 0, 4, 1, 4, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 4, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 1, 4, 0, 0, 0, 0, 0},
-            {4, 4, 4, 4, 4, 4, 1, 4, 0, 4, 4, 4, 4, 4, 4, 4, 0, 4, 1, 4, 4, 4, 4, 4, 4},
-            {4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4},
-            {4, 1, 4, 4, 4, 4, 1, 4, 4, 4, 4, 1, 4, 1, 4, 4, 4, 4, 1, 4, 4, 4, 4, 1, 4},
-            {4, 2, 1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 10, 1, 1, 1, 1, 1, 1, 4, 1, 1, 1, 2, 4},
-            {4, 4, 4, 4, 1, 4, 1, 4, 1, 4, 4, 4, 4, 4, 4, 4, 1, 4, 1, 4, 1, 4, 4, 4, 4},
-            {4, 1, 1, 1, 1, 1, 1, 4, 1, 1, 1, 1, 4, 1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 4},
-            {4, 1, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 4, 1, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 4},
-            {4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4},
-            {4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4}
-    };
-    levelWidth = level.at(0).size();
-    levelHeight = level.size();
+void Board::load(std::string &fileName, bool newGame) {
 
-    //loadConfig();
+    DataManager dataManager;
+    rapidjson::Document d = dataManager.importFromJson(fileName);
+
+    level.clear();
+
+    levelHeight = d["levelHeight"].GetInt();
+    levelWidth = d["levelWidth"].GetInt();
+    if (newGame) {
+        pacman->setScore(d["score"].GetInt());
+        pacman->setLives(d["lives"].GetInt());
+    }
+
+    const rapidjson::Value &jsonLevel = d["level"];
+
+    for (rapidjson::SizeType i = 0; i < jsonLevel.Size(); i++) { // Uses SizeType instead of size_t
+        const rapidjson::Value &jsonSubLevel = jsonLevel[i];
+        std::vector<int> subVector;
+        for (rapidjson::SizeType j = 0; j < jsonSubLevel.Size(); j++){
+            subVector.push_back(jsonSubLevel[j].GetInt());
+        }
+        level.push_back(subVector);
+    }
+
+    //loadConfig(d);
 
     pacman->setLeftDots(0);
 
@@ -144,13 +138,13 @@ void Board::initGame(){
     ghosts[BLINKY]->setMode('s');
     ghosts[BLINKY]->setModeOld('s');
     ghosts[BLINKY]->setDir('q');
-    if (pacman->getLeftDots() <= 235) {
+    if (pacman->getLeftDots() <= 190) {
         ghosts[PINKY]->setMode('e');
     }
-    if (pacman->getLeftDots() <= 200) {
+    if (pacman->getLeftDots() <= 155) {
         ghosts[INKY]->setMode('e');
     }
-    if (pacman->getLeftDots() <= 165) {
+    if (pacman->getLeftDots() <= 120) {
         ghosts[CLYDE]->setMode('e');
     }
 }
@@ -174,14 +168,14 @@ void Board::moveGhosts() {
         }
     }
     // We allow the ghosts to exit
-    if (pacman->getLeftDots() == 235 && ghosts[PINKY]->getMode() == 'w') {
+    if (pacman->getLeftDots() == 190 && ghosts[PINKY]->getMode() == 'w') {
         ghosts[PINKY]->setMode('e');
     }
-    if (pacman->getLeftDots() == 200 && ghosts[INKY]->getMode() == 'w') {
+    if (pacman->getLeftDots() == 155 && ghosts[INKY]->getMode() == 'w') {
         ghosts[INKY]->setMode('e');
         std::cout << "INKY !" << std::endl;
     }
-    if (pacman->getLeftDots() == 165 && ghosts[CLYDE]->getMode() == 'w') {
+    if (pacman->getLeftDots() == 120 && ghosts[CLYDE]->getMode() == 'w') {
         ghosts[CLYDE]->setMode('e');
         std::cout << "CLYDE !" << std::endl;
     }
@@ -235,24 +229,6 @@ void Board::handleModes() {
             }
         }
     }
-    /* A SUPPRIMER                      /!\
-    // handle flashing 1UP
-    if (oneUpTimer) {
-        --oneUpTimer;
-    }
-    else {
-        if (oneUpColor == WHITE) {
-            oneUpColor = BLACK;
-        }
-        else {
-            oneUpColor = WHITE;
-        }
-        SetTextColor(oneUpColor);
-        SetCursorPosition(-3, 3);
-        cout << "1UP";
-        oneUpTimer = ONE_UP_MAX;
-    }
-    */
 
     // We alternate chase and scatter mode          /!\ Décommenter quand le 'c' sera fait
     /*
@@ -277,23 +253,20 @@ void Board::handleModes() {
      */
 }
 
-void Board::loadConfig() {
-
-    DataManager dataManager;
-    std::string fileName = "./pacman/datas/levels/test.json";
-    rapidjson::Document d = dataManager.importFromJson(fileName);
+void Board::loadConfig(rapidjson::Document &d, bool newGame) {
 
     level.clear();
 
     levelHeight = d["levelHeight"].GetInt();
     levelWidth = d["levelWidth"].GetInt();
-    pacman->setScore(d["score"].GetInt());
-    pacman->setLives(d["lives"].GetInt());
+    if (newGame) {
+        pacman->setScore(d["score"].GetInt());
+        pacman->setLives(d["lives"].GetInt());
+    }
 
     const rapidjson::Value &jsonLevel = d["level"];
 
     for (rapidjson::SizeType i = 0; i < jsonLevel.Size(); i++) { // Uses SizeType instead of size_t
-        std::cout << "{";
         const rapidjson::Value &jsonSubLevel = jsonLevel[i];
         std::vector<int> subVector;
         for (rapidjson::SizeType j = 0; j < jsonSubLevel.Size(); j++){
@@ -301,6 +274,8 @@ void Board::loadConfig() {
         }
         level.push_back(subVector);
     }
+
+
 }
 
 void Board::exportGame() {

@@ -475,14 +475,19 @@ int main(int argc, char** argv) {
     int menu_choice = 3;
     int step = 0; // 0 = menu, 1 = game, 2 = echap, 3 = game over
     board->launchGame(); // Initialize Pacman life and score
-    board->load(); // Initialize the game
+
+    //std::string fileName = "./pacman/datas/levels/test.json"; // FOR LINUX
+    std::string fileName = "../../pacman/datas/levels/test.json"; // FOR clion Windows
+    board->load(fileName, 1);
+
     float degree = 0;
     float pi = 3.14159265359;
 
     char dir = 'q';
 
+    // We iterate through the 100 levels
     for (int numLevel = 1; numLevel < 100; numLevel++) {
-	    board->load();
+        board->load(fileName, 0);
 	    char dir = 'q';
         while (loop && board->getPacman()->getLeftDots() != 0) {
             // Event loop:
@@ -606,7 +611,7 @@ int main(int argc, char** argv) {
                 if (!board->getPacman()->getLives()) {
                     step = 3; // Affichage du gameOver 
 				    board->launchGame(); // We reset the pacman lives to 3, and score to 0
-				    board->load(); // We reload the level
+                    board->load(fileName, 1); // We reload the level
 				    numLevel = 0; // We reset the gameLevel to 0 (will be 1 after the end of the loop)
                     dir = 'q';
                 }
@@ -619,7 +624,7 @@ int main(int argc, char** argv) {
                 if (!board->getPacman()->getLives()) {
                     step = 3; // Affichage du gameOver
 				    board->launchGame();
-				    board->load(); // We reload the level
+                    board->load(fileName, 1); // We reload the level
 				    numLevel = 0; // We reset the gameLevel to 0 (will be 1 after the end of the loop)
                     dir = 'q';
                 }
@@ -745,9 +750,9 @@ int main(int argc, char** argv) {
 
                     glm::mat4 lightMatrix;
                     if (camera_choice == 1)
-                        glm::mat4 lightMatrix = glm::rotate(globalMVMatrix = camera1.getViewMatrix(), windowManager.getTime(), glm::vec3(0.0, 1.0, 0.0));
+                        lightMatrix = glm::rotate(globalMVMatrix = camera1.getViewMatrix(), windowManager.getTime(), glm::vec3(0.0, 1.0, 0.0));
                     else
-                        glm::mat4 lightMatrix = glm::rotate(globalMVMatrix = camera3.getViewMatrix(), windowManager.getTime(), glm::vec3(0.0, 1.0, 0.0));
+                        lightMatrix = glm::rotate(globalMVMatrix = camera3.getViewMatrix(), windowManager.getTime(), glm::vec3(0.0, 1.0, 0.0));
 
                     glm::vec4 uLightDirVec = glm::normalize(glm::vec4(1, 1, 1, 0) * lightMatrix);
 

@@ -19,11 +19,6 @@ rapidjson::Document DataManager::importFromJson(std::string &fileName) {
 
     fclose(fp);
 
-    rapidjson::ParseResult result = d.ParseStream(is);
-    if (!result) {
-      std::cerr << "JSON parse error: %s (%u)";
-    }
-
     return d;
 }
 

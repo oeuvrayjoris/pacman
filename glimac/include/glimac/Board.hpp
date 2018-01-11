@@ -3,9 +3,9 @@
 
 #include <iostream>
 #include <vector>
-#include "Constants.hpp"
 #include <rapidjson/document.h>
 #include <glimac/DataManager.hpp>
+#include "Constants.hpp"
 
 class Pacman;
 class Ghost;
@@ -20,7 +20,7 @@ public:
     ~Board();
 
     // Methods
-    void load();
+    void load(std::string &fileName, bool newGame);
     void changeValue(int m, int n, int value);
     void launchGame();
     void initGame();
@@ -29,7 +29,7 @@ public:
     void checkForDeath();
     void handleModes();
 
-    void loadConfig();
+    void loadConfig(rapidjson::Document &d, bool newGame);
     void exportGame();
 
     // Getters
