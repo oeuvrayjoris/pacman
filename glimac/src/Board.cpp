@@ -56,12 +56,8 @@ void Board::load() {
     };
     levelWidth = level.at(0).size();
     levelHeight = level.size();
-    
-/*
-    DataManager dataManager;
-    std::string fileName = "./pacman/datas/levels/test.json";
-    rapidjson::Document d = dataManager.importFromJson(fileName);
-    loadConfig(d);*/
+
+    //loadConfig();
 
     pacman->setLeftDots(0);
 
@@ -281,7 +277,11 @@ void Board::handleModes() {
      */
 }
 
-void Board::loadConfig(rapidjson::Document &d) {
+void Board::loadConfig() {
+
+    DataManager dataManager;
+    std::string fileName = "./pacman/datas/levels/test.json";
+    rapidjson::Document d = dataManager.importFromJson(fileName);
 
     level.clear();
 

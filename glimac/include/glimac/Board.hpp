@@ -29,7 +29,7 @@ public:
     void checkForDeath();
     void handleModes();
 
-    void loadConfig(rapidjson::Document &d);
+    void loadConfig();
     void exportGame();
 
     // Getters

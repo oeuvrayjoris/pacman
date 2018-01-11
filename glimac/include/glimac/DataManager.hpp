@@ -15,7 +15,8 @@
 #include "Pacman.hpp"
 #include "Ghost.hpp"
 #include <cstdio>
-
+#include <stdexcept>               // std::runtime_error
+#include "../rapidjson/error/error.h" // rapidjson::ParseResult
 
 class DataManager {
 
