@@ -109,7 +109,7 @@ int main(int argc, char** argv) {
     if(pImageSpace == NULL)
         std::cout << "SpaceMap == NULL" << std::endl;
 
-    std::unique_ptr<Image> pImagePacman = loadImage("../../assets/textures/PacmanMap.jpg");
+    std::unique_ptr<Image> pImagePacman = loadImage("../../assets/textures/NovelliMap.jpg");
     if(pImagePacman == NULL)
         std::cout << "PacmanMap == NULL" << std::endl;
 
@@ -168,6 +168,10 @@ int main(int argc, char** argv) {
     std::unique_ptr<Image> pImageOver3 = loadImage("../../assets/textures/Over3Map.jpg");
     if(pImageOver3 == NULL)
         std::cout << "Over3Map == NULL" << std::endl;
+
+    std::unique_ptr<Image> pImageDot = loadImage("../../assets/textures/DotMap.jpg");
+    if(pImageDot == NULL)
+        std::cout << "DotMap == NULL" << std::endl;
 #else
     std::unique_ptr<Image> pImageSpace = loadImage(applicationPath.dirPath() + "../assets/textures/SpaceMap.jpg");
     if(pImageSpace == NULL)
@@ -232,6 +236,10 @@ int main(int argc, char** argv) {
     std::unique_ptr<Image> pImageOver3 = loadImage(applicationPath.dirPath() + "../assets/textures/Over3Map.jpg");
     if(pImageOver3 == NULL)
         std::cout << "Over3Map == NULL" << std::endl;
+
+    std::unique_ptr<Image> pImageDot = loadImage(applicationPath.dirPath() + "../assets/textures/DotMap.jpg");
+    if(pImageDot == NULL)
+        std::cout << "DotMap == NULL" << std::endl;
 #endif
 
     GLuint spaceTexture;
@@ -281,6 +289,9 @@ int main(int argc, char** argv) {
 
     GLuint over3Texture;
     glGenTextures(1, &over3Texture);
+
+    GLuint dotTexture;
+    glGenTextures(1, &dotTexture);
 
     glBindTexture(GL_TEXTURE_2D, spaceTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pImageSpace->getWidth(), pImageSpace->getHeight(), 0, GL_RGBA, GL_FLOAT, pImageSpace->getPixels());
@@ -378,6 +389,12 @@ int main(int argc, char** argv) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glBindTexture(GL_TEXTURE_2D, 0);
 
+    glBindTexture(GL_TEXTURE_2D, dotTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pImageDot->getWidth(), pImageDot->getHeight(), 0, GL_RGBA, GL_FLOAT, pImageDot->getPixels());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
     /**
     * Calcul des matrices de Transformation
     */
@@ -448,6 +465,10 @@ int main(int argc, char** argv) {
     int step = 0; // 0 = menu, 1 = game, 2 = echap, 3 = game over
     board->launchGame(); // Initialize Pacman life and score
     board->load(); // Initialize the game
+    float degree = 0;
+    float pi = 3.14159265359;
+
+    char dir = 'q';
 
     for (int numLevel = 1; numLevel < 100; numLevel++) {
 	    board->load();
@@ -492,10 +513,14 @@ int main(int argc, char** argv) {
                                 }
                                 break;
                             case SDLK_UP:
+                                degree += 0.1;
+                                //std::cout << degree << std::endl;
                                     if(menu_choice < 2)
                                         menu_choice += 1;
                                 break;
                             case SDLK_DOWN:
+                                degree -= 0.1;
+                                //std::cout << degree << std::endl;
                                 if (menu_choice > 1)
                                         menu_choice -= 1;
                                 break;
@@ -583,8 +608,8 @@ int main(int argc, char** argv) {
                     // Menu
                     MVMatrix = glm::translate(glm::mat4(1.f), glm::vec3(0, 0, 0.2));
                     MVMatrix = glm::scale(MVMatrix, glm::vec3(16 / 9, 1, 1));
-                    MVMatrix = glm::rotate(MVMatrix, (float) 3.14 / 2, glm::vec3(0, 1, 0));
-                    MVMatrix = glm::rotate(MVMatrix, (float) 3.14 / 2, glm::vec3(1, 0, 0));
+                    MVMatrix = glm::rotate(MVMatrix, pi/2, glm::vec3(0, 1, 0));
+                    MVMatrix = glm::rotate(MVMatrix, pi/2, glm::vec3(1, 0, 0));
 
                     glBindVertexArray(vao);
 
@@ -623,17 +648,16 @@ int main(int argc, char** argv) {
                     // Game
 
                     // Nombre de vies
-                    /*MVMatrix = glm::translate(glm::mat4(1.f), glm::vec3(0,0,-4));
-                    MVMatrix = glm::scale(MVMatrix, glm::vec3(0.1, 0.1, 0.1));
-                    MVMatrix = glm::rotate(MVMatrix, (float) 3.14 / 2, glm::vec3(0, 1, 0));
-                    MVMatrix = glm::rotate(MVMatrix, (float) 3.14 / 2, glm::vec3(1, 0, 0));
+                    MVMatrix = glm::translate(glm::mat4(1.f), glm::vec3(-3.2,-1.7,-3));
+                    MVMatrix = glm::scale(MVMatrix, glm::vec3(0.2, 0.2, 0.2));
+                    MVMatrix = glm::rotate(MVMatrix, pi/2, glm::vec3(1, 0, 0));
 
                     glBindVertexArray(vao);
 
-                    texProgram.m_Program.use();
-                    glUniform1i(texProgram.uTexture, 0);
-
                     for (int i=0; i<board->getPacman()->getLives(); i++) {
+                        texProgram.m_Program.use();
+                        glUniform1i(texProgram.uTexture, 0);
+
                         glUniformMatrix4fv(texProgram.uMVPMatrix, 1, GL_FALSE, glm::value_ptr(ProjMatrix * MVMatrix));
                         glUniformMatrix4fv(texProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
                         glUniformMatrix4fv(texProgram.uNormalMatrix, 1, GL_FALSE,
@@ -643,14 +667,16 @@ int main(int argc, char** argv) {
 
                         glBindTexture(GL_TEXTURE_2D, coeurTexture);
 
-                        glDrawArrays(GL_TRIANGLES, 0, cube.getVertexCount());
+                        glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
 
                         glActiveTexture(GL_TEXTURE0);
                         glBindTexture(GL_TEXTURE_2D, 0);
+
+                        MVMatrix = glm::translate(MVMatrix, glm::vec3(2.2,0,0));
                     }
 
                     glBindVertexArray(0);
-                    */
+
                     /* On récupère la ViewMatrix de la caméra à chaque tour de boucle */
                     glm::mat4 globalMVMatrix;
                     if (camera_choice == 1)
@@ -698,35 +724,54 @@ int main(int argc, char** argv) {
                                     break;
                                 case 1:
                                     // Dot case
-                                    MVMatrix = glm::rotate(MVMatrix, windowManager.getTime(), glm::vec3(0, 1, 0));
                                     MVMatrix = glm::scale(MVMatrix, glm::vec3(0.25, 0.25, 0.25));
                                     glBindVertexArray(vao2);
-                                    normalProgram.m_Program.use();
-                                    glUniformMatrix4fv(normalProgram.uMVPMatrix, 1, GL_FALSE,
+
+                                    texProgram.m_Program.use();
+                                    glUniform1i(texProgram.uTexture, 0);
+
+                                    glUniformMatrix4fv(texProgram.uMVPMatrix, 1, GL_FALSE,
                                                        glm::value_ptr(ProjMatrix * MVMatrix));
-                                    glUniformMatrix4fv(normalProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-                                    glUniformMatrix4fv(normalProgram.uNormalMatrix, 1, GL_FALSE,
+                                    glUniformMatrix4fv(texProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+                                    glUniformMatrix4fv(texProgram.uNormalMatrix, 1, GL_FALSE,
                                                        glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
+
+                                    glActiveTexture(GL_TEXTURE0);
+                                    glBindTexture(GL_TEXTURE_2D, dotTexture);
+
                                     glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
+
+                                    glActiveTexture(GL_TEXTURE0);
+                                    glBindTexture(GL_TEXTURE_2D, 0);
+
                                     glBindVertexArray(0);
                                     MVMatrix = glm::scale(MVMatrix, glm::vec3(4.0, 4.0, 4.0));
-                                    MVMatrix = glm::rotate(MVMatrix, -windowManager.getTime(), glm::vec3(0, 1, 0));
                                     break;
                                 case 2:
                                     // Pellet case
-                                    MVMatrix = glm::rotate(MVMatrix, windowManager.getTime(), glm::vec3(0, 1, 0));
                                     MVMatrix = glm::scale(MVMatrix, glm::vec3(0.5, 0.5, 0.5));
+
                                     glBindVertexArray(vao2);
-                                    normalProgram.m_Program.use();
-                                    glUniformMatrix4fv(normalProgram.uMVPMatrix, 1, GL_FALSE,
+
+                                    texProgram.m_Program.use();
+                                    glUniform1i(texProgram.uTexture, 0);
+
+                                    glUniformMatrix4fv(texProgram.uMVPMatrix, 1, GL_FALSE,
                                                        glm::value_ptr(ProjMatrix * MVMatrix));
-                                    glUniformMatrix4fv(normalProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
-                                    glUniformMatrix4fv(normalProgram.uNormalMatrix, 1, GL_FALSE,
+                                    glUniformMatrix4fv(texProgram.uMVMatrix, 1, GL_FALSE, glm::value_ptr(MVMatrix));
+                                    glUniformMatrix4fv(texProgram.uNormalMatrix, 1, GL_FALSE,
                                                        glm::value_ptr(glm::transpose(glm::inverse(MVMatrix))));
+
+                                    glActiveTexture(GL_TEXTURE0);
+                                    glBindTexture(GL_TEXTURE_2D, dotTexture);
+
                                     glDrawArrays(GL_TRIANGLES, 0, sphere.getVertexCount());
+
+                                    glActiveTexture(GL_TEXTURE0);
+                                    glBindTexture(GL_TEXTURE_2D, 0);
+
                                     glBindVertexArray(0);
                                     MVMatrix = glm::scale(MVMatrix, glm::vec3(2.0, 2.0, 2.0));
-                                    MVMatrix = glm::rotate(MVMatrix, -windowManager.getTime(), glm::vec3(0, 1, 0));
                                     break;
                                 case 3:
                                     // Bonus fruit case
@@ -754,13 +799,13 @@ int main(int argc, char** argv) {
 
                                     switch (board->getPacman()->getDir()) {
                                         case 's':
-                                            MVMatrix = glm::rotate(MVMatrix, (float)3.14, glm::vec3(0, 1, 0));
+                                            MVMatrix = glm::rotate(MVMatrix, pi, glm::vec3(0, 1, 0));
                                             break;
                                         case 'q':
-                                            MVMatrix = glm::rotate(MVMatrix, (float)3.14/2, glm::vec3(0, 1, 0));
+                                            MVMatrix = glm::rotate(MVMatrix, pi/2, glm::vec3(0, 1, 0));
                                             break;
                                         case 'd':
-                                            MVMatrix = glm::rotate(MVMatrix, (float)-3.14/2, glm::vec3(0, 1, 0));
+                                            MVMatrix = glm::rotate(MVMatrix, -pi/2, glm::vec3(0, 1, 0));
                                             break;
                                     }
 
@@ -783,13 +828,13 @@ int main(int argc, char** argv) {
 
                                     switch (board->getPacman()->getDir()) {
                                         case 's':
-                                            MVMatrix = glm::rotate(MVMatrix, (float)-3.14, glm::vec3(0, 1, 0));
+                                            MVMatrix = glm::rotate(MVMatrix, -pi, glm::vec3(0, 1, 0));
                                             break;
                                         case 'q':
-                                            MVMatrix = glm::rotate(MVMatrix, (float)-3.14/2, glm::vec3(0, 1, 0));
+                                            MVMatrix = glm::rotate(MVMatrix, -pi/2, glm::vec3(0, 1, 0));
                                             break;
                                         case 'd':
-                                            MVMatrix = glm::rotate(MVMatrix, (float)3.14/2, glm::vec3(0, 1, 0));
+                                            MVMatrix = glm::rotate(MVMatrix, pi/2, glm::vec3(0, 1, 0));
                                             break;
                                     }
 
@@ -898,8 +943,8 @@ int main(int argc, char** argv) {
                     // Echap
                     MVMatrix = glm::translate(glm::mat4(1.f), glm::vec3(0, 0, 0.2));
                     MVMatrix = glm::scale(MVMatrix, glm::vec3(16 / 9, 1, 1));
-                    MVMatrix = glm::rotate(MVMatrix, (float) 3.14 / 2, glm::vec3(0, 1, 0));
-                    MVMatrix = glm::rotate(MVMatrix, (float) 3.14 / 2, glm::vec3(1, 0, 0));
+                    MVMatrix = glm::rotate(MVMatrix, pi / 2, glm::vec3(0, 1, 0));
+                    MVMatrix = glm::rotate(MVMatrix, pi / 2, glm::vec3(1, 0, 0));
 
                     glBindVertexArray(vao);
 
@@ -938,8 +983,8 @@ int main(int argc, char** argv) {
                     // Game over
                     MVMatrix = glm::translate(glm::mat4(1.f), glm::vec3(0, 0, 0.2));
                     MVMatrix = glm::scale(MVMatrix, glm::vec3(16 / 9, 1, 1));
-                    MVMatrix = glm::rotate(MVMatrix, (float) 3.14 / 2, glm::vec3(0, 1, 0));
-                    MVMatrix = glm::rotate(MVMatrix, (float) 3.14 / 2, glm::vec3(1, 0, 0));
+                    MVMatrix = glm::rotate(MVMatrix, pi / 2, glm::vec3(0, 1, 0));
+                    MVMatrix = glm::rotate(MVMatrix, pi / 2, glm::vec3(1, 0, 0));
 
                     glBindVertexArray(vao);
 
@@ -999,6 +1044,7 @@ int main(int argc, char** argv) {
     glDeleteTextures(1, &over1Texture);
     glDeleteTextures(1, &over2Texture);
     glDeleteTextures(1, &over3Texture);
+    glDeleteTextures(1, &dotTexture);
 
     glDeleteBuffers(1, &vbo);
     glDeleteVertexArrays(1, &vao);
