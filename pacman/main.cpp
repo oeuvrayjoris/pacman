@@ -48,6 +48,12 @@ struct NormalProgram {
     GLint uMVMatrix;
     GLint uNormalMatrix;
 
+    GLint uKd;
+    GLint uKs;
+    GLint uShininess;
+    GLint uLightDir_vs;
+    GLint uLightIntensity;
+
     NormalProgram(const FilePath& applicationPath) {
         std::string VS = "shaders/3D.vs.glsl";
         std::string FS = "shaders/normals.fs.glsl";
@@ -60,6 +66,12 @@ struct NormalProgram {
         uMVPMatrix = glGetUniformLocation(m_Program.getGLId(), "uMVPMatrix");
         uMVMatrix = glGetUniformLocation(m_Program.getGLId(), "uMVMatrix");
         uNormalMatrix = glGetUniformLocation(m_Program.getGLId(), "uNormalMatrix");
+
+        uKd = glGetUniformLocation(m_Program.getGLId(), "uKd");
+        uKs = glGetUniformLocation(m_Program.getGLId(), "uKs");
+        uShininess = glGetUniformLocation(m_Program.getGLId(), "uShininess");
+        uLightDir_vs = glGetUniformLocation(m_Program.getGLId(), "uLightDir_vs");
+        uLightIntensity = glGetUniformLocation(m_Program.getGLId(), "uLightIntensity");
     }
 };
 
@@ -609,7 +621,6 @@ int main(int argc, char** argv) {
                 if (!loop)
                     break;
                 board->handleModes();
-                std::cout << dir << std::endl;
             }
 
             /*********************************
@@ -723,6 +734,30 @@ int main(int argc, char** argv) {
                     glBindTexture(GL_TEXTURE_2D, 0);
 
                     glBindVertexArray(0);
+
+
+                    /* Lumières */
+
+                    glm::mat4 lightMatrix;
+                    if (camera_choice == 1)
+                        glm::mat4 lightMatrix = glm::rotate(globalMVMatrix = camera1.getViewMatrix(), windowManager.getTime(), glm::vec3(0.0, 1.0, 0.0));
+                    else
+                        glm::mat4 lightMatrix = glm::rotate(globalMVMatrix = camera3.getViewMatrix(), windowManager.getTime(), glm::vec3(0.0, 1.0, 0.0));
+
+                    glm::vec4 uLightDirVec = glm::normalize(glm::vec4(1, 1, 1, 0) * lightMatrix);
+
+                    normalProgram.m_Program.use();
+
+                    glUniform3f(normalProgram.uKd, 0.2f, 0.2f, 0.2f);
+                    glUniform3f(normalProgram.uKs, 0.8f, 0.8f, 0.8f);
+                    glUniform1f(normalProgram.uShininess, 100.f);
+                    glUniform3f(normalProgram.uLightDir_vs, uLightDirVec.x, uLightDirVec.y, uLightDirVec.z);
+
+                    if (board->getPacman()->getSuper())
+                        glUniform3f(normalProgram.uLightIntensity, 0.f, 0.f, 2.f);
+                    else
+                        glUniform3f(normalProgram.uLightIntensity, 0.f, 2.f, 0.f);
+
 
                     /* Plateau de jeu */
 
