@@ -109,15 +109,15 @@ void Ghost::move(int target_x, int target_y) {
                         bool left = coord_x > board->getPacman()->getCoord_y();
                         bool favorableDirs[4] = { up, left, down, right };
                         targetObject(favorableDirs);
-                    }
+                    }/*
                     else if (id == 12) {
 
                         dir = board->getPacman()->getDir();
                         getOpposite();
                         dir = dirOpp;
                         changeCoords();
-                    }
-                    else if (id == 14) {
+                    }*/
+                    else if (id == 12 || id == 14) {
                         randomDirection();
                     }
                 }
