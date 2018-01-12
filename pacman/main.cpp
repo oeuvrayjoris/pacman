@@ -515,8 +515,12 @@ int main(int argc, char** argv) {
     int menu_choice = 3;
     int step = 0; // Different screens of our applications. 0 = menu, 1 = game, 2 = echap, 3 = game over
 
-    //std::string fileName = "./pacman/datas/levels/test.json"; // FOR LINUX
-    std::string fileName = "../../pacman/datas/levels/test.json"; // FOR clion Windows
+#if __APPLE__
+    std::string fileName = "../../pacman/datas/levels/test.json";
+#else
+    std::string fileName = "./pacman/datas/levels/test.json";
+#endif
+
     board->load(fileName, 1);
 
     float pi = 3.14159265359;
