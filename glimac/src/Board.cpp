@@ -223,34 +223,33 @@ void Board::handleModes() {
                 }
                 if (ghosts[i]->getMode() == 'f') { // if the ghost was frightned
                     ghosts[i]->setModeOld(ghosts[i]->getMode());
-                    //ghosts[i]->setMode('c');
-                    ghosts[i]->setMode('s'); // he starts scaterring
+                    ghosts[i]->setMode('c');
+                    //ghosts[i]->setMode('s'); // he starts scaterring
                 }
             }
         }
     }
 
     // We alternate chase and scatter mode          /!\ Décommenter quand le 'c' sera fait
-    /*
+    
     if (ghostModeTimer) {
         --ghostModeTimer;
         if (ghostModeTimer == MODE_MAX / 4) {
             for (int i = 0; i < 4; ++i) {
-                if (ghosts[i]->GetMode() == 'c') {
-                    ghosts[i]->SetMode('s');
+                if (ghosts[i]->getMode() == 'c') {
+                    ghosts[i]->setMode('s');
                 }
             }
         }
     }
     else {
         for (int i = 0; i < 4; ++i) {
-            if (ghosts[i]->GetMode() == 's') {
-                ghosts[i]->SetMode('c');
+            if (ghosts[i]->getMode() == 's') {
+                ghosts[i]->setMode('c');
             }
         }
         ghostModeTimer = MODE_MAX;
     }
-     */
 }
 
 void Board::loadConfig(rapidjson::Document &d, bool newGame) {

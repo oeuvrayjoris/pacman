@@ -50,7 +50,7 @@ void Ghost::move(int target_x, int target_y) {
                         mode = 'f'; //
                     }
                     else {
-                        mode = 's'; // put as chasing
+                        mode = 'c'; // put as chasing
                     }
                     dir = 'q'; // a Ghost is supposed to go to the left after leaving the prison
                     dirOld = 'w';
@@ -92,19 +92,73 @@ void Ghost::move(int target_x, int target_y) {
                 wait = GHOST_MAX;
                 break;
             case 'c': // Chase the pacman
-                // will be handled after
-                if (id == BLINKY) {
-
+                getOpposite();
+                if (modeOld == 'e') {
+                    modeOld = mode;
                 }
-                else if (id == PINKY) {
-
+                if (mode != modeOld) { 
+                    dir = dirOpp;
+                    changeCoords();
+                    modeOld = mode;
                 }
-                else if (id == INKY) {
+                else {
+                    if (id == 11 || id == 13) { // If Blinky, we chase Pacman
+                        bool down = coord_x < board->getPacman()->getCoord_x();
+                        bool up = coord_x > board->getPacman()->getCoord_x();
+                        bool right = coord_x < board->getPacman()->getCoord_y();
+                        bool left = coord_x > board->getPacman()->getCoord_y();
+                        bool favorableDirs[4] = { up, left, down, right };
+                        targetObject(favorableDirs);
+                    }
+                    /* Target where Pacman will go
+                    else if (id == 12) {
 
-                }
-                else if (id == CLYDE) {
+                        int pos_x = board->getPacman()->getCoord_x();
+                        int pos_y = board->getPacman()->getCoord_y();
 
+                        if (board->getPacman()->getDir() == 'z') {
+                            pos_x -= 2;
+                            while (pos_x < board->getLevel().size())
+                                pos_x++;
+                            while (board->getLevel()[pos_x][pos_y] < 0 || board->getLevel()[pos_x][pos_y] > 3)
+                                pos_x++;
+                        }                        
+                        else if (board->getPacman()->getDir() == 's') {
+                            pos_x += 2;
+                            while (pos_x > board->getLevel().size())
+                                pos_x--;
+                            while (board->getLevel()[pos_x][pos_y] < 0 || board->getLevel()[pos_x][pos_y] > 3)
+                                pos_x--;
+                        }                        
+                        else if (board->getPacman()->getDir() == 'q') {
+                            pos_y -= 2;
+                            while (pos_y < board->getLevel()[0].size())
+                                pos_y++;
+                            while (board->getLevel()[pos_x][pos_y] < 0 || board->getLevel()[pos_x][pos_y] > 3)
+                                pos_y++;
+                        }                        
+                        else if (board->getPacman()->getDir() == 'd') {
+                            pos_y += 2;
+                            while (pos_y > board->getLevel()[0].size())
+                                pos_y--;
+                            while (board->getLevel()[pos_x][pos_y] < 0 || board->getLevel()[pos_x][pos_y] > 3)
+                                pos_y--;
+                        }
+
+                        bool down = coord_x < pos_x;
+                        bool up = coord_x > pos_x;
+                        bool right = coord_x < pos_y;
+                        bool left = coord_x > pos_y;
+                        bool favorableDirs[4] = { up, left, down, right };
+                        targetObject(favorableDirs);
+
+                    }*/
+                    else if (id == 12 || id == 14) {
+                        randomDirection();
+                    }
                 }
+                dirOld = dir;
+                wait = GHOST_MAX;
                 break;
             case 'f': // The ghost is frightened (for the moment it moves randomly, but slower than before, it should avoid the pacman)
                 getOpposite();

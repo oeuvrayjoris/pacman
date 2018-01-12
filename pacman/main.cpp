@@ -515,8 +515,8 @@ int main(int argc, char** argv) {
     int menu_choice = 3;
     int step = 0; // Different screens of our applications. 0 = menu, 1 = game, 2 = echap, 3 = game over
 
-    //std::string fileName = "./pacman/datas/levels/test.json"; // FOR LINUX
-    std::string fileName = "../../pacman/datas/levels/test.json"; // FOR clion Windows
+    std::string fileName = "./pacman/datas/levels/test.json"; // FOR LINUX
+    //std::string fileName = "../../pacman/datas/levels/test.json"; // FOR clion Windows
     board->load(fileName, 1);
 
     float degree = 0;
@@ -1057,7 +1057,7 @@ int main(int argc, char** argv) {
 
                                     if (board->getGhosts()[CLYDE]->getMode() == 'f')
                                         glBindTexture(GL_TEXTURE_2D, frightenTexture);
-                                    else if (board->getGhosts()[CLYDE]->getMode() == 'd' || board->getGhosts()[BLINKY]->getMode() == 'n'gi)
+                                    else if (board->getGhosts()[CLYDE]->getMode() == 'd' || board->getGhosts()[BLINKY]->getMode() == 'n')
                                         glBindTexture(GL_TEXTURE_2D, eatenTexture);
                                     else
                                         glBindTexture(GL_TEXTURE_2D, clydeTexture);
