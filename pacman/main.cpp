@@ -562,7 +562,6 @@ int main(int argc, char** argv) {
                                     camera_choice = 3;
                                 else
                                     camera_choice = 1;
-                                std::cout << "Camera " << camera_choice << std::endl;
                                 break;
                             case SDLK_ESCAPE:
                                 if (step != 0 && step != 3) {
