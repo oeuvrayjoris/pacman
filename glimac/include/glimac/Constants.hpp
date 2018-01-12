@@ -15,7 +15,7 @@ const int NO_COLLISION_TILES[5] = {0, 1, 2, 3, 10};
 const int COLLISION_CREATURES[4] = {11, 12, 13, 14};
 
 // Timers
-const int SPEED_FACTOR = 1;
+const int SPEED_FACTOR = 2;
 
 const int SUPER_MAX   = 500 * SPEED_FACTOR;
 const int PELLET_MAX  = 8 * SPEED_FACTOR;

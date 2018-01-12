@@ -118,7 +118,7 @@ int main(int argc, char** argv) {
     if(pImageSpace == NULL)
         std::cout << "SpaceMap == NULL" << std::endl;
 
-    std::unique_ptr<Image> pImagePacman = loadImage("../../assets/textures/NovelliMap.jpg");
+    std::unique_ptr<Image> pImagePacman = loadImage("../../assets/textures/PacmanMap.jpg");
     if(pImagePacman == NULL)
         std::cout << "PacmanMap == NULL" << std::endl;
 
@@ -146,7 +146,7 @@ int main(int argc, char** argv) {
     if(pImageEaten == NULL)
         std::cout << "EatenMap == NULL" << std::endl;
 
-    std::unique_ptr<Image> pImageCoeur = loadImage("../../assets/textures/CoeurMap.png");
+    std::unique_ptr<Image> pImageCoeur = loadImage("../../assets/textures/CoeurMap.jpg");
     if(pImageCoeur == NULL)
         std::cout << "CoeurMap == NULL" << std::endl;
 
@@ -591,12 +591,16 @@ int main(int argc, char** argv) {
                                 }
                                 break;
                             case SDLK_UP:
+                                degree += 0.1;
+                                std::cout << degree << std::endl;
                                     if(menu_choice < 2)
                                         menu_choice = 2;
                                     else
                                         menu_choice -= 1;
                                 break;
                             case SDLK_DOWN:
+                                degree -= 0.1;
+                            std::cout << degree << std::endl;
                                 if (menu_choice > 1)
                                         menu_choice = 1;
                                 else
@@ -737,11 +741,11 @@ int main(int argc, char** argv) {
                     // Game
 
                     // Nombre de vies
-                    MVMatrix = glm::translate(glm::mat4(1.f), glm::vec3(-3.2,-1.7,-3));
-                    MVMatrix = glm::scale(MVMatrix, glm::vec3(0.2, 0.2, 0.2));
-                    MVMatrix = glm::rotate(MVMatrix, pi/2, glm::vec3(1, 0, 0));
+                    MVMatrix = glm::translate(glm::mat4(1.f), glm::vec3(-0.4,-0.25,-0.5));
+                    MVMatrix = glm::scale(MVMatrix, glm::vec3(0.03, 0.03, 0.03));
+                    MVMatrix = glm::rotate(MVMatrix, -pi, glm::vec3(0, 1, 0));
 
-                    glBindVertexArray(vao);
+                    glBindVertexArray(vao2);
 
                     for (int i=0; i<board->getPacman()->getLives(); i++) {
                         texProgram.m_Program.use();
@@ -761,7 +765,7 @@ int main(int argc, char** argv) {
                         glActiveTexture(GL_TEXTURE0);
                         glBindTexture(GL_TEXTURE_2D, 0);
 
-                        MVMatrix = glm::translate(MVMatrix, glm::vec3(2.2,0,0));
+                        MVMatrix = glm::translate(MVMatrix, glm::vec3(2,0,0));
                     }
 
                     glBindVertexArray(0);
@@ -802,10 +806,12 @@ int main(int argc, char** argv) {
                     /* Lumières */
 
                     glm::mat4 lightMatrix;
-                    if (camera_choice == 1)
-                        lightMatrix = glm::rotate(globalMVMatrix = camera1.getViewMatrix(), windowManager.getTime(), glm::vec3(0.0, 1.0, 0.0));
-                    else
-                        lightMatrix = glm::rotate(globalMVMatrix = camera3.getViewMatrix(), windowManager.getTime(), glm::vec3(0.0, 1.0, 0.0));
+                    if (camera_choice == 1) {
+                        lightMatrix = glm::rotate(globalMVMatrix = camera1.getViewMatrix(), (float)2.2, glm::vec3(0, 1, 0));
+                    }
+                    else {
+                        lightMatrix = glm::rotate(globalMVMatrix = camera3.getViewMatrix(), (float)2.2, glm::vec3(0, 1, 0));
+                    }
 
                     glm::vec4 uLightDirVec = glm::normalize(glm::vec4(1, 1, 1, 0) * lightMatrix);
 
@@ -1057,7 +1063,7 @@ int main(int argc, char** argv) {
 
                                     if (board->getGhosts()[CLYDE]->getMode() == 'f')
                                         glBindTexture(GL_TEXTURE_2D, frightenTexture);
-                                    else if (board->getGhosts()[CLYDE]->getMode() == 'd' || board->getGhosts()[BLINKY]->getMode() == 'n'gi)
+                                    else if (board->getGhosts()[CLYDE]->getMode() == 'd' || board->getGhosts()[BLINKY]->getMode() == 'n')
                                         glBindTexture(GL_TEXTURE_2D, eatenTexture);
                                     else
                                         glBindTexture(GL_TEXTURE_2D, clydeTexture);
