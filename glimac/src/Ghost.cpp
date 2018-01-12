@@ -110,50 +110,14 @@ void Ghost::move(int target_x, int target_y) {
                         bool favorableDirs[4] = { up, left, down, right };
                         targetObject(favorableDirs);
                     }
-                    /* Target where Pacman will go
                     else if (id == 12) {
 
-                        int pos_x = board->getPacman()->getCoord_x();
-                        int pos_y = board->getPacman()->getCoord_y();
-
-                        if (board->getPacman()->getDir() == 'z') {
-                            pos_x -= 2;
-                            while (pos_x < board->getLevel().size())
-                                pos_x++;
-                            while (board->getLevel()[pos_x][pos_y] < 0 || board->getLevel()[pos_x][pos_y] > 3)
-                                pos_x++;
-                        }                        
-                        else if (board->getPacman()->getDir() == 's') {
-                            pos_x += 2;
-                            while (pos_x > board->getLevel().size())
-                                pos_x--;
-                            while (board->getLevel()[pos_x][pos_y] < 0 || board->getLevel()[pos_x][pos_y] > 3)
-                                pos_x--;
-                        }                        
-                        else if (board->getPacman()->getDir() == 'q') {
-                            pos_y -= 2;
-                            while (pos_y < board->getLevel()[0].size())
-                                pos_y++;
-                            while (board->getLevel()[pos_x][pos_y] < 0 || board->getLevel()[pos_x][pos_y] > 3)
-                                pos_y++;
-                        }                        
-                        else if (board->getPacman()->getDir() == 'd') {
-                            pos_y += 2;
-                            while (pos_y > board->getLevel()[0].size())
-                                pos_y--;
-                            while (board->getLevel()[pos_x][pos_y] < 0 || board->getLevel()[pos_x][pos_y] > 3)
-                                pos_y--;
-                        }
-
-                        bool down = coord_x < pos_x;
-                        bool up = coord_x > pos_x;
-                        bool right = coord_x < pos_y;
-                        bool left = coord_x > pos_y;
-                        bool favorableDirs[4] = { up, left, down, right };
-                        targetObject(favorableDirs);
-
-                    }*/
-                    else if (id == 12 || id == 14) {
+                        dir = board->getPacman()->getDir();
+                        getOpposite();
+                        dir = dirOpp;
+                        changeCoords();
+                    }
+                    else if (id == 14) {
                         randomDirection();
                     }
                 }
