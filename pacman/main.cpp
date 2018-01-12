@@ -222,7 +222,7 @@ int main(int argc, char** argv) {
     if(pImageEaten == NULL)
         std::cout << "EatenMap == NULL" << std::endl;
 
-    std::unique_ptr<Image> pImageCoeur = loadImage(applicationPath.dirPath() +"../assets/textures/CoeurMap.png");
+    std::unique_ptr<Image> pImageCoeur = loadImage(applicationPath.dirPath() +"../assets/textures/CoeurMap.jpg");
     if(pImageCoeur == NULL)
         std::cout << "CoeurMap == NULL" << std::endl;
 
@@ -519,7 +519,6 @@ int main(int argc, char** argv) {
     std::string fileName = "../../pacman/datas/levels/test.json"; // FOR clion Windows
     board->load(fileName, 1);
 
-    float degree = 0;
     float pi = 3.14159265359;
 
     char dir = 'q';
@@ -590,16 +589,12 @@ int main(int argc, char** argv) {
                                 }
                                 break;
                             case SDLK_UP:
-                                degree += 0.1;
-                                std::cout << degree << std::endl;
                                     if(menu_choice < 2)
                                         menu_choice = 2;
                                     else
                                         menu_choice -= 1;
                                 break;
                             case SDLK_DOWN:
-                                degree -= 0.1;
-                            std::cout << degree << std::endl;
                                 if (menu_choice > 1)
                                         menu_choice = 1;
                                 else
