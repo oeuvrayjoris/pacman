@@ -1057,7 +1057,7 @@ int main(int argc, char** argv) {
 
                                     if (board->getGhosts()[CLYDE]->getMode() == 'f')
                                         glBindTexture(GL_TEXTURE_2D, frightenTexture);
-                                    else if (board->getGhosts()[CLYDE]->getMode() == 'd' || board->getGhosts()[BLINKY]->getMode() == 'n')
+                                    else if (board->getGhosts()[CLYDE]->getMode() == 'd' || board->getGhosts()[BLINKY]->getMode() == 'n'gi)
                                         glBindTexture(GL_TEXTURE_2D, eatenTexture);
                                     else
                                         glBindTexture(GL_TEXTURE_2D, clydeTexture);
