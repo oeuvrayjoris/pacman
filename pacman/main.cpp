@@ -801,10 +801,10 @@ int main(int argc, char** argv) {
 
                     glm::mat4 lightMatrix;
                     if (camera_choice == 1) {
-                        lightMatrix = glm::rotate(globalMVMatrix = camera1.getViewMatrix(), (float)2.2, glm::vec3(0, 1, 0));
+                        lightMatrix = glm::rotate(globalMVMatrix = camera1.getViewMatrix(), windowManager.getTime(), glm::vec3(0, 1, 0));
                     }
                     else {
-                        lightMatrix = glm::rotate(globalMVMatrix = camera3.getViewMatrix(), (float)2.2, glm::vec3(0, 1, 0));
+                        lightMatrix = glm::rotate(globalMVMatrix = camera3.getViewMatrix(), windowManager.getTime(), glm::vec3(0, 1, 0));
                     }
 
                     glm::vec4 uLightDirVec = glm::normalize(glm::vec4(1, 1, 1, 0) * lightMatrix);
